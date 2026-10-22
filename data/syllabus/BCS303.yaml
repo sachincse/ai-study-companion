@@ -1,0 +1,47 @@
+# AKTU B.Tech (CSE) - Semester III
+code: BCS303
+name: Discrete Structures and Theory of Logic
+semester: 3
+branch: CSE
+credits: 3
+description: Sets, relations, functions, algebraic structures, lattices, Boolean algebra, logic, trees, graphs and combinatorics.
+units:
+  - number: 1
+    title: Set Theory, Relations, Functions and Natural Numbers
+    topics:
+      - Sets, combination of sets, multisets, ordered pairs, proofs of set identities
+      - Relations - definition, operations, properties, composite relations, recursive definition, order of relations
+      - Functions - classification, operations, recursively defined functions, growth of functions
+      - Mathematical induction, variants of induction, induction with non-zero base cases
+      - Proof methods - proof by counter-example, proof by contradiction
+  - number: 2
+    title: Algebraic Structures
+    topics:
+      - Groups, subgroups and order, cyclic groups
+      - Cosets and Lagrange's theorem
+      - Normal subgroups, permutation and symmetric groups
+      - Group homomorphisms
+      - Rings and fields - definition and elementary properties
+  - number: 3
+    title: Lattices and Boolean Algebra
+    topics:
+      - Lattices - bounded, complemented, modular and complete lattices
+      - Boolean algebra - axioms and theorems, algebraic manipulation of Boolean expressions
+      - Simplification of Boolean functions, Karnaugh maps
+      - Logic gates, digital circuits and Boolean algebra
+  - number: 4
+    title: Propositional and Predicate Logic
+    topics:
+      - Propositions, well-formed formulae, truth tables
+      - Tautology, satisfiability, contradiction, algebra of propositions
+      - Theory of inference
+      - First order predicate logic, quantifiers
+      - Inference theory of predicate logic
+  - number: 5
+    title: Trees, Graphs and Combinatorics
+    topics:
+      - Trees - binary tree, binary tree traversal, binary search tree
+      - Graphs - terminology, representation, multigraphs, bipartite graphs, planar graphs
+      - Isomorphism and homeomorphism of graphs, Euler and Hamiltonian paths, graph colouring
+      - Recurrence relations and generating functions, recursive algorithms, solving recurrences
+      - Combinatorics - counting techniques, pigeonhole principle

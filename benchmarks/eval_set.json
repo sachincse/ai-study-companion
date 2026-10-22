@@ -1,0 +1,619 @@
+{
+  "created_at": "2026-10-22T21:26:35.803024+00:00",
+  "writer": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b"
+  },
+  "per_book": 12,
+  "items": [
+    {
+      "id": "1-9",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 11,
+      "chunk_prefix": "system ha ve pr ompted the de velopment o f a ne w appr oach in\nmanaging large amounts of organizational information cal",
+      "question": "What are three examples of items mentioned where data can be stored?",
+      "reference_answer": "Data can be stored in filing cabinets, spreadsheets, and folders (also ledgers, lists, piles of papers).",
+      "keywords": [
+        "filing cabinets",
+        "spreadsheets",
+        "folders"
+      ]
+    },
+    {
+      "id": "1-22",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 21,
+      "chunk_prefix": "Kim Anh licensed\nunder Creative Commons Attribution License 3.0 license\nThe following material was written by Adrienne W",
+      "question": "What are the three main concepts used in an entity‑relationship model, and how does a relationship function in that model?",
+      "reference_answer": "The entity‑relationship model uses the concepts of entities, attributes, and relationships. An entity represents a real‑world object, attributes represent its properties, and a relationship represents an association among entities, such as an employee working on many projects.",
+      "keywords": [
+        "entity",
+        "attribute",
+        "relationship",
+        "entity‑relationship model"
+      ]
+    },
+    {
+      "id": "1-37",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 34,
+      "chunk_prefix": "by Nguyen Kim Anh licensed under Creative Commons Attribution License 3.0 license\nThe following material was written by ",
+      "question": "Define a relation in the relational data model as described in the passage.",
+      "reference_answer": "A relation, also known as a table or file, is a subset of the Cartesian product of a list of domains characterized by a name.",
+      "keywords": [
+        "relation",
+        "table",
+        "Cartesian product",
+        "domains",
+        "subset"
+      ]
+    },
+    {
+      "id": "1-49",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 46,
+      "chunk_prefix": "because no two rows in a table may\nhave the same value at any time. It is minimal because every column is necessary in o",
+      "question": "What is a composite key and what requirement must it meet?",
+      "reference_answer": "A composite key is composed of two or more attributes, but it must be minimal.",
+      "keywords": [
+        "composite key",
+        "two or more attributes",
+        "minimal"
+      ]
+    },
+    {
+      "id": "1-60",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 58,
+      "chunk_prefix": "databases have declarative referential integrity. In other words, when the tables are\ncreated the referential integrity ",
+      "question": "What must be true about the data types of the primary key and foreign key when setting up referential integrity?",
+      "reference_answer": "The PK and FK must have the same data types and come from the same domain, otherwise the relational database management system will not allow the join.",
+      "keywords": [
+        "primary key",
+        "foreign key",
+        "data types",
+        "same domain"
+      ]
+    },
+    {
+      "id": "1-72",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 70,
+      "chunk_prefix": "although there are deletion anomalies wi th the table. H aving a separate\ncustomer table would solve this problem. Howev",
+      "question": "What is an update anomaly and how does it arise when a branch address changes?",
+      "reference_answer": "An update anomaly occurs when a branch changes address, such as the Round Hill branch, and all rows referring to that branch must be updated; failing to update them leads to inconsistent data.",
+      "keywords": [
+        "update anomaly",
+        "branch address change",
+        "update all rows"
+      ]
+    },
+    {
+      "id": "1-83",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 81,
+      "chunk_prefix": "Commons Attribution-ShareAlike 3.0 Unported\nThe following material was written by Adrienne Watt:\n1. some of Rules of Fun",
+      "question": "According to the passage, what are the goals of normalization in relational database design?",
+      "reference_answer": "The goals of normalization are to be able to characterize the level of redundancy in a relational schema and to provide mechanisms for transforming schemas in order to remove redundancy.",
+      "keywords": [
+        "normalization",
+        "redundancy",
+        "relational schema",
+        "mechanisms",
+        "transforming"
+      ]
+    },
+    {
+      "id": "1-97",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 94,
+      "chunk_prefix": "requirements – as the intention is to develop a single shared\ndatabase.\nThe r equirements should not descri be ho w the ",
+      "question": "According to the passage, what is the primary focus of a conceptual data model in database development?",
+      "reference_answer": "It provides a shared, formal representation of what data a database should contain and the constraints the data must satisfy, expressed in terms independent of implementation details.",
+      "keywords": [
+        "conceptual data model",
+        "formal representation",
+        "data constraints",
+        "implementation independent",
+        "shared"
+      ]
+    },
+    {
+      "id": "1-113",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 104,
+      "chunk_prefix": "SW\nCREATE TABLE EMPLOYEES\n(\nEmployeeNo CHAR(10) NOT NULL UNIQUE,\nDepartmentName CHAR(30) NOT NULL DEFAULT “Human Resourc",
+      "question": "What constraint is used to define the primary key for the EMPLOYEES table and which column does it apply to?",
+      "reference_answer": "The CONSTRAINT Employee_PK PRIMARY KEY(EmployeeNo) defines the primary key on the EmployeeNo column.",
+      "keywords": [
+        "CONSTRAINT",
+        "Employee_PK",
+        "PRIMARY KEY",
+        "EmployeeNo"
+      ]
+    },
+    {
+      "id": "1-124",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 115,
+      "chunk_prefix": "selection with the WHERE cri terion using BETWEEN. Each o f\nthese examples give the same results for store items with be",
+      "question": "What two WHERE clause syntaxes are presented for selecting store items with quantities between 20 and 50 inclusive?",
+      "reference_answer": "The passage shows (1) qty BETWEEN 20 and 50 and (2) qty >= 20 and qty <= 50.",
+      "keywords": [
+        "BETWEEN",
+        ">= and <=",
+        "qty"
+      ]
+    },
+    {
+      "id": "1-135",
+      "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+      "filename": "Database_Design_2nd_Edition__Watt_Eng__CC-BY-4.0.pdf",
+      "page_no": 127,
+      "chunk_prefix": "Books\nWHERE CONVERT(char(5), price) LIKE ‘%99%’\nIn this second example, the conversion function changes data to a data t",
+      "question": "What does the DATEDIFF function return and how does it count date parts according to the description?",
+      "reference_answer": "It returns the number of datepart “boundaries” crossed between two specified dates; counting crossed boundaries makes the result consistent across all data types such as minutes, seconds, and milliseconds.",
+      "keywords": [
+        "DATEDIFF",
+        "datepart",
+        "boundaries",
+        "crossed",
+        "consistent"
+      ]
+    },
+    {
+      "id": "2-180",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 20,
+      "chunk_prefix": "Telephone numbers in the USA have 10 digits.\n• The moon is made of cheese.\n• 42 is a perfect square.\n• Every even number",
+      "question": "Why does the sentence \"3 + x = 12\" fail to be a statement according to the passage?",
+      "reference_answer": "Because it contains a variable; depending on the value of x the sentence could be true or false, but without specifying x it is neither true nor false, so it is not a statement.",
+      "keywords": [
+        "variable",
+        "statement",
+        "true",
+        "false",
+        "quantifying"
+      ]
+    },
+    {
+      "id": "2-224",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 49,
+      "chunk_prefix": "2)}.\n|B× B| /equalx 9. There will be 3 pairs with ﬁrst coordinate3, three\nmore with ﬁrst coordinate4, and a ﬁnal three w",
+      "question": "According to the passage, what set expression is equivalent to (B∩C)∪(C∩A)?",
+      "reference_answer": "It is equivalent to C∩((A∩C)∩B).",
+      "keywords": [
+        "(B∩C)∪(C∩A)",
+        "C∩((A∩C)∩B)",
+        "intersection",
+        "Venn diagram",
+        "shaded region"
+      ]
+    },
+    {
+      "id": "2-268",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 81,
+      "chunk_prefix": "three subjects is counted a total of 7 times in the total 37. To\nclarify things, let us think of the students who failed",
+      "question": "How many students passed all three classes?",
+      "reference_answer": "26 students passed all three classes.",
+      "keywords": [
+        "passed all three classes",
+        "26",
+        "students",
+        "total number of students",
+        "failed at least one class"
+      ]
+    },
+    {
+      "id": "2-310",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 108,
+      "chunk_prefix": "question in two diﬀerent ways, so the two answers must\nbe the same. Thus\n(n\nk\n)\n/equalx\n(n−1\nk−1\n)\n+\n(n−1\nk\n)\n.\nYou can ",
+      "question": "Why are the binomial coefficients (n k) and (n n−k) equal?",
+      "reference_answer": "(n k) counts the ways to select k items from n, while (n n−k) counts the ways to exclude n−k items; excluding n−k items leaves exactly k items, so both count the same outcomes.",
+      "keywords": [
+        "(n k)",
+        "(n n−k)",
+        "selection",
+        "exclude",
+        "binomial identity"
+      ]
+    },
+    {
+      "id": "2-359",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 139,
+      "chunk_prefix": "of combinations is that we are\ndeﬁning two injective functions to beequivalent if they have the same range, and then\ncou",
+      "question": "How many different meals can be bought with $10 when there are 7 dollar‑menu items and at least one of each item must be purchased?",
+      "reference_answer": "There are \\(\\binom{9}{6}=84\\) possible meals.",
+      "keywords": [
+        "$10",
+        "7 items",
+        "at least one of each",
+        "stars and bars"
+      ]
+    },
+    {
+      "id": "2-431",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 190,
+      "chunk_prefix": "a30 + b· 0· 30 /equalx a\na1 /equalx 4 /equalx a· 3 + b· 1· 3 /equalx 3a + 3b.\nSince a /equalx 1, we ﬁnd thatb /equalx 13",
+      "question": "What is the characteristic polynomial of the recurrence an = 2 an−1 + an−2 − 3 an−3 as given in the passage?",
+      "reference_answer": "The characteristic polynomial is x^3 − 2x^2 − x + 3.",
+      "keywords": [
+        "characteristic polynomial",
+        "recurrence",
+        "x^3 − 2x^2 − x + 3",
+        "roots",
+        "linear homogeneous"
+      ]
+    },
+    {
+      "id": "2-506",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 235,
+      "chunk_prefix": "any integersx and y such that\nx2 /equalx 4y + 2. ■\nExample 3.2.9\nThePigeonholePrinciple: Ifmorethan n pigeonsﬂyinto n pi",
+      "question": "Why does the passage claim that an example cannot be used to prove a statement of the form ∀x P(x)?",
+      "reference_answer": "Because proving a universal statement with an example does not show it holds for all integers; the passage states that it is never okay to prove a statement of the form ∀x P(x) with just an example.",
+      "keywords": [
+        "universal statement",
+        "example",
+        "prove",
+        "∀x P(x)",
+        "cannot"
+      ]
+    },
+    {
+      "id": "2-595",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 300,
+      "chunk_prefix": "to both parties. A matching then represented a way for the town elders to\nmarryoﬀeveryoneinthetown,nopolygamyallowed. We",
+      "question": "State Hall’s Marriage Theorem as given in the passage.",
+      "reference_answer": "Let G be a bipartite graph with sets A and B. Then G has a matching of A if and only if |N(S)| ≥ |S| for all S⊆A.",
+      "keywords": [
+        "Hall’s Marriage Theorem",
+        "matching",
+        "bipartite graph",
+        "|N(S)| ≥ |S|"
+      ]
+    },
+    {
+      "id": "2-657",
+      "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+      "filename": "Discrete_Mathematics_An_Open_Introduction_3e__Levin__CC-BY-SA-4.0.pdf",
+      "page_no": 345,
+      "chunk_prefix": "in either case,\nwe don’t yet know whether the four atomic statements are true or false,\nsince he hasn’t said them by the",
+      "question": "What approach does the passage recommend for simplifying negations that involve quantifiers?",
+      "reference_answer": "It recommends translating the statements into symbols and then using the formulaic rules to simplify negations (i.e., rules for quantifiers and De Morgan’s laws).",
+      "keywords": [
+        "translate",
+        "symbols",
+        "simplify negations",
+        "quantifiers",
+        "De Morgan’s laws"
+      ]
+    },
+    {
+      "id": "3-763",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 16,
+      "chunk_prefix": "List interface\nusing arrays and in Chapter 3 we will see implementations of the List\ninterface using pointer-based data ",
+      "question": "What are the three queueing disciplines described, and how does each determine which element is removed?",
+      "reference_answer": "The FIFO discipline removes items in the same order they were added; the priority discipline always removes the smallest element (breaking ties arbitrarily); the LIFO discipline removes the most recently added element.",
+      "keywords": [
+        "FIFO",
+        "priority",
+        "LIFO",
+        "remove",
+        "queueing discipline"
+      ]
+    },
+    {
+      "id": "3-810",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 60,
+      "chunk_prefix": "remove( i). However, the following lemma shows that, on average, balance() only spends\na constant amount of time per ope",
+      "question": "What lower bound on the potential Φ is established for the situation just before a call to balance() that shifts elements because front.size() < back.size()?",
+      "reference_answer": "The passage shows that Φ₁ > n/2 (since Φ₁ = back.size()−front.size() > back.size()−back.size()/3 = 2/3·back.size() > 2/3·3/4·n = n/2).",
+      "keywords": [
+        "potential",
+        "Φ",
+        "balance()",
+        "front.size()",
+        "back.size()"
+      ]
+    },
+    {
+      "id": "3-832",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 81,
+      "chunk_prefix": "i. Note that the location of an element consists of two parts:\n1. The node u that contains the block that contains the e",
+      "question": "What is the asymptotic time complexity for locating the item with index i in the described block‑linked list structure?",
+      "reference_answer": "The time to locate the item with index i is O(1 + min{i,n−i}/b).",
+      "keywords": [
+        "time complexity",
+        "locate",
+        "min{i,n−i}",
+        "b",
+        "O(1 + min{i,n−i}/b)"
+      ]
+    },
+    {
+      "id": "3-859",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 107,
+      "chunk_prefix": "path in a skiplist is at most\n2log n +O(1).\nProof. The easiest way to see this is to consider the reverse search path fo",
+      "question": "According to the analysis, what is the expected number of steps the forward search path takes at a particular level r in a skiplist?",
+      "reference_answer": "The expected number of steps Sr at level r satisfies E[Sr] ≤ 1 (i.e., at most one).",
+      "keywords": [
+        "expected number",
+        "Sr",
+        "level r",
+        "skiplist",
+        "≤ 1"
+      ]
+    },
+    {
+      "id": "3-897",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 138,
+      "chunk_prefix": "code that does trial insertions and searches, timing\nhow long it takes to add and ﬁnd particular values. (This can be, a",
+      "question": "According to the passage, how is a binary tree defined and what term is used for a node that has no children?",
+      "reference_answer": "A binary tree is a connected, undirected, finite graph with no cycles and no vertex of degree greater than three, and a node with no children is called a leaf.",
+      "keywords": [
+        "binary tree",
+        "connected",
+        "leaf",
+        "children",
+        "degree"
+      ]
+    },
+    {
+      "id": "3-951",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 191,
+      "chunk_prefix": "the new root. Again, this simultaneously decreases the height of every leaf and therefore maintains the\nheight property.",
+      "question": "What are the two properties that must hold for a red‑black tree before and after any operation?",
+      "reference_answer": "Property 9.3 (black‑height): every root‑to‑leaf path contains the same number of black nodes (the sum of the colours on any root‑to‑leaf path is the same). Property 9.4 (no‑red‑edge): no two red nodes are adjacent (for any node u, except the root, u.colour + u.parent.colour ≥ 1).",
+      "keywords": [
+        "black-height",
+        "no-red-edge",
+        "red‑black tree",
+        "colour",
+        "root"
+      ]
+    },
+    {
+      "id": "3-964",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 207,
+      "chunk_prefix": "restore this with a call to ﬂip left(v). We then return the nodev so that\nthe next iteration of remove ﬁxup(u) then cont",
+      "question": "What total time complexity does Theorem 9.2 claim for all calls to add_fixup(u) and remove_fixup(u) over a sequence of m add(x) and remove(x) operations starting from an empty RedBlackTree?",
+      "reference_answer": "Theorem 9.2 states that the total time spent during all calls to add_fixup(u) and remove_fixup(u) is O(m).",
+      "keywords": [
+        "O(m)",
+        "add_fixup",
+        "remove_fixup",
+        "RedBlackTree",
+        "Theorem 9.2"
+      ]
+    },
+    {
+      "id": "3-996",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 240,
+      "chunk_prefix": "for an array of size n← 3 is shown in\nFigure 11.5.The comparison tree for a sorting algorithm tells us everything about\n",
+      "question": "What lower bound on the number of comparisons does any deterministic comparison‑based sorting algorithm require for an input array of length n?",
+      "reference_answer": "It must perform at least log(n!) = n log n − O(n) comparisons.",
+      "keywords": [
+        "deterministic comparison‑based sorting algorithm",
+        "log(n!)",
+        "lower bound",
+        "comparisons",
+        "n log n"
+      ]
+    },
+    {
+      "id": "3-1025",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 267,
+      "chunk_prefix": "sink. Your algorithm should run inO(n) time.\n1A universal sink, v, is also sometimes called acelebrity: Everyone in the ",
+      "question": "What is the time complexity of the add(x) and remove(x) operations in a YFastTrie?",
+      "reference_answer": "add(x) and remove(x) run in O(log w) time.",
+      "keywords": [
+        "YFastTrie",
+        "add(x)",
+        "remove(x)",
+        "O(log w)",
+        "time complexity"
+      ]
+    },
+    {
+      "id": "3-1052",
+      "book": "Open Data Structures (Morin) CC-BY-2.5",
+      "filename": "Open_Data_Structures__Morin__CC-BY-2.5.pdf",
+      "page_no": 293,
+      "chunk_prefix": "lo\nThe ﬁnd it(a,x) method uses a binary search that halves the search\nspace at each step, so it runs in O(log(length(a))",
+      "question": "What is the asymptotic running time of a B-tree find(x) operation in the external memory model, and how is this derived from the tree's height?",
+      "reference_answer": "In the external memory model, find(x) takes O(log_B n) time, because a B-tree that stores n keys has height O(log_B n) and each node accessed counts as one I/O operation.",
+      "keywords": [
+        "external memory model",
+        "O(log_B n)",
+        "height",
+        "B-tree",
+        "node access"
+      ]
+    },
+    {
+      "id": "4-1134",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 31,
+      "chunk_prefix": "also introduces some signiﬁcant\nmiddleware, because database systems provide an interesting example of\ndeadlock handling",
+      "question": "What guarantees does a transaction provide regarding intermediate states, isolation, and system crashes?",
+      "reference_answer": "A transaction guarantees that no intermediate state is ever visible, concurrent transactions are isolated from each other, and if a transaction fails or the system catastrophically crashes, the storage remains as it was before the transaction started, so after reboot the partial transaction is not reflected.",
+      "keywords": [
+        "intermediate state",
+        "isolation",
+        "atomicity",
+        "crash",
+        "storage"
+      ]
+    },
+    {
+      "id": "4-1205",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 76,
+      "chunk_prefix": "to reﬂect importance. If tasks have hard deadlines, then\nimportance can be dealt with as in the homework example—through",
+      "question": "According to the passage, how is importance interpreted for tasks with soft deadlines compared to when no urgency information is provided?",
+      "reference_answer": "With soft deadlines, importance measures how bad it is for each task to be late; when no urgency information is given, a high‑importance task is one to work on whenever possible and a low‑importance task is one to fill in idle moments.",
+      "keywords": [
+        "soft deadlines",
+        "importance measures",
+        "high‑importance",
+        "idle moments",
+        "urgency"
+      ]
+    },
+    {
+      "id": "4-1352",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 163,
+      "chunk_prefix": "it stores an AtomicReference to a State object that packages\nthese two variables together, allowing them to be kept cons",
+      "question": "What condition must be true for the sellTicket method to attempt to update the state, and how does it ensure the update is applied only if the snapshot remains valid?",
+      "reference_answer": "The method first checks that seatsRemaining > 0, then creates a new State and calls state.compareAndSet(snapshot, next); the compareAndSet updates the AtomicReference only if the snapshot has not changed, ensuring the update is applied only when the snapshot remains valid.",
+      "keywords": [
+        "seatsRemaining",
+        "compareAndSet",
+        "snapshot",
+        "AtomicReference",
+        "State"
+      ]
+    },
+    {
+      "id": "4-1429",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 212,
+      "chunk_prefix": "on how much of the log needs to be processed.\nThese mechanisms are generally referred to ascheckpointing, because the\nsi",
+      "question": "What is checkpointing and how does it affect the retention of log entries?",
+      "reference_answer": "Checkpointing creates a point at which the main persistent storage is brought to a consistent state, so no log entries prior to the checkpoint need to be retained.",
+      "keywords": [
+        "checkpointing",
+        "consistent state",
+        "log entries",
+        "persistent storage"
+      ]
+    },
+    {
+      "id": "4-1499",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 252,
+      "chunk_prefix": "is stored in 4 bytes, this tiny page table\nwould occupy 32 consecutive bytes of memory. The information that page 3\nhas ",
+      "question": "How many bytes does a linear page table require for a 32-bit address space with 4‑KB pages when each page-table entry occupies 4 bytes?",
+      "reference_answer": "you now have a 4‑MB page table.",
+      "keywords": [
+        "4‑MB page table",
+        "32‑bit address space",
+        "4‑KB pages",
+        "page‑table entry"
+      ]
+    },
+    {
+      "id": "4-1572",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 295,
+      "chunk_prefix": "approaches to memory protection: one with a separate\naddress space for each process, and one with a single address space",
+      "question": "What are the two approaches to memory protection described, and how does the finer‑grained approach differ from the coarser‑grained approach?",
+      "reference_answer": "The two approaches are a separate address space for each process and a single address space. The finer‑grained approach protects parts of processes from each other, while the coarser‑grained approach protects entire simulated machines from one another.",
+      "keywords": [
+        "separate address space",
+        "single address space",
+        "finer‑grained",
+        "coarser‑grained",
+        "simulated machines"
+      ]
+    },
+    {
+      "id": "4-1643",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 337,
+      "chunk_prefix": "from the distinction between a principal\nand a subject, or in simpliﬁed terms, between a user and a process. A process\nt",
+      "question": "What security risk arises when a program runs with a user's credentials and can send the user's private data over the network?",
+      "reference_answer": "A Trojan horse program can act with the user's credentials, allowing it to send the user's private data over the network.",
+      "keywords": [
+        "Trojan horse",
+        "user credentials",
+        "process",
+        "private data",
+        "network"
+      ]
+    },
+    {
+      "id": "4-1792",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 422,
+      "chunk_prefix": "software as a form of middleware,\nbecause it runs outside of the operating system kernel but supports\napplication softwa",
+      "question": "What role does middleware play at the application layer according to the passage?",
+      "reference_answer": "Middleware provides the necessary communication abstractions at the application layer, above the transport services provided by operating systems, such as queuing messages for atomic transactions or invoking higher‑level operations on objects.",
+      "keywords": [
+        "middleware",
+        "application layer",
+        "communication abstractions",
+        "transport services",
+        "atomic transactions"
+      ]
+    },
+    {
+      "id": "4-1935",
+      "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+      "filename": "Operating_Systems_and_Middleware__Hailperin__CC-BY-SA-3.0.pdf",
+      "page_no": 506,
+      "chunk_prefix": "a greater problem in the days when the major communication channel between personal computers was hand-carried diskettes",
+      "question": "What is identified as the most serious means of worm propagation, and what programming mistake enables it?",
+      "reference_answer": "The most serious means of worm propagation has come to be the exploitation of buffer‑overflow vulnerabilities. Most programs read input into a contiguous block of virtual memory called a buffer, and when a fixed-size buffer is not properly checked against input size, the overflow can be exploited by a worm.",
+      "keywords": [
+        "buffer‑overflow vulnerabilities",
+        "buffer",
+        "fixed-size buffer",
+        "contiguous block of virtual memory",
+        "worm propagation"
+      ]
+    }
+  ]
+}

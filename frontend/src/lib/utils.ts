@@ -1,0 +1,72 @@
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+export function formatDate(iso: string | null | undefined, opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleDateString(undefined, opts)
+}
+
+export function formatDateTime(iso: string | null | undefined) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return d.toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+}
+
+export function timeAgo(iso: string | null | undefined) {
+  if (!iso) return ''
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000
+  if (diff < 60) return 'just now'
+  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} h ago`
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)} d ago`
+  return formatDate(iso)
+}
+
+export function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+}
+
+export function formatDuration(sec: number | null | undefined) {
+  if (!sec && sec !== 0) return ''
+  const m = Math.floor(sec / 60)
+  const s = sec % 60
+  if (m >= 60) return `${Math.floor(m / 60)}h ${m % 60}m`
+  return m ? `${m}m ${s.toString().padStart(2, '0')}s` : `${s}s`
+}
+
+export function pct(n: number | null | undefined, digits = 0) {
+  if (n === null || n === undefined) return '-'
+  return `${n.toFixed(digits)}%`
+}
+
+/** Convert FTS `[[term]]` markers into <mark> while escaping everything else. */
+export function highlightSnippet(snippet: string) {
+  const escaped = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return escaped.replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>')
+}
+
+export function initials(name: string) {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase())
+    .join('')
+}
+
+export const ANSWER_MODES: { id: string; label: string; hint: string }[] = [
+  { id: 'exam', label: 'Exam answer', hint: 'Structured, full-marks style' },
+  { id: 'beginner', label: 'Explain simply', hint: 'Plain language and analogies' },
+  { id: 'detailed', label: 'Detailed', hint: 'Examples, edge cases, comparisons' },
+  { id: 'short', label: 'Short', hint: 'Definition in a few sentences' },
+  { id: 'steps', label: 'Step by step', hint: 'Numericals and derivations' },
+  { id: 'practice', label: 'Practice questions', hint: 'Generate questions + model answers' },
+]

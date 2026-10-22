@@ -1,0 +1,51 @@
+# AKTU B.Tech (CSE) - Semester III
+code: BCS302
+name: Computer Organization and Architecture
+semester: 3
+branch: CSE
+credits: 4
+description: Functional units, ALU design, control unit, memory hierarchy and I/O organization.
+units:
+  - number: 1
+    title: Introduction
+    topics:
+      - Functional units of a digital system and their interconnections
+      - Buses, bus architecture, types of buses and bus arbitration
+      - Register, bus and memory transfer
+      - Processor organization and general register organization
+      - Stack organization
+      - Addressing modes
+  - number: 2
+    title: Arithmetic and Logic Unit
+    topics:
+      - Look-ahead carry adders
+      - Signed operand multiplication, Booth's algorithm and array multiplier
+      - Division and logic operations
+      - Floating point arithmetic operations
+      - Arithmetic and logic unit design
+      - IEEE standard for floating point numbers
+  - number: 3
+    title: Control Unit
+    topics:
+      - Instruction types and formats
+      - Instruction cycle and sub-cycles (fetch, decode, execute), micro-operations
+      - Execution of a complete instruction
+      - Program control, RISC, pipelining
+      - Hardwired and microprogrammed control
+      - Microprogram sequencing, horizontal and vertical microprogramming
+  - number: 4
+    title: Memory
+    topics:
+      - Memory hierarchy, semiconductor RAM memories, 2D and 2.5D memory organization
+      - ROM memories
+      - Cache memory - concept, design issues, performance, address mapping and replacement
+      - Auxiliary memories - magnetic disk, magnetic tape, optical disks
+      - Virtual memory - concept and implementation
+  - number: 5
+    title: Input / Output
+    topics:
+      - Peripheral devices, I/O interface and I/O ports
+      - Interrupts - interrupt hardware, types of interrupts and exceptions
+      - Modes of data transfer - programmed I/O, interrupt-initiated I/O, direct memory access (DMA)
+      - I/O channels and processors
+      - Serial communication - synchronous and asynchronous, standard communication interfaces

@@ -1,0 +1,61 @@
+# AKTU B.Tech (CSE) - Semester III
+# Source: AKTU evaluation scheme & syllabus (2nd year, effective 2023-24). Verify against the
+# official PDF at aktu.ac.in before relying on it for exam weightage.
+code: BCS301
+name: Data Structure
+semester: 3
+branch: CSE
+credits: 4
+description: Arrays, linked lists, stacks, queues, searching/sorting, graphs and trees with C implementations.
+units:
+  - number: 1
+    title: Introduction, Arrays and Linked Lists
+    topics:
+      - Basic terminology and elementary data organization
+      - Built-in data types in C and abstract data types (ADT)
+      - Algorithm efficiency, time and space complexity, asymptotic notations (Big O, Theta, Omega)
+      - Time-space trade-off
+      - Single and multidimensional arrays, row-major and column-major representation
+      - Index formulae for 1-D, 2-D, 3-D and n-D arrays
+      - Sparse matrices and their representation
+      - Singly, doubly and circular linked lists (array and pointer implementation)
+      - Linked list operations - insertion, deletion, traversal
+      - Polynomial representation and addition, subtraction, multiplication using linked lists
+  - number: 2
+    title: Stacks and Queues
+    topics:
+      - Stack ADT, push and pop, array and linked implementation in C
+      - Prefix and postfix expressions, evaluation of postfix expression
+      - Iteration and recursion, principles of recursion, tail recursion, removal of recursion
+      - Recursion examples - binary search, Fibonacci series, Tower of Hanoi
+      - Trade-offs between iteration and recursion
+      - Queue operations - create, add, delete, full and empty
+      - Circular queues, array and linked implementation of queues
+      - Dequeue and priority queue
+  - number: 3
+    title: Searching and Sorting
+    topics:
+      - Sequential search, index sequential search, binary search
+      - Hashing and collision resolution techniques
+      - Insertion sort, selection sort, bubble sort
+      - Quick sort, merge sort
+      - Heap sort, radix sort
+  - number: 4
+    title: Graphs
+    topics:
+      - Graph terminology, adjacency matrix and adjacency list representation
+      - Graph traversal - depth first search (DFS) and breadth first search (BFS)
+      - Connected components and spanning trees
+      - Minimum cost spanning trees - Prim's and Kruskal's algorithms
+      - Transitive closure and Warshall's algorithm
+      - Shortest path - Dijkstra's algorithm
+  - number: 5
+    title: Trees
+    topics:
+      - Tree terminology, binary trees, array and linked representation
+      - Binary search tree, complete binary tree, extended binary trees
+      - Tree traversals - inorder, preorder, postorder; constructing a tree from traversals
+      - Insertion, deletion, searching and modification in a BST
+      - Threaded binary trees and their traversal
+      - Huffman coding using binary trees
+      - AVL trees, B-trees and binary heaps - concepts and basic operations

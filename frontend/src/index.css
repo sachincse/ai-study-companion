@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { @apply antialiased; }
+  body { @apply bg-slate-50 text-slate-800 font-sans; }
+  ::selection { @apply bg-brand-200 text-ink-900; }
+  * { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+}
+
+@layer components {
+  .card { @apply bg-white border border-slate-200 rounded-2xl shadow-card; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400; }
+  .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700; }
+  .btn-secondary { @apply btn bg-white border border-slate-200 text-slate-700 hover:bg-slate-50; }
+  .btn-ghost { @apply btn text-slate-600 hover:bg-slate-100; }
+  .btn-danger { @apply btn bg-rose-50 text-rose-600 hover:bg-rose-100; }
+  .btn-sm { @apply px-3 py-1.5 text-xs; }
+  .input { @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100; }
+  .label { @apply block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1.5; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+  .kbd { @apply font-mono text-[11px] bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 text-slate-600; }
+}
+
+.prose-chat :where(p):not(:last-child) { margin-bottom: 0.6em; }
+.prose-chat :where(ul, ol) { margin: 0.4em 0 0.6em; padding-left: 1.25em; }
+.prose-chat :where(ul) { list-style: disc; }
+.prose-chat :where(ol) { list-style: decimal; }
+.prose-chat :where(li) { margin: 0.15em 0; }
+.prose-chat :where(h1, h2, h3) { font-weight: 700; margin: 0.8em 0 0.35em; }
+.prose-chat :where(h2) { font-size: 1.05em; }
+.prose-chat :where(h3) { font-size: 1em; }
+.prose-chat :where(pre) { @apply bg-ink-900 text-slate-100 rounded-xl p-3 text-[13px] overflow-x-auto my-2; }
+.prose-chat :where(code):not(pre code) { @apply font-mono text-[0.9em] bg-slate-100 rounded px-1 py-0.5; }
+.prose-chat :where(table) { @apply text-sm my-2 w-full; }
+.prose-chat :where(th, td) { @apply border border-slate-200 px-2 py-1 text-left; }
+.prose-chat :where(blockquote) { @apply border-l-4 border-brand-200 pl-3 text-slate-600 italic; }
+.prose-chat :where(strong) { @apply font-semibold text-ink-900; }
+.cite-chip { @apply inline-flex items-center justify-center min-w-[1.4rem] h-5 px-1 mx-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-bold align-baseline cursor-pointer hover:bg-brand-100 border border-brand-100; }
+mark { @apply bg-amber-50 text-amber-600 rounded px-0.5; }
+
+.flip-card { perspective: 1200px; }
+.flip-inner { transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; }
+.flip-inner.flipped { transform: rotateY(180deg); }
+.flip-face { backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }

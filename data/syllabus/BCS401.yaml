@@ -1,0 +1,49 @@
+# AKTU B.Tech (CSE) - Semester IV
+code: BCS401
+name: Operating System
+semester: 4
+branch: CSE
+credits: 4
+description: OS structure, concurrency, CPU scheduling, deadlocks, memory management, I/O and file systems.
+units:
+  - number: 1
+    title: Introduction
+    topics:
+      - Operating system functions and classification - batch, interactive, time sharing, real time
+      - Multiprocessor, multiuser, multiprocess and multithreaded systems
+      - Operating system structure - layered structure, system components, OS services
+      - Reentrant kernels, monolithic and microkernel systems
+  - number: 2
+    title: Concurrent Processes
+    topics:
+      - Process concept and principle of concurrency
+      - Producer-consumer problem, mutual exclusion, critical section problem
+      - Dekker's solution and Peterson's solution
+      - Semaphores, test-and-set operation
+      - Classical problems - dining philosophers, sleeping barber
+      - Inter-process communication models and schemes, process generation
+  - number: 3
+    title: CPU Scheduling and Deadlock
+    topics:
+      - Scheduling concepts, performance criteria, process states and transition diagram
+      - Schedulers, process control block (PCB), process address space
+      - Threads and their management
+      - Scheduling algorithms - FCFS, SJF, priority, round robin, multilevel queue
+      - Multiprocessor scheduling
+      - Deadlock - system model, characterization, prevention, avoidance (Banker's algorithm), detection and recovery
+  - number: 4
+    title: Memory Management
+    topics:
+      - Bare machine, resident monitor, multiprogramming with fixed and variable partitions
+      - Protection schemes, paging, segmentation, paged segmentation
+      - Virtual memory, demand paging and its performance
+      - Page replacement algorithms - FIFO, optimal, LRU
+      - Thrashing, cache memory organization, locality of reference
+  - number: 5
+    title: I/O Management, Disk Scheduling and File Systems
+    topics:
+      - I/O devices and subsystems, I/O buffering
+      - Disk storage and disk scheduling - FCFS, SSTF, SCAN, C-SCAN
+      - RAID levels
+      - File concept, organization and access mechanisms, file directories, file sharing
+      - File system implementation issues, protection and security

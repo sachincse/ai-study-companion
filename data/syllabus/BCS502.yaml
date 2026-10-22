@@ -1,0 +1,43 @@
+# AKTU B.Tech (CSE) - Semester V
+code: BCS502
+name: Web Technology
+semester: 5
+branch: CSE
+credits: 4
+description: Web fundamentals, HTML/XML, CSS, JavaScript and AJAX, Java networking, Beans/EJB, Node.js, MongoDB, servlets and JSP.
+units:
+  - number: 1
+    title: Introduction and Web Page Designing
+    topics:
+      - Web development strategies, history of the web and internet, protocols governing the web
+      - Writing web projects, connecting to the internet, internet services and tools, client-server computing
+      - HTML - lists, tables, images, frames, forms
+      - XML - document type definition, XML schemas, DOM and SAX processors
+  - number: 2
+    title: CSS and Page Layout
+    topics:
+      - Cascading style sheets - creating and applying styles
+      - Box model, borders, margins, padding
+      - Positioning, floats and page layout techniques
+      - Responsive page design fundamentals
+  - number: 3
+    title: JavaScript, AJAX and Networking
+    topics:
+      - JavaScript - introduction, documents, forms, statements, functions, objects
+      - Event handling and DOM manipulation
+      - Introduction to AJAX
+      - Networking - InetAddress, URL and URL connection, TCP/IP sockets
+  - number: 4
+    title: Enterprise Java Beans, Node.js and MongoDB
+    topics:
+      - JavaBeans - preparing a class to be a JavaBean, properties, design patterns
+      - Enterprise JavaBeans - session beans, entity beans, deployment
+      - Node.js - introduction, environment setup, REPL, callbacks and event loop
+      - MongoDB - basics, CRUD operations and integration with Node.js
+  - number: 5
+    title: Servlets and JSP
+    topics:
+      - Servlet overview, architecture, life cycle, handling HTTP requests and responses
+      - Using cookies and session tracking
+      - JSP - overview, implicit objects, standard actions, directives
+      - JSP with database access and error handling

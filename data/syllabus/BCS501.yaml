@@ -1,0 +1,48 @@
+# AKTU B.Tech (CSE) - Semester V
+code: BCS501
+name: Database Management System
+semester: 5
+branch: CSE
+credits: 4
+description: Data models, ER design, relational algebra and SQL, normalization, transactions, recovery and concurrency control.
+units:
+  - number: 1
+    title: Introduction and ER Model
+    topics:
+      - Database system vs file system, database system concepts and architecture
+      - Data model, schema and instances, data independence
+      - Database languages and interfaces, DDL, DML, overall database structure
+      - ER model - entities, attributes, relationships, keys, generalization, aggregation
+      - Reduction of an ER diagram to tables, extended ER model
+      - Relationships of higher degree
+  - number: 2
+    title: Relational Data Model, Language and SQL
+    topics:
+      - Relational data model concepts, integrity constraints - entity and referential integrity
+      - Keys and constraints, relational algebra and relational calculus (tuple and domain)
+      - SQL - characteristics, data types, literals, DDL and DML commands
+      - SQL operators, tables, views and indexes, queries and sub-queries, aggregate functions
+      - Joins, unions, intersection, minus
+      - Cursors, triggers and procedures in SQL/PL-SQL
+  - number: 3
+    title: Database Design and Normalization
+    topics:
+      - Functional dependencies, Armstrong's axioms, closure and canonical cover
+      - Normal forms - first, second, third normal form and BCNF
+      - Inclusion dependence, lossless join decomposition
+      - Multivalued dependencies and fourth normal form, join dependencies and fifth normal form
+      - Alternative approaches to database design
+  - number: 4
+    title: Transaction Processing Concepts
+    topics:
+      - Transaction system, testing of serializability, serializability of schedules
+      - Conflict and view serializable schedules, recoverability
+      - Recovery from transaction failures, log-based recovery, checkpoints, deadlock handling
+      - Distributed database - concepts, data fragmentation, replication and allocation techniques
+  - number: 5
+    title: Concurrency Control Techniques
+    topics:
+      - Concurrency control, locking techniques, time stamping protocols
+      - Validation-based protocol, multiple granularity
+      - Multiversion schemes, recovery with concurrent transactions
+      - Case study of Oracle

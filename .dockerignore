@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+storage/
+backend/.venv/
+backend/.pytest_cache/
+backend/**/__pycache__/
+frontend/node_modules/
+frontend/dist/
+data/sample_notes/*.pdf
+docs/demo/*.webm
+benchmarks/results/
+scripts/.recordings/

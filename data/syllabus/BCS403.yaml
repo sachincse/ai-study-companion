@@ -1,0 +1,50 @@
+# AKTU B.Tech (CSE) - Semester IV
+code: BCS403
+name: Object Oriented Programming with Java
+semester: 4
+branch: CSE
+credits: 3
+description: Java fundamentals, OOP, exceptions, multithreading, modern Java features, collections and Spring Boot.
+units:
+  - number: 1
+    title: Introduction and Object Oriented Programming
+    topics:
+      - Why Java, history, JVM, JRE, Java environment, source file structure and compilation
+      - Classes, constructors, methods, access specifiers, static and final members
+      - Data types, variables, operators, control flow, arrays and strings
+      - Inheritance, super class and sub class, overriding and overloading
+      - Encapsulation, polymorphism, abstraction, interfaces and abstract classes
+      - Packages - defining packages, CLASSPATH, JAR files, import and static import
+  - number: 2
+    title: Exception Handling, I/O and Multithreading
+    topics:
+      - Exceptions and errors, types of exceptions, control flow in exceptions, JVM reaction to exceptions
+      - try, catch, finally, throw, throws; built-in and user-defined exceptions; checked and unchecked exceptions
+      - Byte streams and character streams, reading and writing files
+      - Threads, thread life cycle, creating threads, thread priorities
+      - Synchronizing threads and inter-thread communication
+  - number: 3
+    title: Java New Features
+    topics:
+      - Functional interfaces, lambda expressions, method references, Stream API
+      - Default, static and private methods in interfaces
+      - Base64 encode/decode, forEach method, try-with-resources
+      - Type annotations, repeating annotations, Java module system
+      - Local variable type inference, switch expressions, yield keyword, text blocks
+      - Records and sealed classes
+  - number: 4
+    title: Java Collections Framework
+    topics:
+      - Collection framework hierarchy, Iterator and Collection interfaces
+      - List interface - ArrayList, LinkedList, Vector, Stack
+      - Queue interface; Set interface - HashSet, LinkedHashSet, SortedSet, TreeSet
+      - Map interface - HashMap, LinkedHashMap, TreeMap, Hashtable
+      - Sorting with Comparable and Comparator, Properties class
+  - number: 5
+    title: Spring Framework and Spring Boot
+    topics:
+      - Spring core - dependency injection, inversion of control, AOP
+      - Bean scopes, autowiring, annotations, life-cycle callbacks, bean configuration styles
+      - Spring Boot build systems, code structure, runners, logger
+      - Building RESTful web services - RestController, RequestMapping, RequestBody, PathVariable, RequestParam
+      - GET, POST, PUT, DELETE APIs and building web applications

@@ -1,0 +1,40 @@
+# secrets & local config
+.env
+.env.*
+!.env.example
+
+# runtime data (database, uploads, vector index, model cache)
+storage/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+
+# node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# editors / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# demo recording scratch
+scripts/.recordings/
+
+# open textbooks are fetched by scripts/fetch_open_notes.py (large PDFs)
+data/sample_notes/*.pdf
+docs/demo/*.webm

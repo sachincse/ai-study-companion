@@ -1,0 +1,68 @@
+# Curated YouTube channels that AKTU students rely on. We deliberately store channel
+# pages and search links rather than individual video ids, because video ids go stale.
+# Live results come from the YouTube Data API (if YOUTUBE_API_KEY is set) or yt-dlp.
+channels:
+  - id: gate_smashers
+    name: Gate Smashers
+    url: https://www.youtube.com/@GateSmashers
+    search_prefix: Gate Smashers
+    why: Short, exam-focused lectures on OS, DBMS, COA, CN and TOC - a staple for AKTU and GATE prep.
+  - id: jennys_lectures
+    name: Jenny's Lectures CS IT
+    url: https://www.youtube.com/@JennyslecturesCSIT
+    search_prefix: Jenny's lectures
+    why: Clear whiteboard explanations of data structures, algorithms and C programming.
+  - id: knowledge_gate
+    name: KnowledgeGATE by Sanchit Sir
+    url: https://www.youtube.com/@KNOWLEDGEGATE_kg
+    search_prefix: Knowledge Gate
+    why: One-shot and unit-wise university lectures (OS, DBMS, TOC, DSTL) aligned with AKTU units.
+  - id: five_minutes_engineering
+    name: 5 Minutes Engineering
+    url: https://www.youtube.com/@5MinutesEngineering
+    search_prefix: 5 Minutes Engineering
+    why: Quick concept refreshers - ideal the night before an exam.
+  - id: neso_academy
+    name: Neso Academy
+    url: https://www.youtube.com/@nesoacademy
+    search_prefix: Neso Academy
+    why: Rigorous fundamentals for TOC, COA and digital logic.
+  - id: abdul_bari
+    name: Abdul Bari
+    url: https://www.youtube.com/@abdul_bari
+    search_prefix: Abdul Bari
+    why: The go-to playlist for Design and Analysis of Algorithms.
+  - id: education_4u
+    name: Education 4u
+    url: https://www.youtube.com/@Education4u
+    search_prefix: Education 4u
+    why: Semester-wise AKTU lectures with previous-year question discussion.
+  - id: edushine
+    name: EduShine Classes
+    url: https://www.youtube.com/@edushineclasses
+    search_prefix: EduShine AKTU
+    why: AKTU-specific one-shot revisions and important questions per unit.
+
+subjects:
+  BCS301:
+    channels: [jennys_lectures, gate_smashers, abdul_bari, edushine]
+  BCS302:
+    channels: [gate_smashers, neso_academy, knowledge_gate, education_4u]
+  BCS303:
+    channels: [knowledge_gate, gate_smashers, five_minutes_engineering]
+  BCS401:
+    channels: [gate_smashers, knowledge_gate, five_minutes_engineering, edushine]
+  BCS402:
+    channels: [neso_academy, gate_smashers, knowledge_gate]
+  BCS403:
+    channels: [education_4u, edushine]
+  BCS501:
+    channels: [gate_smashers, knowledge_gate, five_minutes_engineering, edushine]
+  BCS502:
+    channels: [education_4u, edushine]
+  BCS503:
+    channels: [abdul_bari, gate_smashers, jennys_lectures]
+
+tips:
+  - Watch the one-shot first, then solve the previous-year questions for that unit.
+  - Pause after every example and try to reproduce it in your own notes - then quiz yourself here.

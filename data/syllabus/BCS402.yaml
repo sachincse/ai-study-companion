@@ -1,0 +1,51 @@
+# AKTU B.Tech (CSE) - Semester IV
+code: BCS402
+name: Theory of Automata and Formal Languages
+semester: 4
+branch: CSE
+credits: 4
+description: Finite automata, regular expressions, context-free grammars, pushdown automata and Turing machines.
+units:
+  - number: 1
+    title: Basic Concepts and Automata Theory
+    topics:
+      - Automata, computability and complexity; alphabet, symbol, string, formal languages
+      - Deterministic finite automaton (DFA) - definition, representation, acceptability of strings and languages
+      - Non-deterministic finite automaton (NFA), equivalence of DFA and NFA
+      - NFA with epsilon transitions and their equivalence
+      - Finite automata with output - Moore and Mealy machines and their equivalence
+      - Minimization of finite automata, Myhill-Nerode theorem
+      - Simulation of DFA and NFA
+  - number: 2
+    title: Regular Expressions and Languages
+    topics:
+      - Regular expressions, transition graphs, Kleene's theorem
+      - Finite automata and regular expressions - Arden's theorem and algebraic method
+      - Closure properties of regular languages
+      - Pigeonhole principle, pumping lemma and its applications
+      - Decidability and decision properties of regular languages
+  - number: 3
+    title: Regular and Non-Regular Grammars
+    topics:
+      - Context-free grammar (CFG) - derivations, languages, derivation trees and ambiguity
+      - Regular grammars - right linear and left linear; conversion between FA and grammars
+      - Simplification of CFG
+      - Normal forms - Chomsky normal form (CNF), Greibach normal form (GNF)
+      - Chomsky hierarchy
+  - number: 4
+    title: Push Down Automata and Properties of Context-Free Languages
+    topics:
+      - Non-deterministic pushdown automata (NPDA) - definition, moves, accepted language
+      - Deterministic PDA and deterministic context-free languages
+      - PDA for CFLs and CFGs for PDAs, two-stack PDA
+      - Pumping lemma for CFLs, closure properties of CFLs
+      - Decision problems of CFLs
+  - number: 5
+    title: Turing Machines and Recursive Function Theory
+    topics:
+      - Basic Turing machine model, representation, language acceptability
+      - Techniques for Turing machine construction, modifications of Turing machines
+      - Turing machine as computer of integer functions, universal Turing machine
+      - Linear bounded automata, Church's thesis
+      - Recursive and recursively enumerable languages, halting problem, Post's correspondence problem
+      - Introduction to recursive function theory

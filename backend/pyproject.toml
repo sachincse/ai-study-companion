@@ -1,0 +1,22 @@
+[project]
+name = "ai-study-companion-backend"
+version = "1.0.0"
+description = "RAG-powered personal study assistant API (FastAPI)"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 160
+target-version = "py311"
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B008", "B904", "B905", "UP035", "UP006"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::pytest.PytestUnraisableExceptionWarning"]
+asyncio_mode = "auto"

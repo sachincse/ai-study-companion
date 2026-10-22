@@ -1,0 +1,44 @@
+# AKTU B.Tech (CSE) - Semester V
+code: BCS503
+name: Design and Analysis of Algorithm
+semester: 5
+branch: CSE
+credits: 4
+description: Algorithm analysis, advanced data structures, divide and conquer, greedy, dynamic programming, backtracking, string matching and NP-completeness.
+units:
+  - number: 1
+    title: Introduction and Sorting
+    topics:
+      - Algorithms, analyzing algorithms, complexity of algorithms, growth of functions
+      - Performance measurements, asymptotic notations, recurrence relations (substitution, recursion tree, master method)
+      - Sorting and order statistics - shell sort, quick sort, merge sort, heap sort
+      - Comparison of sorting algorithms, sorting in linear time (counting, radix, bucket sort)
+  - number: 2
+    title: Advanced Data Structures
+    topics:
+      - Red-black trees
+      - B-trees
+      - Binomial heaps and Fibonacci heaps
+      - Tries and skip lists
+  - number: 3
+    title: Divide and Conquer, Greedy Methods
+    topics:
+      - Divide and conquer - convex hull, searching, matrix multiplication (Strassen)
+      - Greedy methods - activity selection, task scheduling
+      - Minimum spanning trees - Prim's and Kruskal's algorithms
+      - Single source shortest paths - Dijkstra's and Bellman-Ford algorithms
+  - number: 4
+    title: Dynamic Programming, Backtracking and Branch and Bound
+    topics:
+      - Dynamic programming - knapsack, matrix chain multiplication, longest common subsequence
+      - All pairs shortest paths - Warshall's and Floyd's algorithms
+      - Resource allocation problem
+      - Backtracking - n-queens, graph colouring, Hamiltonian cycles, sum of subsets
+      - Branch and bound - travelling salesman problem
+  - number: 5
+    title: Selected Topics
+    topics:
+      - Algebraic computation, fast Fourier transform
+      - String matching - naive, Rabin-Karp, Knuth-Morris-Pratt
+      - Theory of NP-completeness, P, NP, NP-hard and NP-complete problems
+      - Approximation algorithms and randomized algorithms
