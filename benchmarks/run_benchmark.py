@@ -33,7 +33,7 @@ from common import EVAL_SET, RESULTS_DIR, ROOT, bench_session, bench_user, ensur
 from sqlalchemy import select
 
 from app.models import Chunk, Document
-from app.services.llm import extract_json
+from app.services.llm import LLMError, extract_json
 from app.services.rag_service import answer_once
 from app.services.search_service import RetrievedChunk, hybrid_search
 
@@ -85,13 +85,29 @@ def evaluate_retrieval(db, user_id: int, items: list[dict], doc_titles: dict[int
     return out
 
 
-async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge, limit: int | None) -> dict:  # noqa: ANN001
+async def _with_backoff(coro_factory, what: str, attempts: int = 5):  # noqa: ANN001
+    """Free tiers throttle hard; wait and retry instead of losing the question."""
+    delay = 20.0
+    for attempt in range(attempts):
+        try:
+            return await coro_factory()
+        except LLMError as exc:
+            if exc.status != 429 or attempt == attempts - 1:
+                raise
+            print(f"    {what}: rate limited, waiting {delay:.0f}s (attempt {attempt + 1}/{attempts})")
+            await asyncio.sleep(delay)
+            delay = min(delay * 1.6, 120.0)
+
+
+async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge, limit: int | None, pause: float = 8.0) -> dict:  # noqa: ANN001
     rows = []
     subset = items[:limit] if limit else items
     for i, item in enumerate(subset, start=1):
+        if i > 1 and pause:
+            await asyncio.sleep(pause)  # stay under per-minute token limits
         t0 = time.perf_counter()
         try:
-            answer, ctx = await answer_once(answerer, db, user_id, item["question"], answer_mode="short")
+            answer, ctx = await _with_backoff(lambda: answer_once(answerer, db, user_id, item["question"], answer_mode="exam"), "answer")
         except Exception as exc:  # noqa: BLE001
             print(f"  [{i}/{len(subset)}] answer failed: {exc}")
             rows.append({"id": item["id"], "error": str(exc)[:200]})
@@ -101,11 +117,14 @@ async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge,
         keywords_hit = sum(1 for k in item["keywords"] if k.lower() in answer.lower())
         score, reason = None, None
         try:
-            res = await judge.complete(
-                [{"role": "system", "content": "Reply with JSON only."}, {"role": "user", "content": JUDGE_PROMPT.format(question=item["question"], reference=item["reference_answer"], candidate=answer[:3000])}],
-                temperature=0.0,
-                max_tokens=1024,  # reasoning models spend tokens thinking before the JSON
-                json_mode=True,
+            res = await _with_backoff(
+                lambda: judge.complete(
+                    [{"role": "system", "content": "Reply with JSON only."}, {"role": "user", "content": JUDGE_PROMPT.format(question=item["question"], reference=item["reference_answer"], candidate=answer[:3000])}],
+                    temperature=0.0,
+                    max_tokens=1024,  # reasoning models spend tokens thinking before the JSON
+                    json_mode=True,
+                ),
+                "judge",
             )
             if not res.text.strip():
                 raise ValueError("judge returned an empty response")
@@ -133,6 +152,7 @@ async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge,
     scored = [r for r in rows if r.get("judge_score") is not None]
     summary = {
         "answered": len([r for r in rows if "answer" in r]),
+        "failed": len([r for r in rows if "error" in r]),
         "judged": len(scored),
         "mean_score": round(statistics.mean(r["judge_score"] for r in scored), 2) if scored else None,
         "accuracy_ge4": round(sum(1 for r in scored if r["judge_score"] >= 4) / len(scored), 3) if scored else None,
@@ -165,7 +185,7 @@ def write_results_md(result: dict) -> None:
             "",
             "| Metric | Value |",
             "|---|---|",
-            f"| Questions answered / judged | {s['answered']} / {s['judged']} |",
+            f"| Questions answered / judged / failed | {s['answered']} / {s['judged']} / {s.get('failed', 0)} |",
             f"| Mean judge score (0-5) | {s['mean_score']} |",
             f"| Accuracy (score >= 4) | {s['accuracy_ge4']} |",
             f"| Answers with citations | {s['cited_rate']} |",
@@ -183,6 +203,7 @@ async def main() -> None:
     ap.add_argument("--judge-provider", default=None)
     ap.add_argument("--judge-model", default=None)
     ap.add_argument("--limit", type=int, default=None, help="answer only the first N questions")
+    ap.add_argument("--pause", type=float, default=8.0, help="seconds between questions (free tiers have per-minute token limits)")
     args = ap.parse_args()
 
     if not EVAL_SET.exists():
@@ -218,7 +239,7 @@ async def main() -> None:
         print(f"\nAnswering with {answerer.id}/{answerer.model}; judging with {judge.id}/{judge.model}")
         result["answerer"] = f"{answerer.id}/{answerer.model}"
         result["judge"] = f"{judge.id}/{judge.model}"
-        result["answers"] = await evaluate_answers(db, user.id, items, answerer, judge, args.limit)
+        result["answers"] = await evaluate_answers(db, user.id, items, answerer, judge, args.limit, pause=args.pause)
         print("\nSummary:", json.dumps(result["answers"]["summary"]))
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)

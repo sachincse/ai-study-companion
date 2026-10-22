@@ -69,9 +69,12 @@ export function TutorPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // leaving a conversation mid-answer: stop the stream instead of letting it race the next one
+  // Switching to a *different* conversation mid-answer stops the stream. The app's own navigation to the
+  // conversation it just created must not count (streamingSessionRef holds the id the stream belongs to).
+  const streamingSessionRef = useRef<number | null>(null)
   useEffect(() => {
-    return () => abortRef.current?.abort()
+    const current = streamingSessionRef.current
+    if (current !== null && String(current) !== sessionId) abortRef.current?.abort()
   }, [sessionId])
 
   const createSession = useMutation({
@@ -98,6 +101,7 @@ export function TutorPage() {
     const tempAssistant: ChatMessage = { ...tempUser, id: tempUser.id - 1, role: 'assistant', content: '', pending: true }
     setMessages((m) => [...m, tempUser, tempAssistant])
     setStreaming(true)
+    streamingSessionRef.current = sid
     abortRef.current = new AbortController()
     try {
       for await (const ev of streamEvents(`/api/v1/chat/sessions/${sid}/messages`, { content, answer_mode: mode, document_ids: docFilter.length ? docFilter : null }, abortRef.current.signal)) {
@@ -126,6 +130,7 @@ export function TutorPage() {
         m.map((x) => (x.id === tempAssistant.id && x.pending ? { ...x, pending: false, content: x.content || (aborted ? '_Stopped._' : `_${errorMessage(err)}_`) } : x)),
       )
     } finally {
+      streamingSessionRef.current = null
       setStreaming(false)
       invalidate('sessions', 'dashboard', 'session')
     }
