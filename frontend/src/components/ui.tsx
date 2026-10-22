@@ -1,5 +1,6 @@
 import { Loader2, X } from 'lucide-react'
 import { useEffect, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '../lib/utils'
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: ReactNode }) {
@@ -102,7 +103,7 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
   if (!open) return null
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={title}>
       <div className="absolute inset-0 bg-ink-950/50 backdrop-blur-[2px]" onClick={onClose} />
       <div className={cn('relative max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-pop animate-fade-up sm:rounded-2xl', wide ? 'sm:max-w-3xl' : 'sm:max-w-lg')}>
@@ -114,7 +115,8 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

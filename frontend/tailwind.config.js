@@ -37,7 +37,7 @@ export default {
       },
       borderRadius: { xl: '0.875rem', '2xl': '1.125rem' },
       keyframes: {
-        'fade-up': { '0%': { opacity: '0', transform: 'translateY(6px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+        'fade-up': { '0%': { opacity: '0', transform: 'translateY(6px)' }, '100%': { opacity: '1', transform: 'none' } },
         'pulse-dot': { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.4' } },
       },
       animation: { 'fade-up': 'fade-up 0.25s ease-out both', 'pulse-dot': 'pulse-dot 1.6s ease-in-out infinite' },
