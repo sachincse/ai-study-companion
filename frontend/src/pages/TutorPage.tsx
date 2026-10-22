@@ -42,13 +42,21 @@ export function TutorPage() {
     enabled: !!sessionId,
   })
 
+  // Which session id the local message list currently reflects. Prevents a refetch of the
+  // session (e.g. right after we created it and started streaming) from clobbering local state.
+  const loadedFor = useRef<string | undefined>(undefined)
   useEffect(() => {
-    if (session.data) {
+    if (!sessionId) {
+      if (loadedFor.current !== undefined) setMessages([])
+      loadedFor.current = undefined
+      return
+    }
+    if (loadedFor.current === sessionId) return
+    if (session.data && session.data.id === Number(sessionId)) {
       setMessages(session.data.messages)
       setMode(session.data.answer_mode)
       if (session.data.document_ids?.length) setDocFilter(session.data.document_ids)
-    } else if (!sessionId) {
-      setMessages([])
+      loadedFor.current = sessionId
     }
   }, [session.data, sessionId])
 
@@ -74,6 +82,7 @@ export function TutorPage() {
       if (!sid) {
         const s = await createSession.mutateAsync()
         sid = s.id
+        loadedFor.current = String(s.id) // keep the local (streaming) list when the route changes
         navigate(`/tutor/${s.id}`, { replace: true })
       }
     } catch (err) {
@@ -109,7 +118,7 @@ export function TutorPage() {
       if ((err as Error).name !== 'AbortError') toast.error(errorMessage(err))
     } finally {
       setStreaming(false)
-      invalidate('sessions', 'dashboard')
+      invalidate('sessions', 'dashboard', 'session')
     }
   }
 

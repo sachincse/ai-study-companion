@@ -29,6 +29,7 @@ class ProviderSpec:
     local: bool = False
     supports_json_mode: bool = True
     notes: str = ""
+    models_url: str | None = None  # providers whose catalogue is not at {base_url}/models
 
 
 PROVIDERS: dict[str, ProviderSpec] = {
@@ -128,6 +129,67 @@ PROVIDERS: dict[str, ProviderSpec] = {
         default_model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
         key_env="TOGETHER_API_KEY",
         docs_url="https://api.together.xyz/settings/api-keys",
+    ),
+    "cerebras": ProviderSpec(
+        id="cerebras",
+        name="Cerebras",
+        kind="openai_compat",
+        base_url="https://api.cerebras.ai/v1",
+        default_model="llama-3.3-70b",
+        key_env="CEREBRAS_API_KEY",
+        docs_url="https://cloud.cerebras.ai/",
+        key_hint="csk-...",
+        free_tier=True,
+        notes="Free developer tier with very fast inference.",
+    ),
+    "sambanova": ProviderSpec(
+        id="sambanova",
+        name="SambaNova Cloud",
+        kind="openai_compat",
+        base_url="https://api.sambanova.ai/v1",
+        default_model="Meta-Llama-3.3-70B-Instruct",
+        key_env="SAMBANOVA_API_KEY",
+        docs_url="https://cloud.sambanova.ai/",
+        free_tier=True,
+        notes="Free tier for open-weight models (Llama, DeepSeek, Qwen).",
+    ),
+    "github": ProviderSpec(
+        id="github",
+        name="GitHub Models",
+        kind="openai_compat",
+        base_url="https://models.github.ai/inference",
+        default_model="openai/gpt-4.1-mini",
+        key_env="GITHUB_MODELS_TOKEN",
+        docs_url="https://github.com/settings/personal-access-tokens/new",
+        key_hint="github_pat_... (scope: models:read)",
+        free_tier=True,
+        notes="Free, rate-limited access to GPT, Llama, Mistral and more with any GitHub account.",
+        models_url="https://models.github.ai/catalog/models",
+    ),
+    "huggingface": ProviderSpec(
+        id="huggingface",
+        name="Hugging Face Inference",
+        kind="openai_compat",
+        base_url="https://router.huggingface.co/v1",
+        default_model="meta-llama/Llama-3.3-70B-Instruct",
+        key_env="HF_TOKEN",
+        docs_url="https://huggingface.co/settings/tokens",
+        key_hint="hf_...",
+        free_tier=True,
+        supports_json_mode=False,
+        notes="Free monthly inference credits with a Hugging Face account; thousands of open models.",
+    ),
+    "nvidia": ProviderSpec(
+        id="nvidia",
+        name="NVIDIA NIM",
+        kind="openai_compat",
+        base_url="https://integrate.api.nvidia.com/v1",
+        default_model="meta/llama-3.3-70b-instruct",
+        key_env="NVIDIA_API_KEY",
+        docs_url="https://build.nvidia.com/",
+        key_hint="nvapi-...",
+        free_tier=True,
+        notes="Free API credits on signup at build.nvidia.com.",
     ),
     "ollama": ProviderSpec(
         id="ollama",

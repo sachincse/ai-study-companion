@@ -9,7 +9,7 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -62,6 +62,11 @@ class Settings(BaseSettings):
     mistral_api_key: str | None = None
     deepseek_api_key: str | None = None
     together_api_key: str | None = None
+    cerebras_api_key: str | None = None
+    sambanova_api_key: str | None = None
+    github_models_token: str | None = None
+    hf_token: str | None = Field(default=None, validation_alias=AliasChoices("HF_TOKEN", "HUGGINGFACE_API_TOKEN"))
+    nvidia_api_key: str | None = None
     ollama_base_url: str = "http://localhost:11434"
     llm_timeout_seconds: float = 120.0
 
