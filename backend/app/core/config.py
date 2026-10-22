@@ -6,11 +6,13 @@ is also honoured for people who only run the API.
 """
 from __future__ import annotations
 
+import json
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated
 
-from pydantic import AliasChoices, Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AliasChoices, Field, field_validator, model_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 ROOT_DIR = BACKEND_DIR.parent
@@ -30,7 +32,9 @@ class Settings(BaseSettings):
     secret_key: str = Field(default="change-me-in-production")
     access_token_expire_minutes: int = 60 * 24 * 7
     allow_registration: bool = True
-    cors_origins: list[str] = Field(
+    # NoDecode: pydantic-settings would otherwise json.loads() the raw env value before our
+    # validator runs, which rejects the plain comma-separated form used in .env.example.
+    cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:8000"]
     )
 
@@ -81,8 +85,23 @@ class Settings(BaseSettings):
     @classmethod
     def _split_origins(cls, value):  # noqa: ANN001
         if isinstance(value, str):
-            return [v.strip() for v in value.split(",") if v.strip()]
+            text = value.strip()
+            if text.startswith("["):  # JSON list form
+                return json.loads(text)
+            return [v.strip() for v in text.split(",") if v.strip()]
         return value
+
+    @model_validator(mode="after")
+    def _check_secret_key(self):
+        """Refuse to run in production with the shipped placeholder secret."""
+        key = self.secret_key.strip()
+        weak = not key or key.startswith("change-me") or len(key.encode("utf-8")) < 32
+        if weak and self.is_production:
+            raise ValueError(
+                "SECRET_KEY is missing, still the placeholder, or shorter than 32 bytes. Refusing to start in production. "
+                'Generate one with: python -c "import secrets; print(secrets.token_urlsafe(48))"'
+            )
+        return self
 
     # --- derived -----------------------------------------------------------------
     @property

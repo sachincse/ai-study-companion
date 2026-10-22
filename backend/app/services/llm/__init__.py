@@ -6,6 +6,7 @@ Settings page) -> environment defaults (``LLM_PROVIDER``, ``*_API_KEY``).
 from __future__ import annotations
 
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from sqlalchemy.orm import Session
 
@@ -17,7 +18,26 @@ from app.services.llm.base import LLMError, LLMProvider, LLMResult, extract_json
 from app.services.llm.openai_compat import OpenAICompatProvider
 from app.services.llm.registry import PROVIDERS, ProviderSpec, get_spec
 
-__all__ = ["LLMError", "LLMProvider", "LLMResult", "ResolvedLLM", "build_provider", "extract_json", "resolve_llm"]
+__all__ = ["LLMError", "LLMProvider", "LLMResult", "ResolvedLLM", "build_provider", "extract_json", "resolve_llm", "validate_base_url"]
+
+CONFIGURABLE_BASE_URL = {"custom", "ollama"}  # every other provider is pinned to its registry endpoint
+BLOCKED_HOSTS = {"metadata.google.internal", "metadata", "169.254.169.254", "fd00:ec2::254"}
+
+
+def validate_base_url(url: str | None, provider_id: str) -> str | None:
+    """Only http(s) URLs; cloud metadata endpoints are refused (SSRF guard).
+
+    Loopback/private hosts stay allowed on purpose: Ollama, LM Studio and vLLM run there.
+    """
+    if not url:
+        return None
+    parsed = urlparse(url.strip())
+    host = (parsed.hostname or "").lower()
+    if parsed.scheme not in ("http", "https") or not host:
+        raise LLMError(f"Base URL for {provider_id} must start with http:// or https:// and include a host.", status=400, provider=provider_id)
+    if host in BLOCKED_HOSTS or host.startswith("169.254."):
+        raise LLMError("That base URL is not allowed.", status=400, provider=provider_id)
+    return url.strip().rstrip("/")
 
 
 @dataclass
@@ -62,14 +82,16 @@ def resolve_llm(db: Session, user: User | None, *, override: dict | None = None)
     if not model:
         model = settings.llm_model if settings.llm_provider.lower() == spec.id and settings.llm_model else spec.default_model
 
-    base_url = override.get("base_url") or (user_settings.llm_base_url if user_settings and user_settings.llm_provider == spec.id else None)
-    if not base_url:
-        if spec.id == "ollama":
-            base_url = settings.ollama_base_url.rstrip("/") + "/v1"
-        elif settings.llm_base_url and settings.llm_provider.lower() == spec.id:
-            base_url = settings.llm_base_url
-        else:
-            base_url = spec.base_url
+    if spec.id in CONFIGURABLE_BASE_URL:
+        base_url = override.get("base_url") or (user_settings.llm_base_url if user_settings and user_settings.llm_provider == spec.id else None)
+        if not base_url:
+            if spec.id == "ollama":
+                base_url = settings.ollama_base_url.rstrip("/") + "/v1"
+            elif settings.llm_base_url and settings.llm_provider.lower() == spec.id:
+                base_url = settings.llm_base_url
+        base_url = validate_base_url(base_url, spec.id)
+    else:
+        base_url = spec.base_url  # pinned: user/env overrides are ignored for hosted providers
     return ResolvedLLM(provider_id=spec.id, model=model, api_key=api_key, base_url=base_url, source=source, spec=spec)
 
 

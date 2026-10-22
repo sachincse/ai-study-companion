@@ -60,13 +60,13 @@ export function NotesPage() {
     mutationFn: (id: number) => api(`/api/v1/documents/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       toast.success('Document removed')
-      invalidate('documents', 'health', 'dashboard')
+      invalidate('documents', 'health', 'dashboard', 'search', 'chunks')
     },
     onError: (err) => toast.error(errorMessage(err)),
   })
   const reindex = useMutation({
     mutationFn: (id: number) => api(`/api/v1/documents/${id}/reindex`, { method: 'POST' }),
-    onSuccess: () => invalidate('documents'),
+    onSuccess: () => invalidate('documents', 'search', 'chunks'),
     onError: (err) => toast.error(errorMessage(err)),
   })
 
@@ -80,7 +80,9 @@ export function NotesPage() {
 
   const submitSearch = (e: FormEvent) => {
     e.preventDefault()
-    setParams(query.trim() ? { q: query.trim() } : {})
+    const next = query.trim()
+    if (next && next === activeQuery) void search.refetch()
+    else setParams(next ? { q: next } : {})
   }
 
   const subjectName = (id: number | null) => subjects?.find((s) => s.id === id)?.code ?? ''
@@ -160,7 +162,14 @@ export function NotesPage() {
             {search.data.hits.map((h) => (
               <li key={h.chunk_id} className="rounded-xl border border-slate-200 p-3 hover:border-brand-200">
                 <div className="mb-1 flex flex-wrap items-center gap-2 text-xs">
-                  <button className="font-semibold text-brand-700 hover:underline" onClick={() => setViewer({ doc: docs!.find((d) => d.id === h.document_id)!, page: h.page_no })}>
+                  <button
+                    className="font-semibold text-brand-700 hover:underline"
+                    onClick={() => {
+                      const doc = docs?.find((d) => d.id === h.document_id)
+                      if (doc) setViewer({ doc, page: h.page_no })
+                      else void search.refetch()
+                    }}
+                  >
                     {h.document_title}
                   </button>
                   {h.page_no && <Badge>p. {h.page_no}</Badge>}
@@ -268,7 +277,7 @@ function DocumentViewer({ doc, page, onClose }: { doc: Document; page?: number; 
   return (
     <Modal open onClose={onClose} title={doc.title} wide>
       <p className="mb-3 text-xs text-slate-500">
-        {doc.filename} · {doc.pages} page{doc.pages === 1 ? '' : 's'} · {doc.chunk_count} passages
+        {doc.filename} · {doc.pages} page{doc.pages === 1 ? '' : 's'} · {doc.chunk_count} passage{doc.chunk_count === 1 ? '' : 's'}
       </p>
       {chunks.isLoading ? (
         <Spinner label="Loading passages..." />

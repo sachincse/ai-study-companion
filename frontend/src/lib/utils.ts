@@ -53,6 +53,12 @@ export function highlightSnippet(snippet: string) {
   return escaped.replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>')
 }
 
+/** YYYY-MM-DD in the browser's local calendar (toISOString would give the UTC date). */
+export function localDateKey(d = new Date()) {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
 export function initials(name: string) {
   return name
     .split(' ')

@@ -40,6 +40,7 @@ Rules:
 - "explanation" teaches why the answer is right in 1-3 sentences.
 - "topic" is a short topic label (2-5 words) used for analytics.
 - "marks": 1 for mcq/true_false, 2-4 for short_answer.
+- "title": short and descriptive; never invent a subject code.
 
 Return JSON: {{"title": "...", "questions": [{{"type": "mcq", "question": "...", "options": ["...", "...", "...", "..."], "answer": "B", "explanation": "...", "topic": "...", "marks": 1, "source": 1}}, {{"type": "short_answer", "question": "...", "answer": "...", "rubric": ["...", "..."], "explanation": "...", "topic": "...", "marks": 3, "source": 2}}]}}"""
 
@@ -56,6 +57,8 @@ def _normalise_question(raw: dict, sources: list[RetrievedChunk]) -> dict | None
     if len(prompt) < 8:
         return None
     answer = str(raw.get("answer") if raw.get("answer") is not None else "").strip()
+    if not answer:
+        return None  # an unanswerable question is worse than one fewer question
     options: list | None = None
     if qtype == "mcq":
         opts = [str(o).strip() for o in (raw.get("options") or []) if str(o).strip()]
@@ -142,7 +145,9 @@ async def generate_quiz(
     if len(questions) < 2:
         raise GenerationError("Could not build a valid quiz from the model output. Try again or change the model.")
 
-    title = (data.get("title") if isinstance(data, dict) else None) or (f"Quiz: {topic}" if topic else "Practice quiz")
+    title = str((data.get("title") if isinstance(data, dict) else None) or (f"Quiz: {topic}" if topic else "Practice quiz")).strip()
+    if not subject_id:  # the model sometimes invents a subject code when none was given
+        title = re.sub(r"^[A-Z]{2,4}-?\d{3}\s*[:\-]?\s*", "", title) or title
     quiz = Quiz(
         user_id=user.id,
         title=str(title)[:200],
@@ -205,13 +210,19 @@ def grade_objective(question: Question, answer: str | None) -> tuple[bool, float
     if not answer:
         return False, 0.0
     if question.qtype == "mcq":
-        given = answer.strip().upper()[:1]
-        if given not in LETTERS and question.options:
-            matches = [i for i, o in enumerate(question.options) if _norm(o) == _norm(answer)]
+        text = answer.strip()
+        given = ""
+        if re.fullmatch(r"[A-Fa-f][\.\)\:]?", text):  # a bare option letter
+            given = text[0].upper()
+        elif question.options:  # the option text itself
+            matches = [i for i, o in enumerate(question.options) if _norm(o) == _norm(text)]
             given = LETTERS[matches[0]] if matches else ""
-        correct = given == question.answer_key.strip().upper()[:1]
+        correct = bool(given) and given == question.answer_key.strip().upper()[:1]
     else:  # true_false
-        correct = _norm(answer).startswith(_norm(question.answer_key)[:1])
+        norm = _norm(answer)
+        truthy = norm in {"true", "t", "yes"}
+        falsy = norm in {"false", "f", "no"}
+        correct = (truthy and _norm(question.answer_key) == "true") or (falsy and _norm(question.answer_key) == "false")
     return correct, float(question.marks) if correct else 0.0
 
 
@@ -248,7 +259,7 @@ async def grade_short_answer(llm: LLMProvider | None, question: Question, answer
         },
     ]
     try:
-        result = await llm.complete(prompt, temperature=0.0, max_tokens=400, json_mode=True)
+        result = await llm.complete(prompt, temperature=0.0, max_tokens=900, json_mode=True)
         data = extract_json(result.text)
         marks = float(data.get("marks", 0))
         marks = max(0.0, min(float(question.marks), round(marks * 2) / 2))

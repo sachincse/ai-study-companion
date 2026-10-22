@@ -144,18 +144,19 @@ export function AppShell() {
           <button className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </button>
-          <h1 className="text-lg font-bold text-ink-900">{pageTitle(location.pathname)}</h1>
+          <h1 className="min-w-0 flex-1 truncate text-base font-bold text-ink-900 sm:flex-none sm:text-lg">{pageTitle(location.pathname)}</h1>
           <form onSubmit={submitSearch} className="ml-auto hidden w-full max-w-sm md:block">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your notes..." className="input pl-9" aria-label="Search notes" />
             </div>
           </form>
-          <div className="ml-auto flex items-center gap-2 md:ml-0">
-            <div className="chip bg-amber-50 text-amber-600" title="Study streak">
-              <Flame className="h-3.5 w-3.5" /> {streak} day{streak === 1 ? '' : 's'}
+          <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
+            <div className="chip whitespace-nowrap bg-amber-50 text-amber-600" title="Study streak">
+              <Flame className="h-3.5 w-3.5" /> {streak}
+              <span className="hidden sm:inline"> day{streak === 1 ? '' : 's'}</span>
             </div>
-            <button onClick={() => navigate('/settings')} className="chip bg-brand-50 text-brand-700 hover:bg-brand-100" title="Active model (change in Settings)">
+            <button onClick={() => navigate('/settings')} className="chip hidden bg-brand-50 text-brand-700 hover:bg-brand-100 md:inline-flex" title="Active model (change in Settings)">
               <Sparkles className="h-3.5 w-3.5" />
               <span className="max-w-[160px] truncate">{providers.data?.current.model ?? 'model'}</span>
             </button>

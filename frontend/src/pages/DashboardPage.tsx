@@ -126,7 +126,7 @@ export function DashboardPage() {
         <Card title="Last 14 days" subtitle="Study actions per day">
           <div className="flex h-40 items-end gap-1.5">
             {data.streak.last_14_days.map((d) => (
-              <div key={d.date} className="group relative flex flex-1 flex-col items-center justify-end" title={`${formatDate(d.date)}: ${d.count} action${d.count === 1 ? '' : 's'}`}>
+              <div key={d.date} className="group relative flex h-full flex-1 flex-col items-center justify-end" title={`${formatDate(d.date)}: ${d.count} action${d.count === 1 ? '' : 's'}`}>
                 <div className={cn('w-full rounded-t-[4px] transition-all', d.count ? 'bg-brand-500' : 'bg-slate-100')} style={{ height: `${Math.max(6, (d.count / maxActivity) * 100)}%` }} />
               </div>
             ))}

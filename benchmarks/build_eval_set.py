@@ -10,6 +10,11 @@ The passage (document, page, text prefix) is the retrieval ground truth.
 """
 from __future__ import annotations
 
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):  # Windows consoles default to cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import argparse
 import asyncio
 import json

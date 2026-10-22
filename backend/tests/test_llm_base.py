@@ -23,3 +23,11 @@ def test_think_filter_passes_plain_text_untouched():
     f = ThinkTagFilter()
     out = "".join(f.feed(t) for t in ["Hello ", "world", "!"]) + f.flush()
     assert out == "Hello world!"
+
+
+def test_follow_up_cleaning_drops_placeholders():
+    from app.services.rag_service import clean_follow_ups
+
+    cleaned = clean_follow_ups(["...", "<question 1>", "What is a TLB?", "What is a TLB?", "Compare paging and segmentation?"])
+    assert cleaned == ["What is a TLB?", "Compare paging and segmentation?"]
+    assert clean_follow_ups(None) == []

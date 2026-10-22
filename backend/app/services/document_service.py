@@ -96,13 +96,19 @@ def process_document(document_id: int) -> None:
             log_activity(db, doc.user_id, "upload", ref_id=doc.id, subject_id=doc.subject_id, detail=doc.title)
             log.info("indexed document %s (%s chunks)", doc.id, doc.chunk_count)
         except (UnsupportedFileError, EmptyDocumentError) as exc:
+            db.rollback()  # drop any half-written chunk rows
+            doc = db.get(Document, document_id)
             doc.status = "failed"
             doc.error = str(exc)
+            doc.chunk_count = 0
             db.commit()
         except Exception as exc:  # noqa: BLE001
             log.exception("ingestion failed for document %s", document_id)
+            db.rollback()
+            doc = db.get(Document, document_id)
             doc.status = "failed"
             doc.error = f"Indexing failed: {str(exc)[:300]}"
+            doc.chunk_count = 0
             db.commit()
 
 

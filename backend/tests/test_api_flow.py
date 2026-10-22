@@ -2,8 +2,8 @@
 import json
 
 
-def test_health_and_config(client):
-    health = client.get("/api/v1/system/health").json()
+def test_health_and_config(client, auth):
+    health = client.get("/api/v1/system/health", headers=auth).json()
     assert health["status"] == "ok" and health["fts"] is True
     assert health["embedding"]["provider"] == "hash"
     cfg = client.get("/api/v1/system/config").json()
@@ -166,7 +166,7 @@ def test_settings_providers(client, auth):
     assert updated["provider"] == "gemini" and updated["key_source"] == "user" and updated["key_masked"].startswith("AIza")
     test = client.post("/api/v1/settings/llm/test", headers=auth, json={}).json()
     assert test["ok"] is True and "Connection" in (test["reply"] or "") or test["ok"] is True
-    models = client.get("/api/v1/settings/llm/models", headers=auth, params={"provider": "gemini"}).json()
+    models = client.post("/api/v1/settings/llm/models", headers=auth, json={"provider": "gemini"}).json()
     assert "fake-model" in models["models"]
     cleared = client.put("/api/v1/settings/llm", headers=auth, json={"provider": "groq"}).json()
     assert cleared["provider"] == "groq" and cleared["key_source"] == "env"

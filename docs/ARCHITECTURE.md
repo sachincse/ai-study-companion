@@ -33,7 +33,7 @@ flowchart TB
   VID --> YT[YouTube Data API / yt-dlp / curated channels]
 
   subgraph LLM["Provider layer"]
-    OA[OpenAI-compatible client\nOpenAI · Groq · Gemini · xAI · OpenRouter · Mistral · DeepSeek · Together · Ollama · custom]
+    OA[OpenAI-compatible client\nOpenAI · Groq · Gemini · xAI · OpenRouter · Mistral · DeepSeek · Together · Cerebras · SambaNova · GitHub Models · Hugging Face · NVIDIA · Ollama · custom]
     AN[Anthropic SDK\nClaude]
   end
   EMB[Embeddings\nfastembed bge-small (local) · OpenAI · Gemini · Ollama] --> VEC
@@ -67,11 +67,13 @@ See `backend/app/models/tables.py`. Main tables: users, user_settings, subjects,
 
 - Every query filters by `user_id`; the test-suite includes cross-account access tests.
 - API keys entered in Settings are encrypted at rest (Fernet, key derived from `SECRET_KEY`) and only ever masked in responses.
-- Uploads are validated by extension and size; file names are sanitised; files live under `storage/uploads/user_<id>/`.
+- Uploads are validated by extension and size (streamed with a cap plus a request-body limit); file names are sanitised; files live under `storage/uploads/user_<id>/`.
+- Hosted providers are pinned to their registry endpoints; only Ollama and the custom provider accept a user-supplied base URL, which is validated (http/https only, cloud metadata hosts refused).
+- Provider keys are only ever sent in request bodies, never in query strings, so they stay out of access logs.
 - AI endpoints have a per-user sliding-window rate limit.
 
 ## Why these choices
 
-- **SQLite + FTS5 + Chroma** keep the whole product runnable on a laptop with zero infrastructure; `DATABASE_URL` can point at PostgreSQL and the vector store is behind an interface.
+- **SQLite + FTS5 + Chroma** keep the whole product runnable on a laptop with zero infrastructure. The vector store sits behind an interface; `DATABASE_URL` is accepted for other SQL databases, but only SQLite is tested and the FTS5 keyword index is SQLite-specific (other databases fall back to a LIKE scan).
 - **Local embeddings by default** (fastembed, ONNX) mean notes never leave the machine for indexing and retrieval works offline; only generation needs a model API (or Ollama for fully offline use).
 - **One chat protocol** (OpenAI-compatible) covers nearly every provider, so adding one is a registry entry; Anthropic uses its official SDK for streaming and refusal fallbacks.

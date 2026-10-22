@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models import AttemptAnswer, Document, Question, Quiz, QuizAttempt, StudyActivity, Subject, Topic, TopicProgress, User
+from app.schemas.common import to_iso_utc
 from app.services.chat_service import chat_stats
 from app.services.document_service import document_stats
 from app.services.flashcard_service import flashcard_stats
@@ -46,10 +47,10 @@ def topic_accuracy(db: Session, user: User, days: int = 60) -> list[dict]:
 
 def streak(db: Session, user: User, window_days: int = 14) -> dict:
     today = _utcnow().date()
-    since = datetime.combine(today - timedelta(days=window_days + 1), datetime.min.time())
+    # One row per active day over the whole history, so long streaks are never cut off by the chart window.
     rows = db.execute(
         select(func.date(StudyActivity.created_at), func.count(StudyActivity.id))
-        .where(StudyActivity.user_id == user.id, StudyActivity.created_at >= since)
+        .where(StudyActivity.user_id == user.id)
         .group_by(func.date(StudyActivity.created_at))
     ).all()
     counts: dict[date, int] = {}
@@ -112,7 +113,7 @@ def recent_attempts(db: Session, user: User, limit: int = 10) -> list[dict]:
         .limit(limit)
     ).all()
     out = [
-        {"attempt_id": a.id, "quiz_id": a.quiz_id, "title": title, "percent": a.percent, "score": a.score, "max_score": a.max_score, "submitted_at": a.submitted_at}
+        {"attempt_id": a.id, "quiz_id": a.quiz_id, "title": title, "percent": a.percent, "score": a.score, "max_score": a.max_score, "submitted_at": to_iso_utc(a.submitted_at)}
         for a, title in rows
     ]
     out.reverse()
@@ -144,7 +145,7 @@ def recent_activity(db: Session, user: User, limit: int = 12) -> list[dict]:
             "detail": a.detail,
             "topic": a.topic,
             "value": a.value,
-            "created_at": a.created_at,
+            "created_at": to_iso_utc(a.created_at),
         }
         for a in rows
     ]

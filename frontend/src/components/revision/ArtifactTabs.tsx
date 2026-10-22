@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { BookText, Copy, KeyRound, Plus, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { toast } from 'sonner'
 import { api, errorMessage } from '../../lib/api'
 import { useInvalidate } from '../../lib/hooks'
@@ -54,8 +55,12 @@ export function SourcesFooter({ sources }: { sources: Artifact['sources'] }) {
 
 export function SummariesTab() {
   const invalidate = useInvalidate()
+  const location = useLocation()
   const { data } = useArtifacts<{ markdown: string }>('summary')
   const [open, setOpen] = useState(false)
+  useEffect(() => {
+    if ((location.state as { topic?: string } | null)?.topic) setOpen(true)
+  }, [location.state])
   const [selected, setSelected] = useState<number | null>(null)
   const generate = useMutation({
     mutationFn: (v: { topic: string; document_ids: number[]; subject_id: number | '' }) =>

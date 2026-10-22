@@ -8,12 +8,14 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.core.deps import get_current_user
+from app.core.deps import SlidingWindowLimiter, get_current_user
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models import User, UserSettings
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UpdateProfileRequest, UserOut, UserProfile
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+login_limiter = SlidingWindowLimiter()
+LOGIN_ATTEMPTS_PER_MINUTE = 10
 
 
 def user_out(db: Session, user: User) -> UserOut:
@@ -50,7 +52,10 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> TokenRe
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    user = db.execute(select(User).where(User.email == payload.email.lower().strip())).scalar_one_or_none()
+    email = payload.email.lower().strip()
+    if get_settings().app_env != "test":
+        login_limiter.check(hash(email), LOGIN_ATTEMPTS_PER_MINUTE)
+    user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
     if user is None or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Incorrect email or password")
     if not user.is_active:
@@ -75,7 +80,7 @@ def update_me(payload: UpdateProfileRequest, user: User = Depends(get_current_us
         user.name = payload.name.strip()
     if payload.answer_mode:
         settings.answer_mode = payload.answer_mode
-    if payload.semester is not None:
+    if "semester" in payload.model_fields_set:  # explicit null clears it
         settings.semester = payload.semester
     if payload.branch is not None:
         settings.branch = payload.branch

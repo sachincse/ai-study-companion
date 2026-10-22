@@ -81,9 +81,9 @@ export function QuizzesPage() {
       ) : !quizzes.data?.length ? (
         <EmptyState icon={<ListChecks className="h-5 w-5" />} title="No quizzes yet" description="Create your first quiz from a topic or from the notes you uploaded." action={<button className="btn-primary" onClick={() => setOpen(true)}>Generate a quiz</button>} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {quizzes.data.map((q) => (
-            <Card key={q.id} className="flex flex-col">
+            <Card key={q.id} className="flex min-w-0 flex-col">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <h3 className="truncate font-bold text-ink-900" title={q.title}>

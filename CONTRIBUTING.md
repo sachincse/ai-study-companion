@@ -39,7 +39,7 @@ If you touch retrieval or generation, also run the live benchmark
 |---|---|
 | API routes | `backend/app/api/v1/` |
 | Business logic | `backend/app/services/` |
-| LLM providers | `backend/app/services/llm/` (add a provider = one entry in `registry.py`) |
+| LLM providers | `backend/app/services/llm/` (see "Adding an LLM provider" below) |
 | ORM models | `backend/app/models/tables.py` |
 | Syllabus data | `data/syllabus/*.yaml` (one file per subject) |
 | Frontend pages | `frontend/src/pages/` |
@@ -53,10 +53,14 @@ progress is preserved because topics are matched by unit number + name.
 
 ## Adding an LLM provider
 
-If it speaks the OpenAI chat-completions protocol, add a `ProviderSpec` in
-`backend/app/services/llm/registry.py` and an env var in `config.py` /
-`.env.example`. Anything else needs a small class implementing `stream`,
-`complete` and `list_models` (see `anthropic_provider.py`).
+If it speaks the OpenAI chat-completions protocol you need four small edits:
+
+1. a `ProviderSpec` in `backend/app/services/llm/registry.py` (base URL, default model, `key_env`);
+2. a matching field in `backend/app/core/config.py` named after `key_env` in lower case (that is how the key is read);
+3. the variable in `.env.example` and a row in `docs/PROVIDERS.md`;
+4. nothing in the frontend: the Settings page renders whatever the registry returns.
+
+Anything else needs a small class implementing `stream`, `complete` and `list_models` (see `anthropic_provider.py`).
 
 ## Pull requests
 

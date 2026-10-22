@@ -42,7 +42,7 @@ export function SettingsPage() {
   }
 
   const save = useMutation({
-    mutationFn: () => api<ResolvedLLM>('/api/v1/settings/llm', { method: 'PUT', body: { provider, model: model || null, api_key: apiKey || null, base_url: baseUrl || null } }),
+    mutationFn: () => api<ResolvedLLM>('/api/v1/settings/llm', { method: 'PUT', body: { provider, model: model || null, api_key: apiKey || null, base_url: baseUrl } }),
     onSuccess: (r) => {
       toast.success(`Now using ${r.provider_name} · ${r.model}`)
       setApiKey('')
@@ -56,7 +56,7 @@ export function SettingsPage() {
     onError: (err) => toast.error(errorMessage(err)),
   })
   const loadModels = useMutation({
-    mutationFn: () => api<{ models: string[] }>('/api/v1/settings/llm/models', { params: { provider, api_key: apiKey || undefined, base_url: baseUrl || undefined } }),
+    mutationFn: () => api<{ models: string[] }>('/api/v1/settings/llm/models', { body: { provider, api_key: apiKey || null, base_url: baseUrl || null } }),
     onSuccess: (r) => {
       setModels(r.models)
       if (!r.models.length) toast.message('The provider returned no models')

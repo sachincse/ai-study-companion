@@ -1,6 +1,17 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from app.services.llm.registry import PROVIDERS
+
+
+def _check_provider(value: str | None) -> str | None:
+    if value is None:
+        return None
+    pid = value.strip().lower()
+    if pid not in PROVIDERS:
+        raise ValueError(f"Unknown provider '{value}'. Choose one of: {', '.join(PROVIDERS)}")
+    return pid
 
 
 class ProviderInfo(BaseModel):
@@ -41,12 +52,26 @@ class LLMSettingsUpdate(BaseModel):
     base_url: str | None = Field(default=None, max_length=255)
     clear_key: bool = False
 
+    _provider = field_validator("provider")(_check_provider)
+
 
 class LLMTestRequest(BaseModel):
     provider: str | None = None
-    model: str | None = None
-    api_key: str | None = None
-    base_url: str | None = None
+    model: str | None = Field(default=None, max_length=120)
+    api_key: str | None = Field(default=None, max_length=512)
+    base_url: str | None = Field(default=None, max_length=255)
+
+    _provider = field_validator("provider")(_check_provider)
+
+
+class ModelListRequest(BaseModel):
+    """POST body for listing models: the key travels in the body, never in the URL."""
+
+    provider: str
+    api_key: str | None = Field(default=None, max_length=512)
+    base_url: str | None = Field(default=None, max_length=255)
+
+    _provider = field_validator("provider")(_check_provider)
 
 
 class LLMTestResponse(BaseModel):

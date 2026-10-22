@@ -6,11 +6,12 @@ from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db, get_session_factory
 from app.core.deps import ai_rate_limit, get_current_user
-from app.models import ChatMessage, User
+from app.models import ChatMessage, Document, User
 from app.schemas.chat import (
     BookmarkRequest,
     FeedbackRequest,
@@ -36,6 +37,15 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 def _sse(event: dict) -> str:
     return f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+
+
+def _owned_document_ids(db: Session, user: User, ids: list[int] | None) -> list[int] | None:
+    """Keep only documents that still exist and belong to the user (deleted ids would silently empty retrieval)."""
+    if not ids:
+        return None
+    owned = {d for (d,) in db.execute(select(Document.id).where(Document.user_id == user.id, Document.id.in_(ids))).all()}
+    kept = [i for i in ids if i in owned]
+    return kept or None
 
 
 @router.post("/sessions", response_model=SessionOut, status_code=status.HTTP_201_CREATED)
@@ -96,7 +106,7 @@ async def send_message(session_id: int, payload: SendMessageRequest, user: User 
         raise HTTPException(status.HTTP_400_BAD_REQUEST, exc.user_message) from exc
 
     answer_mode = payload.answer_mode or session.answer_mode
-    document_ids = payload.document_ids if payload.document_ids is not None else session.document_ids
+    document_ids = _owned_document_ids(db, user, payload.document_ids if payload.document_ids is not None else session.document_ids)
     hint = subject_hint(db, session.subject_id)
     history = chat_service.recent_history(db, session, limit=8)
     user_msg = chat_service.add_user_message(db, session, user, payload.content)
@@ -126,9 +136,9 @@ async def send_message(session_id: int, payload: SendMessageRequest, user: User 
                         yield _sse({"type": "done", "message": MessageOut.model_validate(msg).model_dump(mode="json")})
                     else:
                         yield _sse(event)
-            except Exception as exc:  # noqa: BLE001
+            except Exception:  # noqa: BLE001
                 log.exception("chat stream failed")
-                yield _sse({"type": "error", "message": f"Something went wrong: {str(exc)[:200]}"})
+                yield _sse({"type": "error", "message": "Something went wrong while answering. Please try again."})
 
     return StreamingResponse(event_stream(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
@@ -144,7 +154,7 @@ async def send_message_sync(session_id: int, payload: SendMessageRequest, user: 
     user_msg = chat_service.add_user_message(db, session, user, payload.content)
     answer, ctx = await answer_once(
         llm, db, user.id, payload.content,
-        document_ids=payload.document_ids if payload.document_ids is not None else session.document_ids,
+        document_ids=_owned_document_ids(db, user, payload.document_ids if payload.document_ids is not None else session.document_ids),
         answer_mode=payload.answer_mode or session.answer_mode, history=history,
     )
     msg = chat_service.add_assistant_message(db, session, user, answer, sources=ctx.sources, provider=llm.id, model=llm.model, follow_ups=None, grounded=ctx.grounded, latency_ms=None)

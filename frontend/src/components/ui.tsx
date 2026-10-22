@@ -149,6 +149,18 @@ export function Field({ label, children, hint }: { label: string; children: Reac
   )
 }
 
+export function ErrorState({ message, backTo = '/', backLabel = 'Back to dashboard' }: { message: string; backTo?: string; backLabel?: string }) {
+  return (
+    <div className="rounded-2xl border border-rose-50 bg-rose-50/60 px-6 py-10 text-center">
+      <h3 className="text-base font-bold text-rose-600">Could not load this page</h3>
+      <p className="mt-1 text-sm text-slate-600">{message}</p>
+      <a href={backTo} className="btn-secondary mt-4">
+        {backLabel}
+      </a>
+    </div>
+  )
+}
+
 export function Skeleton({ className }: { className?: string }) {
   return <div className={cn('animate-pulse rounded-xl bg-slate-100', className)} />
 }

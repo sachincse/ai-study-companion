@@ -99,7 +99,7 @@ export function ConceptMapTab() {
               </button>
             </div>
             <div className="h-[560px]">
-              <ReactFlow key={active.id} nodes={flow.nodes} edges={flow.edges} fitView nodesDraggable nodesConnectable={false} onNodeClick={(_e, n) => setFocus({ label: String(n.data.label), description: n.data.description as string | undefined })} proOptions={{ hideAttribution: true }}>
+              <ReactFlow key={active.id} nodes={flow.nodes} edges={flow.edges} fitView fitViewOptions={{ padding: 0.15 }} minZoom={0.1} nodesDraggable nodesConnectable={false} onNodeClick={(_e, n) => setFocus({ label: String(n.data.label), description: n.data.description as string | undefined })} proOptions={{ hideAttribution: true }}>
                 <Background gap={18} color="#e2e8f0" />
                 <MiniMap pannable zoomable />
                 <Controls />

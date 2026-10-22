@@ -38,3 +38,4 @@ scripts/.recordings/
 # open textbooks are fetched by scripts/fetch_open_notes.py (large PDFs)
 data/sample_notes/*.pdf
 docs/demo/*.webm
+docs/demo/.raw/

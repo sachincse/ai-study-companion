@@ -11,15 +11,26 @@ type Props = {
   onCite?: (index: number) => void
 }
 
-/** Turn bare [n] / [n, m] citations into links we can style as chips. */
+const CITATION = /\[(\d{1,2}(?:\s*,\s*\d{1,2})*)\](?!\()/g
+// fenced code, inline code and TeX math must be left alone (array indices, matrices...)
+const PROTECTED = /(```[\s\S]*?```|`[^`\n]*`|\$\$[\s\S]*?\$\$|\$[^$\n]+\$)/g
+
+/** Turn bare [n] / [n, m] citations into links we can style as chips, outside code and math. */
 function linkifyCitations(text: string) {
-  return text.replace(/\[(\d{1,2}(?:\s*,\s*\d{1,2})*)\](?!\()/g, (_m, group: string) =>
-    group
-      .split(',')
-      .map((n) => n.trim())
-      .map((n) => `[${n}](#cite-${n})`)
-      .join(''),
-  )
+  return text
+    .split(PROTECTED)
+    .map((segment, i) =>
+      i % 2 === 1
+        ? segment
+        : segment.replace(CITATION, (_m, group: string) =>
+            group
+              .split(',')
+              .map((n) => n.trim())
+              .map((n) => `[${n}](#cite-${n})`)
+              .join(''),
+          ),
+    )
+    .join('')
 }
 
 export function Markdown({ children, className, onCite }: Props) {

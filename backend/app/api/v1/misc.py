@@ -4,6 +4,7 @@ from __future__ import annotations
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,13 +12,14 @@ from sqlalchemy.orm import Session
 from app import __version__
 from app.core.config import get_settings
 from app.core.database import fts_available, get_db
-from app.core.deps import ai_rate_limit, get_current_user
+from app.core.deps import ai_rate_limit, bearer_scheme, get_current_user
 from app.core.security import encrypt_secret, mask_secret
 from app.models import Subject, User, UserSettings
 from app.schemas.settings import (
     LLMSettingsUpdate,
     LLMTestRequest,
     LLMTestResponse,
+    ModelListRequest,
     ModelListResponse,
     ProviderInfo,
     ProvidersResponse,
@@ -25,8 +27,8 @@ from app.schemas.settings import (
 )
 from app.services import dashboard_service, syllabus_service, video_service
 from app.services.embeddings import embedder_status
-from app.services.llm import LLMError, build_provider, provider_catalogue, resolve_llm
-from app.services.llm.registry import PROVIDERS, get_spec
+from app.services.llm import CONFIGURABLE_BASE_URL, LLMError, build_provider, provider_catalogue, resolve_llm, validate_base_url
+from app.services.llm.registry import get_spec
 from app.services.vector_store import get_vector_store
 
 router = APIRouter(tags=["dashboard", "syllabus", "resources", "settings", "system"])
@@ -114,8 +116,13 @@ def update_llm(payload: LLMSettingsUpdate, user: User = Depends(get_current_user
     switching = row.llm_provider != spec.id
     row.llm_provider = spec.id
     row.llm_model = (payload.model or "").strip() or (None if switching else row.llm_model)
-    if payload.base_url is not None:
-        row.llm_base_url = payload.base_url.strip() or None
+    if switching:
+        row.llm_base_url = None  # never carry a custom endpoint over to another provider
+    if spec.id in CONFIGURABLE_BASE_URL:
+        if payload.base_url is not None:
+            row.llm_base_url = validate_base_url(payload.base_url, spec.id)
+    else:
+        row.llm_base_url = None  # hosted providers are pinned to their registry endpoint
     if payload.clear_key or switching:
         row.llm_api_key_enc = None
     if payload.api_key:
@@ -133,35 +140,47 @@ async def test_llm(payload: LLMTestRequest, user: User = Depends(ai_rate_limit),
         llm = build_provider(resolved)
         result = await llm.complete(
             [{"role": "system", "content": "You are a connectivity check."}, {"role": "user", "content": "Reply with exactly: Connection OK"}],
-            temperature=0.0, max_tokens=64,
+            temperature=0.0, max_tokens=512,  # reasoning models think before they answer
         )
-        return LLMTestResponse(ok=True, provider=resolved.provider_id, model=resolved.model, latency_ms=int((time.perf_counter() - started) * 1000), reply=result.text[:200])
+        latency = int((time.perf_counter() - started) * 1000)
+        if not result.text.strip():
+            return LLMTestResponse(ok=False, provider=resolved.provider_id, model=resolved.model, latency_ms=latency, error="The model connected but returned an empty reply (finish reason: " + str(result.finish_reason) + "). Try another model.")
+        return LLMTestResponse(ok=True, provider=resolved.provider_id, model=resolved.model, latency_ms=latency, reply=result.text[:200])
     except LLMError as exc:
         return LLMTestResponse(ok=False, provider=resolved.provider_id, model=resolved.model, error=exc.user_message)
 
 
-@router.get("/settings/llm/models", response_model=ModelListResponse)
-async def list_models(provider: str, api_key: str | None = None, base_url: str | None = None, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> ModelListResponse:
-    if provider not in PROVIDERS:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Unknown provider")
-    override = {"provider": provider}
-    if api_key:
-        override["api_key"] = api_key
-    if base_url:
-        override["base_url"] = base_url
+@router.post("/settings/llm/models", response_model=ModelListResponse)
+async def list_models(payload: ModelListRequest, user: User = Depends(ai_rate_limit), db: Session = Depends(get_db)) -> ModelListResponse:
+    """List the provider's live model catalogue (POST so the key never appears in a URL or access log)."""
+    override = {"provider": payload.provider}
+    if payload.api_key:
+        override["api_key"] = payload.api_key
+    if payload.base_url:
+        override["base_url"] = payload.base_url
     resolved = resolve_llm(db, user, override=override)
     try:
         llm = build_provider(resolved)
         models = await llm.list_models()
     except LLMError as exc:
-        raise HTTPException(status.HTTP_502_BAD_GATEWAY, exc.user_message) from exc
-    return ModelListResponse(provider=provider, models=models)
+        raise HTTPException(exc.status if exc.status in (400, 429) else status.HTTP_502_BAD_GATEWAY, exc.user_message) from exc
+    return ModelListResponse(provider=payload.provider, models=models)
 
 
 # ---------------------------------------------------------------------- system
 @router.get("/system/health")
-def health(db: Session = Depends(get_db)) -> dict:
+def health(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme), db: Session = Depends(get_db)) -> dict:
+    """Liveness for everyone; configuration details only for signed-in users."""
     settings = get_settings()
+    authenticated = False
+    if credentials is not None:
+        try:
+            get_current_user(credentials, db)
+            authenticated = True
+        except HTTPException:
+            authenticated = False
+    if not authenticated:
+        return {"status": "ok", "version": __version__, "rag_engine": "active" if embedder_status()["ready"] else "warming-up"}
     try:
         store = get_vector_store()
         vector = {"name": store.name, "count": store.count()}

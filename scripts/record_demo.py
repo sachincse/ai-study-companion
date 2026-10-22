@@ -61,6 +61,7 @@ def type_slowly(page: Page, selector: str, text: str, delay: int = 18) -> None:
 
 def run(base_url: str, out: Path, book: Path, email: str) -> Path:
     out.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(out / ".raw", ignore_errors=True)  # stale partial recordings from a failed run
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(viewport=VIEWPORT, record_video_dir=str(out / ".raw"), record_video_size=VIEWPORT, device_scale_factor=1)
@@ -103,7 +104,7 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         type_slowly(page, "textarea", "Explain the difference between a primary key and a foreign key with an example", delay=10)
         page.keyboard.press("Enter")
         page.wait_for_selector("button:has-text('source')", timeout=120_000)
-        page.wait_for_selector("text=Copy", timeout=120_000)
+        page.wait_for_selector("button[title='Copy']", timeout=120_000)
         time.sleep(1.0)
         caption(page, "Grounded answer with [n] citations, plus follow-up questions.", 2.0)
         shot(page, out, "04-tutor-answer")
@@ -116,7 +117,7 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         if follow:
             caption(page, "Follow-ups keep the conversation moving.", 1.0)
             follow.click()
-            page.wait_for_selector("button:has-text('Copy') >> nth=1", timeout=120_000)
+            page.wait_for_selector("button[title='Copy'] >> nth=1", timeout=120_000)
             time.sleep(1.0)
 
         # 4. Quiz -----------------------------------------------------------------------
@@ -153,7 +154,6 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
                     opts[0].click()
             page.click("button:has-text('Next')")
             time.sleep(0.6)
-        page.wait_for_selector("text=Topic breakdown, text=Retake", timeout=180_000)
         page.wait_for_selector("button:has-text('Retake')", timeout=180_000)
         caption(page, "Objective questions are auto-graded; descriptive answers are graded against a rubric with feedback.", 2.5)
         shot(page, out, "08-quiz-result")

@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Layers, ListChecks, MessageSquare, MonitorPlay } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Badge, Card, PageHeader, ProgressBar, Spinner } from '../components/ui'
+import { Badge, Card, ErrorState, PageHeader, ProgressBar, Spinner } from '../components/ui'
 import { api, errorMessage } from '../lib/api'
 import { useInvalidate } from '../lib/hooks'
 import type { SubjectDetail } from '../lib/types'
@@ -11,12 +11,13 @@ export function SubjectPage() {
   const { subjectId } = useParams()
   const navigate = useNavigate()
   const invalidate = useInvalidate()
-  const { data, isLoading } = useQuery({ queryKey: ['subject', subjectId], queryFn: () => api<SubjectDetail>(`/api/v1/syllabus/subjects/${subjectId}`) })
+  const { data, isLoading, isError, error } = useQuery({ queryKey: ['subject', subjectId], queryFn: () => api<SubjectDetail>(`/api/v1/syllabus/subjects/${subjectId}`) })
   const toggle = useMutation({
     mutationFn: ({ id, completed }: { id: number; completed: boolean }) => api(`/api/v1/syllabus/topics/${id}/progress`, { body: { completed } }),
     onSuccess: () => invalidate('subject', 'subjects', 'dashboard'),
     onError: (err) => toast.error(errorMessage(err)),
   })
+  if (isError) return <ErrorState message={errorMessage(error)} />
   if (isLoading || !data) return <Spinner label="Loading subject..." />
   const unitTopic = (u: { number: number; title: string }) => `${data.name} Unit ${u.number}: ${u.title}`
 

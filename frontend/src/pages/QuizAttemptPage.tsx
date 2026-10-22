@@ -3,7 +3,7 @@ import { Clock } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Badge, Card, Spinner } from '../components/ui'
+import { Badge, Card, ErrorState, Spinner } from '../components/ui'
 import { api, errorMessage } from '../lib/api'
 import { useInvalidate } from '../lib/hooks'
 import type { Attempt, AttemptResult, Quiz } from '../lib/types'
@@ -21,6 +21,7 @@ export function QuizAttemptPage() {
   const [current, setCurrent] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const startedRef = useRef(false)
+  const autoSubmittedRef = useRef(false)
 
   const start = useMutation({
     mutationFn: () => api<Attempt>(`/api/v1/quizzes/${quizId}/attempts`, { method: 'POST' }),
@@ -53,12 +54,15 @@ export function QuizAttemptPage() {
   const limit = quiz.data?.time_limit_sec ?? null
   const remaining = limit ? limit - elapsed : null
   useEffect(() => {
-    if (remaining !== null && remaining <= 0 && attempt && !submit.isPending) {
+    if (remaining !== null && remaining <= 0 && attempt && !submit.isPending && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true
       toast.message('Time is up - submitting your answers')
       submit.mutate()
     }
   }, [remaining, attempt, submit])
 
+  if (quiz.isError) return <ErrorState message={errorMessage(quiz.error)} />
+  if (start.isError) return <ErrorState message={errorMessage(start.error)} />
   if (quiz.isLoading || !quiz.data || !attempt) return <Spinner label="Preparing your quiz..." />
   const questions = quiz.data.questions
   const q = questions[current]

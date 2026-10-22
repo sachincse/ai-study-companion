@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { CheckCircle2, Layers, MessageSquare, RotateCcw, XCircle } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Badge, Card, ProgressBar, Spinner } from '../components/ui'
-import { api } from '../lib/api'
+import { Badge, Card, ErrorState, ProgressBar, Spinner } from '../components/ui'
+import { api, errorMessage } from '../lib/api'
 import type { AttemptResult } from '../lib/types'
 import { cn, formatDuration } from '../lib/utils'
 
@@ -26,7 +26,8 @@ function ScoreRing({ percent }: { percent: number }) {
 export function QuizResultPage() {
   const { attemptId } = useParams()
   const navigate = useNavigate()
-  const { data, isLoading } = useQuery({ queryKey: ['attempt', attemptId], queryFn: () => api<AttemptResult>(`/api/v1/quizzes/attempts/${attemptId}`) })
+  const { data, isLoading, isError, error } = useQuery({ queryKey: ['attempt', attemptId], queryFn: () => api<AttemptResult>(`/api/v1/quizzes/attempts/${attemptId}`) })
+  if (isError) return <ErrorState message={errorMessage(error)} />
   if (isLoading || !data) return <Spinner label="Loading results..." />
   const answerFor = (qid: number) => data.answers.find((a) => a.question_id === qid)
   const breakdown = Object.entries(data.topic_breakdown ?? {}).sort((a, b) => a[1].percent - b[1].percent)

@@ -5,7 +5,9 @@ $root = Split-Path -Parent $PSScriptRoot
 
 if (-not (Test-Path "$root\.env")) {
   Copy-Item "$root\.env.example" "$root\.env"
-  Write-Host "Created .env from .env.example - add an API key (or use Ollama) before chatting." -ForegroundColor Yellow
+  $secret = python -c "import secrets; print(secrets.token_urlsafe(48))"
+  (Get-Content "$root\.env") -replace '^SECRET_KEY=.*$', "SECRET_KEY=$secret" | Set-Content "$root\.env"
+  Write-Host "Created .env from .env.example (with a fresh SECRET_KEY) - add an API key (or use Ollama) before chatting." -ForegroundColor Yellow
 }
 if (-not (Test-Path "$root\backend\.venv")) {
   python -m venv "$root\backend\.venv"

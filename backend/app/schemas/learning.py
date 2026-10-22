@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.schemas.common import OptUtcDatetime, ORMModel, UtcDatetime
 
@@ -51,6 +51,13 @@ class QuestionPublic(ORMModel):
     topic: str | None = None
     marks: int
     source_page: int | None = None
+
+    @model_validator(mode="after")
+    def _hide_rubric(self):
+        # For short answers `options` stores the grading rubric; only QuestionRevealed (after submission) may show it.
+        if type(self) is QuestionPublic and self.qtype == "short_answer":
+            self.options = None
+        return self
 
 
 class QuestionRevealed(QuestionPublic):

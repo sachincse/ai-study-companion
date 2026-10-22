@@ -69,6 +69,11 @@ export function TutorPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // leaving a conversation mid-answer: stop the stream instead of letting it race the next one
+  useEffect(() => {
+    return () => abortRef.current?.abort()
+  }, [sessionId])
+
   const createSession = useMutation({
     mutationFn: () => api<ChatSession>('/api/v1/chat/sessions', { body: { answer_mode: mode, document_ids: docFilter.length ? docFilter : null } }),
   })
@@ -115,7 +120,11 @@ export function TutorPage() {
         }
       }
     } catch (err) {
-      if ((err as Error).name !== 'AbortError') toast.error(errorMessage(err))
+      const aborted = (err as Error).name === 'AbortError'
+      if (!aborted) toast.error(errorMessage(err))
+      setMessages((m) =>
+        m.map((x) => (x.id === tempAssistant.id && x.pending ? { ...x, pending: false, content: x.content || (aborted ? '_Stopped._' : `_${errorMessage(err)}_`) } : x)),
+      )
     } finally {
       setStreaming(false)
       invalidate('sessions', 'dashboard', 'session')

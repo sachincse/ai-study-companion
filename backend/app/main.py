@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
     )
+    _add_body_limit(app, settings.max_upload_mb)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
@@ -62,7 +63,9 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(LLMError)
     async def _llm_error(_: Request, exc: LLMError) -> JSONResponse:
-        status = 429 if exc.status == 429 else 502
+        # 400 = bad input (unknown provider, bad URL), 429 = provider quota; anything else is upstream trouble.
+        # Never forward a provider's 401/403: the browser would treat it as a logged-out session.
+        status = exc.status if exc.status in (400, 429) else 502
         return JSONResponse(status_code=status, content={"detail": exc.user_message, "provider": exc.provider, "kind": "llm_error"})
 
     @app.exception_handler(GenerationError)
@@ -77,6 +80,15 @@ def create_app() -> FastAPI:
     return app
 
 
+def _add_body_limit(app: FastAPI, max_upload_mb: int) -> None:
+    """Reject oversized request bodies before they are buffered (defence in depth for uploads)."""
+    try:
+        from starlette.middleware.body_limit import RequestBodyLimitMiddleware
+    except ImportError:  # older starlette: the upload endpoint still enforces the limit while reading
+        return
+    app.add_middleware(RequestBodyLimitMiddleware, max_body_size=max_upload_mb * 1024 * 1024 + 1024 * 1024)
+
+
 def mount_frontend(app: FastAPI) -> None:
     """Serve the built React app (frontend/dist) when present - single-container deploys."""
     if not FRONTEND_DIST.exists():
@@ -87,6 +99,8 @@ def mount_frontend(app: FastAPI) -> None:
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def spa(full_path: str):  # noqa: ANN202
+        if full_path == "api" or full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not found")  # never serve the SPA for API paths
         candidate = FRONTEND_DIST / full_path
         if full_path and candidate.is_file() and candidate.resolve().is_relative_to(FRONTEND_DIST.resolve()):
             return FileResponse(str(candidate))

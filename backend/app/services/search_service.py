@@ -24,6 +24,7 @@ STOPWORDS = {
     "can", "could", "would", "should", "give", "tell", "please", "notes", "note", "unit", "topic", "question",
 }
 RRF_K = 60
+RELEVANCE_CUTOFF = 0.5  # drop candidates whose fused score is below half of the best one
 
 
 @dataclass
@@ -58,6 +59,20 @@ def query_terms(query: str, limit: int = 12) -> list[str]:
 
 def _fts_match_expression(terms: list[str]) -> str:
     return " OR ".join(f'"{t}"' for t in terms)
+
+
+def make_snippet(content: str, terms: list[str], width: int = 240) -> str:
+    """A window of ``content`` around the first query term, with matches marked as [[term]]."""
+    lowered = content.lower()
+    hit = min((lowered.find(t) for t in terms if t in lowered), default=-1)
+    if hit < 0:
+        return content[:width] + (" ..." if len(content) > width else "")
+    start = max(0, hit - width // 3)
+    end = min(len(content), start + width)
+    window = content[start:end]
+    pattern = re.compile(r"\b(" + "|".join(re.escape(t) for t in sorted(terms, key=len, reverse=True)) + r")\w*", re.IGNORECASE)
+    marked = pattern.sub(lambda m: f"[[{m.group(0)}]]", window)
+    return ("... " if start > 0 else "") + marked + (" ..." if end < len(content) else "")
 
 
 def keyword_search(
@@ -155,7 +170,10 @@ def hybrid_search(
     if not fused:
         return []
 
-    ordered = sorted(fused.items(), key=lambda kv: kv[1], reverse=True)[:top_k]
+    ordered = sorted(fused.items(), key=lambda kv: kv[1], reverse=True)
+    best = ordered[0][1]
+    ordered = [kv for kv in ordered if kv[1] >= best * RELEVANCE_CUTOFF][:top_k]
+    terms = query_terms(query)
     ids = [cid for cid, _ in ordered]
     rows = db.execute(
         select(Chunk, Document.title).join(Document, Document.id == Chunk.document_id).where(Chunk.id.in_(ids), Chunk.user_id == user_id)
@@ -178,7 +196,7 @@ def hybrid_search(
                 score=round(score / max_fused, 4),
                 keyword_score=round(kw_scores.get(cid, 0.0), 4),
                 vector_score=round(vec_scores.get(cid, 0.0), 4),
-                snippet=snippets.get(cid) or chunk.content[:240],
+                snippet=snippets.get(cid) or make_snippet(chunk.content, terms),
                 methods=methods.get(cid, []),
             )
         )

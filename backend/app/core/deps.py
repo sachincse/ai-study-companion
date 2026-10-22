@@ -47,7 +47,7 @@ class SlidingWindowLimiter:
         while q and now - q[0] > window:
             q.popleft()
         if len(q) >= limit:
-            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many AI requests, slow down for a minute")
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many requests, slow down for a minute")
         q.append(now)
 
 

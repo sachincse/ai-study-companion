@@ -16,6 +16,11 @@ benchmarks/RESULTS.md.
 """
 from __future__ import annotations
 
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):  # Windows consoles default to cp1252
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import argparse
 import asyncio
 import json
@@ -99,9 +104,11 @@ async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge,
             res = await judge.complete(
                 [{"role": "system", "content": "Reply with JSON only."}, {"role": "user", "content": JUDGE_PROMPT.format(question=item["question"], reference=item["reference_answer"], candidate=answer[:3000])}],
                 temperature=0.0,
-                max_tokens=200,
+                max_tokens=1024,  # reasoning models spend tokens thinking before the JSON
                 json_mode=True,
             )
+            if not res.text.strip():
+                raise ValueError("judge returned an empty response")
             data = extract_json(res.text)
             score = max(0, min(5, int(data.get("score", 0))))
             reason = str(data.get("reason", ""))[:300]

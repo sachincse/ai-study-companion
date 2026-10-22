@@ -13,6 +13,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.services.llm.base import LLMError
+
 
 @dataclass(frozen=True)
 class ProviderSpec:
@@ -50,12 +52,12 @@ PROVIDERS: dict[str, ProviderSpec] = {
         name="Google Gemini",
         kind="openai_compat",
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-        default_model="gemini-flash-latest",
+        default_model="gemini-3.5-flash",
         key_env="GEMINI_API_KEY",
         docs_url="https://aistudio.google.com/apikey",
         key_hint="AIza...",
         free_tier=True,
-        notes="Free tier via Google AI Studio. Model ids like gemini-3.5-flash or the gemini-flash-latest alias.",
+        notes="Free tier via Google AI Studio. gemini-3.5-flash and gemini-flash-lite-latest answer in seconds; the gemini-flash-latest alias can be much slower.",
     ),
     "openai": ProviderSpec(
         id="openai",
@@ -223,6 +225,6 @@ DEFAULT_PROVIDER_ORDER = list(PROVIDERS.keys())
 
 def get_spec(provider_id: str) -> ProviderSpec:
     try:
-        return PROVIDERS[provider_id.lower()]
+        return PROVIDERS[(provider_id or "").strip().lower()]
     except KeyError as exc:
-        raise ValueError(f"Unknown LLM provider '{provider_id}'. Choose one of: {', '.join(PROVIDERS)}") from exc
+        raise LLMError(f"Unknown LLM provider '{provider_id}'. Choose one of: {', '.join(PROVIDERS)}", status=400) from exc

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -27,7 +29,13 @@ async def upload_document(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> DocumentOut:
-    data = await file.read()
+    limit = get_settings().max_upload_mb * 1024 * 1024
+    buf = bytearray()
+    while chunk := await file.read(1024 * 1024):
+        buf.extend(chunk)
+        if len(buf) > limit:
+            raise HTTPException(status.HTTP_413_CONTENT_TOO_LARGE, f"File is larger than the {get_settings().max_upload_mb} MB limit.")
+    data = bytes(buf)
     try:
         doc = document_service.save_upload(db, user, filename=file.filename or "upload.txt", data=data, title=title, subject_id=subject_id, unit=unit)
     except UploadError as exc:
@@ -96,7 +104,12 @@ def search_notes(
 ) -> SearchResponse:
     if mode not in ("hybrid", "keyword", "semantic"):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "mode must be hybrid, keyword or semantic")
-    ids = [int(x) for x in document_ids.split(",") if x.strip().isdigit()] if document_ids else None
+    ids: list[int] | None = None
+    if document_ids:
+        parts = [x.strip() for x in document_ids.split(",") if x.strip()]
+        if not all(re.fullmatch(r"[0-9]+", x) for x in parts):
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "document_ids must be a comma-separated list of ids")
+        ids = [int(x) for x in parts]
     k = min(max(top_k or get_settings().retrieval_top_k, 1), 30)
     hits = hybrid_search(db, user.id, q, top_k=k, document_ids=ids, mode=mode)
     return SearchResponse(query=q, mode=mode, hits=[SearchHit(**{k2: getattr(h, k2) for k2 in SearchHit.model_fields}) for h in hits])

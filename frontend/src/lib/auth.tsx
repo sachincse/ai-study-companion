@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api, getToken, setToken } from './api'
 import type { TokenResponse, User } from './types'
@@ -14,6 +15,7 @@ type AuthState = {
 const AuthContext = createContext<AuthState | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(!!getToken())
 
@@ -35,10 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void refresh()
-    const onUnauthorized = () => setUser(null)
+    const onUnauthorized = () => {
+      queryClient.clear()
+      setUser(null)
+    }
     window.addEventListener('asc:unauthorized', onUnauthorized)
     return () => window.removeEventListener('asc:unauthorized', onUnauthorized)
-  }, [refresh])
+  }, [refresh, queryClient])
 
   const login = useCallback(async (email: string, password: string) => {
     const data = await api<TokenResponse>('/api/v1/auth/login', { body: { email, password } })
@@ -54,8 +59,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     setToken(null)
+    queryClient.clear() // never show the previous student's cached data to the next one
     setUser(null)
-  }, [])
+  }, [queryClient])
 
   const value = useMemo(() => ({ user, loading, login, register, logout, refresh }), [user, loading, login, register, logout, refresh])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

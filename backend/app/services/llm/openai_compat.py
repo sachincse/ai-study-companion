@@ -99,15 +99,17 @@ class OpenAICompatProvider:
             raise LLMError(f"{self.spec.name} returned an unexpected response: {str(resp)[:120]}.{hint}", status=502, provider=self.id)
         choice = resp.choices[0] if resp.choices else None
         text = (choice.message.content if choice and choice.message else "") or ""
-        if not text.strip() and choice is not None:
-            # reasoning models that spent the budget on thinking
-            reasoning = getattr(choice.message, "reasoning", None) or getattr(choice.message, "reasoning_content", None)
-            if reasoning and json_mode:
-                text = reasoning
+        finish = getattr(choice, "finish_reason", None)
+        if not text.strip() and finish == "length":
+            raise LLMError(
+                f"{self.spec.name} ran out of tokens before answering ({self.model} spends tokens on reasoning). Raise max_tokens or pick a lighter model.",
+                status=502,
+                provider=self.id,
+            )
         usage = resp.usage.model_dump() if getattr(resp, "usage", None) else {}
         filt = ThinkTagFilter()
         cleaned = filt.feed(text) + filt.flush()
-        return LLMResult(text=cleaned.strip(), provider=self.id, model=self.model, usage=usage, finish_reason=getattr(choice, "finish_reason", None))
+        return LLMResult(text=cleaned.strip(), provider=self.id, model=self.model, usage=usage, finish_reason=finish)
 
     async def list_models(self) -> list[str]:
         try:

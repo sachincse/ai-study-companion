@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { api, errorMessage } from '../../lib/api'
 import { useInvalidate, useSubjects } from '../../lib/hooks'
 import type { Artifact, StudyPlan } from '../../lib/types'
-import { cn, formatDate } from '../../lib/utils'
+import { cn, formatDate, localDateKey } from '../../lib/utils'
 import { Badge, Card, Field, Modal, ProgressBar, Spinner } from '../ui'
 import { ArtifactList, useArtifacts } from './ArtifactTabs'
 
@@ -52,7 +52,7 @@ export function StudyPlanTab() {
   }
   const total = active?.content.days.reduce((n, d) => n + d.tasks.length, 0) ?? 0
   const done = active?.content.days.reduce((n, d) => n + d.tasks.filter((t) => t.done).length, 0) ?? 0
-  const today = new Date().toISOString().slice(0, 10)
+  const today = localDateKey()
 
   return (
     <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">

@@ -174,17 +174,39 @@ async def suggest_follow_ups(llm: LLMProvider, question: str, answer: str) -> li
     if len(answer) < 80:
         return []
     prompt = [
-        {"role": "system", "content": "You suggest follow-up study questions. Reply with JSON only: {\"questions\": [\"...\", \"...\", \"...\"]}. Each under 12 words, specific to the topic, no numbering."},
+        {
+            "role": "system",
+            "content": (
+                "You suggest follow-up study questions. Reply with JSON only: an object with a single key "
+                '"questions" whose value is an array of exactly three complete questions written out in full. '
+                "Each question is under 12 words, specific to the topic, ends with a question mark, no numbering."
+            ),
+        },
         {"role": "user", "content": f"Student asked: {question}\n\nTutor answered (excerpt): {answer[:1500]}\n\nSuggest 3 follow-up questions."},
     ]
     try:
-        result = await llm.complete(prompt, temperature=0.5, max_tokens=200, json_mode=True)
+        # reasoning models spend a few hundred tokens thinking before the JSON, so leave room
+        result = await llm.complete(prompt, temperature=0.5, max_tokens=800, json_mode=True)
         data = extract_json(result.text)
         qs = data.get("questions") if isinstance(data, dict) else data
-        return [str(q).strip() for q in (qs or []) if str(q).strip()][:3]
+        return clean_follow_ups(qs)
     except Exception as exc:  # noqa: BLE001
-        log.debug("follow-up generation skipped: %s", exc)
+        log.warning("follow-up generation skipped (%s/%s): %s", llm.id, llm.model, str(exc)[:160])
         return []
+
+
+def clean_follow_ups(candidates) -> list[str]:  # noqa: ANN001
+    """Keep only real questions (drops placeholders such as '...' or '<question 1>')."""
+    out: list[str] = []
+    for q in candidates or []:
+        text = str(q).strip()
+        if len(text) < 8 or not any(ch.isalpha() for ch in text):
+            continue
+        if text.startswith("<") or "question 1" in text.lower() or text.count("?") > 1:
+            continue
+        if text not in out:
+            out.append(text)
+    return out[:3]
 
 
 def source_to_dict(src: RetrievedChunk, rank: int | None = None) -> dict:

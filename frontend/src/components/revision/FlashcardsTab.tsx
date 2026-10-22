@@ -204,7 +204,7 @@ function ReviewSession({ deckId, onExit }: { deckId: number | null; onExit: () =
         setFlipped((f) => !f)
       }
       const map: Record<string, string> = { '1': 'again', '2': 'hard', '3': 'good', '4': 'easy' }
-      if (flipped && map[e.key]) rate.mutate({ id: queue[index].id, rating: map[e.key] })
+      if (flipped && map[e.key] && !rate.isPending) rate.mutate({ id: queue[index].id, rating: map[e.key] })
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)

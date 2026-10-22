@@ -22,6 +22,18 @@
   <sub>Full walkthrough video: <a href="docs/demo/demo.mp4">docs/demo/demo.mp4</a></sub>
 </p>
 
+## Screens
+
+| Cited tutor answer | Sources behind an answer | Graded quiz with topic breakdown |
+|---|---|---|
+| ![Tutor answer with citations](docs/demo/screenshots/04-tutor-answer.png) | ![Source passages with page numbers](docs/demo/screenshots/05-tutor-sources.png) | ![Quiz result](docs/demo/screenshots/08-quiz-result.png) |
+
+| Concept map from the notes | Hybrid notes search | Dashboard |
+|---|---|---|
+| ![Concept map](docs/demo/screenshots/11-concept-map.png) | ![Notes search with highlights](docs/demo/screenshots/03-notes-search.png) | ![Dashboard](docs/demo/screenshots/14-dashboard.png) |
+
+All screenshots come from the demo run on the open-licensed *Database Design* textbook, not from mock data.
+
 ## Why
 
 University exam prep is scattered across PDFs, handwritten notes and YouTube, and generic chatbots answer confidently
@@ -34,7 +46,7 @@ page in the student's own material.
 | Quizzes graded against the notes | basic | no | flashcard tests | **MCQ / true-false / rubric-graded short answers, per-topic accuracy** |
 | Spaced repetition | no | no | yes | **SM-2 scheduling** |
 | University syllabus built in | no | no | no | **AKTU B.Tech CSE units and topics** |
-| Choice of model | fixed | fixed | fixed | **10 providers incl. free tiers and local Ollama** |
+| Choice of model | fixed | fixed | fixed | **15 providers incl. free tiers and local Ollama** |
 | Self-hosted, open source | no | no | no | **yes, single container** |
 
 ## Features
@@ -47,7 +59,7 @@ page in the student's own material.
 - **Lecture finder.** YouTube search per subject and topic (official Data API if you have a key, otherwise a keyless fallback) plus curated channels AKTU students rely on.
 - **Dashboard.** Accuracy by topic, score trend, 14-day activity, streak, cards due, syllabus coverage and rule-based recommendations for what to do next.
 - **Searchable history.** Every conversation is full-text indexed; bookmark the explanations worth keeping.
-- **Bring your own model.** Groq, Google Gemini, OpenAI, Anthropic Claude, xAI Grok, OpenRouter, Mistral, DeepSeek, Together, a local Ollama or any OpenAI-compatible endpoint. Keys live in `.env` or are pasted per account (encrypted at rest). The Settings page lists each provider's live model catalogue and has a one-click connection test.
+- **Bring your own model.** Groq, Google Gemini, OpenAI, Anthropic Claude, xAI Grok, OpenRouter, Mistral, DeepSeek, Together, Cerebras, SambaNova, GitHub Models, Hugging Face, NVIDIA NIM, a local Ollama or any OpenAI-compatible endpoint. Several of those have free tiers (see [`docs/PROVIDERS.md`](docs/PROVIDERS.md)). Keys live in `.env` or are pasted per account (encrypted at rest). The Settings page lists each provider's live model catalogue and has a one-click connection test.
 
 ## Quick start
 
@@ -85,14 +97,17 @@ npm run dev
 <summary>Docker (single container, serves the built UI on port 8000)</summary>
 
 ```bash
-cp .env.example .env   # add a key
+cp .env.example .env
+# production mode needs a real secret: python -c "import secrets; print(secrets.token_urlsafe(48))" -> SECRET_KEY=...
+# add one provider key, then:
 docker compose up --build
-# optional fully-offline inference:
+
+# optional fully-offline inference (set LLM_PROVIDER=ollama and OLLAMA_BASE_URL=http://ollama:11434 in .env first):
 docker compose --profile local up -d ollama && docker compose exec ollama ollama pull qwen2.5:7b
 ```
 </details>
 
-The first upload downloads the local embedding model (`BAAI/bge-small-en-v1.5`, ~130 MB) once. No notes ever leave your machine for indexing; only the question plus the retrieved passages are sent to the chat model you chose.
+On first start the server downloads the local embedding model (`BAAI/bge-small-en-v1.5`, ~130 MB) in the background; the sidebar shows "RAG Engine warming up" until it is ready. No notes ever leave your machine for indexing; only the question plus the retrieved passages are sent to the chat model you chose.
 
 ### Try it on real textbooks
 
@@ -117,7 +132,7 @@ upload ──> parse (pypdf / docx) ──> chunk (~500 tok, page-aware) ──>
 question ──> BM25 ∪ vector search ──> reciprocal-rank fusion ──> numbered sources ──> LLM (streamed, cited) ──> saved + indexed
 ```
 
-- **Backend:** FastAPI, SQLAlchemy, SQLite with FTS5, ChromaDB, fastembed, one OpenAI-compatible client for nine providers plus the official Anthropic SDK. Server-Sent Events for streaming.
+- **Backend:** FastAPI, SQLAlchemy, SQLite with FTS5, ChromaDB, fastembed, one OpenAI-compatible client for fourteen providers plus the official Anthropic SDK. Server-Sent Events for streaming.
 - **Frontend:** React 19, TypeScript, Vite, Tailwind, TanStack Query, React Flow, Recharts, KaTeX.
 - **Grading:** deterministic for MCQ/true-false; rubric-based LLM grading for short answers with a keyword-coverage fallback if the model is unavailable.
 - **Scheduling:** SM-2 with ease factor floor 1.3; lapses relearn after 10 minutes.
@@ -137,7 +152,7 @@ All endpoints are under `/api/v1` and documented at `/api/docs` (OpenAPI). Highl
 | Flashcards | `POST /flashcards/generate`, `GET /flashcards/due`, `POST /flashcards/cards/{id}/review` (`again\|hard\|good\|easy`) |
 | Tools | `POST /tools/summary`, `/tools/keywords`, `/tools/concept-map`, `/tools/study-plan`, `GET /tools/artifacts?kind=` |
 | Syllabus | `GET /syllabus/subjects`, `GET /syllabus/subjects/{id}`, `POST /syllabus/topics/{id}/progress` |
-| Other | `GET /dashboard`, `GET /resources/videos`, `GET/PUT /settings/llm`, `POST /settings/llm/test`, `GET /system/health` |
+| Other | `GET /dashboard`, `GET /resources/videos`, `GET /settings/providers`, `PUT /settings/llm`, `POST /settings/llm/test`, `POST /settings/llm/models`, `GET /system/health` |
 
 ## Project structure
 

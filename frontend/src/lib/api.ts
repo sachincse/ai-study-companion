@@ -95,6 +95,10 @@ export async function* streamEvents(path: string, body: unknown, signal?: AbortS
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`
   const res = await fetch(buildUrl(path), { method: 'POST', headers, body: JSON.stringify(body), signal })
+  if (res.status === 401 && token) {
+    setToken(null)
+    window.dispatchEvent(new CustomEvent('asc:unauthorized'))
+  }
   if (!res.ok || !res.body) throw await parseError(res)
   const reader = res.body.getReader()
   const decoder = new TextDecoder()

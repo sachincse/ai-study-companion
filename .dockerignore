@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+backend/.env
 storage/
 backend/.venv/
 backend/.pytest_cache/
