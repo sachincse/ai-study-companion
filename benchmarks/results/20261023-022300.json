@@ -1,0 +1,1498 @@
+{
+  "run_at": "2026-10-23 02:16 UTC",
+  "corpus": [
+    "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+    "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+    "Open Data Structures (Morin) CC-BY-2.5",
+    "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0"
+  ],
+  "chunks": 2016,
+  "questions": 39,
+  "embedding": "BAAI/bge-small-en-v1.5",
+  "vector_store": "chroma",
+  "retrieval": {
+    "keyword": {
+      "hit@1": 0.615,
+      "hit@3": 0.795,
+      "hit@5": 0.872,
+      "mrr": 0.724,
+      "p50_latency_ms": 13.7,
+      "misses": [
+        "1-9",
+        "2-224",
+        "2-310",
+        "2-657",
+        "3-1025"
+      ]
+    },
+    "semantic": {
+      "hit@1": 0.513,
+      "hit@3": 0.769,
+      "hit@5": 0.872,
+      "mrr": 0.651,
+      "p50_latency_ms": 38.4,
+      "misses": [
+        "1-9",
+        "2-224",
+        "2-657",
+        "3-1025",
+        "4-1134"
+      ]
+    },
+    "hybrid": {
+      "hit@1": 0.615,
+      "hit@3": 0.846,
+      "hit@5": 0.872,
+      "mrr": 0.727,
+      "p50_latency_ms": 45.5,
+      "misses": [
+        "1-9",
+        "2-224",
+        "2-310",
+        "2-657",
+        "3-1025"
+      ]
+    }
+  },
+  "answerer": "gemini/gemini-3.5-flash-lite",
+  "judge": "groq/openai/gpt-oss-20b",
+  "answers": {
+    "summary": {
+      "answered": 39,
+      "failed": 0,
+      "judged": 39,
+      "mean_score": 4.72,
+      "accuracy_ge4": 0.923,
+      "cited_rate": 0.872,
+      "p50_latency_ms": 1945
+    },
+    "rows": [
+      {
+        "id": "1-9",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What are three examples of items mentioned where data can be stored?",
+        "answer": "**Persistent storage items** refer to the fundamental structures provided by operating systems or middleware where data and application information are organized and maintained [2], [4].\n\nThree examples of items mentioned where data can be stored are:\n\n* **Tables**: A multiset of rows (also known as tuples or records) in a relational database system where each row provides an appropriately typed value for each of the table's columns [4].\n* **Hierarchical Directories**: Structures that map names into objects, forming a tree of directories (or nested file folders) commonly used by operating systems to provide access to files [4].\n* **Persistent Objects**: Application-specific objects associated with object-oriented programming languages (such as Java objects) that are made persistent using database or middleware storage [4].\n\nStudy tip: Review how file systems and relational database tables manage metadata alongside raw data for efficient access [2], [4].",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 36
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 33
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 67
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 353
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 14
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 20
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "1/3",
+        "judge_score": 0,
+        "judge_reason": "Answer lists different items than those in the reference.",
+        "latency_ms": 2078
+      },
+      {
+        "id": "1-22",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What are the three main concepts used in an entity‑relationship model, and how does a relationship function in that model?",
+        "answer": "An **Entity-Relationship (ER) model** is a high-level conceptual data model that uses main concepts like entities, attributes, and relationships to present data close to the way people perceive it [3].\n\n### Main Concepts and Functions\n\n* **Entities**: A thing or object in the real world with an independent existence that can be differentiated from other objects (such as an employee or a project) [1, 3].\n* **Attributes**: Properties that describe the characteristics of an entity (such as an employee's name, address, and birthdate) [3].\n* **Relationships**: Associations or interactions among entities that are used to connect related information [1, 3]. \n\n### Function of a Relationship\n* A **relationship** functions by defining how entities interact or are associated with one another in the database [2, 3]. \n* It acts as a bridge between entities to represent real-world connections [2, 3].\n\n> **Worked Example:** In the company database model, an employee (**entity**) works on many projects (**entity**), and the **relationship** exists to associate the employee with each specific project they participate in [3].\n\nSuggested next topic to study: *Types of attributes and cardinality/connectivity in ER models*.",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 52
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 41
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 21
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 53
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 26
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 29
+          }
+        ],
+        "grounded": true,
+        "cited": false,
+        "keywords_hit": "3/4",
+        "judge_score": 5,
+        "judge_reason": "Fully correct and complete.",
+        "latency_ms": 1855
+      },
+      {
+        "id": "1-37",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "Define a relation in the relational data model as described in the passage.",
+        "answer": "A **relation** in the relational data model is defined as a subset of the Cartesian product of a list of domains characterized by a name [1]. \n\nKey characteristics and foundational concepts of a relation include:\n* **Alternative Names:** A relation is also commonly known as a **table** or a **file** [1].\n* **Rows (Tuples / Records):** Each row in a relation represents a group of related data values and is referred to as a **tuple** or **record** [1].\n* **Columns (Attributes / Fields):** Each column is referred to as an **attribute** or **field**, which is used to define the record [1].\n* **Mathematical Definition:** Given $n$ domains denoted by $D_1, D_2, \\dots, D_n$, if $r$ is a relation defined on these domains, then $r \\subseteq D_1 \\times D_2 \\times \\dots \\times D_n$ [1].\n\n> **Example:** Consider a relation named `Employee` with domains for ID (number), Name (character), and DateOfHire (date). A single row like `(101, 'Alice', '2023-01-15')` represents a **tuple**, while each category (ID, Name, DateOfHire) represents an **attribute** (column) [5].\n\n*Next, study the properties of a table and how domains constrain attribute values.*",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 34
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 39
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 23
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 94
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 38
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 21
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer fully matches the definition and includes all key elements.",
+        "latency_ms": 1906
+      },
+      {
+        "id": "1-49",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What is a composite key and what requirement must it meet?",
+        "answer": "A **composite key** is a key composed of two or more attributes that together uniquely identify a row in a table [1].\n\n### Key Requirements\n* **Uniqueness:** No two rows in a table may have the same combination of values for these attributes at any time [1].\n* **Minimality:** Every column included in the composite key is strictly necessary in order to attain this uniqueness; removing any attribute will destroy the uniqueness property [1].\n\n### Example\nUsing an `Employee` entity set, a possible composite key could be **First Name** and **Last Name** (assuming there is no one else in the company with the same name), or **Last Name** and **DepartmentID** (assuming two people with the same last name do not work in the same department) [1].\n\n*Suggested next topic to study: Primary key vs. Alternate key.*",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 46
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 509
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/3",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer correctly defines composite key and minimality requirement.",
+        "latency_ms": 1395
+      },
+      {
+        "id": "1-60",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What must be true about the data types of the primary key and foreign key when setting up referential integrity?",
+        "answer": "**Referential integrity compatibility:** When setting up referential integrity between two tables, the primary key (PK) and foreign key (FK) must have the exact **same data types** and come from the **same domain**, otherwise the relational database management system (RDBMS) will not allow the join [4].\n\n* **Key Requirements for PK and FK Joins:**\n  * **Same Data Type:** For example, if a PK is an `INTEGER`, the corresponding FK must also be defined as an `INTEGER` [4], [5].\n  * **Same Domain:** Both attributes must draw their values from the same underlying set of valid values.\n  * **System Enforcement:** If these conditions are violated, the RDBMS will reject the relationship creation.\n\n* **Worked Example (SQL):**\n  ```sql\n  CREATE TABLE Customer (\n      CustID INTEGER PRIMARY KEY,\n      CustName CHAR(35)\n  );\n\n  CREATE TABLE Orders (\n      OrderID INTEGER PRIMARY KEY,\n      CustID INTEGER REFERENCES Customer(CustID), -- Must match Customer(CustID) data type (INTEGER)\n      OrderDate DATETIME\n  );\n  ```\n\nStudy next: Foreign key rules like Cascade Update and Cascade Delete.",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 66
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 58
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 65
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 58
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 59
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 57
+          }
+        ],
+        "grounded": true,
+        "cited": false,
+        "keywords_hit": "4/4",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer accurately states that PK and FK must have the same data type and domain, matching the reference.",
+        "latency_ms": 1668
+      },
+      {
+        "id": "1-72",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What is an update anomaly and how does it arise when a branch address changes?",
+        "answer": "An **update anomaly** is a database anomaly that occurs when existing information is changed incorrectly or inconsistently due to data redundancy across multiple rows [1].\n\n* **How it arises:** It occurs when a piece of data is stored redundantly in multiple places within a table [1]. \n* **Branch Address Example:** If a branch's address changes (such as the **Round Hill branch**), that address must be manually updated in every single row where it appears [1]. If the update is missed in even one row or done incorrectly, it results in an **update anomaly**, leading to conflicting and inconsistent data across the database [1].\n\nTo avoid this, tables should be decomposed into smaller tables where each table represents a single entity and has minimal overlap [2].\n\nWould you like to study database normalization and functional dependencies next?",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 70
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 71
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 414
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "1/3",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly defines an update anomaly and explains its occurrence when a branch address changes, matching the reference.",
+        "latency_ms": 1607
+      },
+      {
+        "id": "1-83",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "According to the passage, what are the goals of normalization in relational database design?",
+        "answer": "**Normalization** is the branch of relational theory that determines the level of redundancy in a table and provides mechanisms to transform schemas to remove that redundancy [1].\n\nThe primary goals of normalization are to:\n* **Characterize redundancy**: Characterize the level of redundancy present in a relational schema [1].\n* **Provide transformation mechanisms**: Provide mechanisms for transforming schemas in order to remove redundancy [1].\n* **Reduce update anomalies**: Ensure the presence and/or absence of update anomalies, since higher normal forms contain less redundancy and therefore result in fewer update problems [1].\n\nStudy next: **First, Second, and Third Normal Forms (1NF, 2NF, 3NF)**.",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 81
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 97
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 88
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 87
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 69
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 89
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer correctly states both goals and includes no incorrect information.",
+        "latency_ms": 1551
+      },
+      {
+        "id": "1-97",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "According to the passage, what is the primary focus of a conceptual data model in database development?",
+        "answer": "A **conceptual data model** is a formal, database-independent representation of what data a database should contain, focusing strictly on meaning, structure, and constraints rather than implementation details [1, 4].\n\n### Key Focus Areas of a Conceptual Data Model:\n* **\"What\" over \"How\":** It addresses the question *\"What is required?\"* instead of *\"How is it achieved?\"* or how data is processed [1].\n* **Data Properties & Semantics:** It identifies data items, their attributes (including value ranges), semantic information (business rules), and security/integrity requirements [1, 4].\n* **Relationships & Constraints:** It captures the relationships holding between data items along with necessary constraints [1, 4].\n* **Community View:** It provides a high-level \"community view\" representing the logical structure of the entire database as communicated between clients and developers, acting like architectural drawings for a house [1, 3, 4].\n\n> **Example:** In a school database, a conceptual model defines entities like *Student* and *Course*, their attributes (course code, title, credit points), and constraints, without deciding whether it will use a relational or object-oriented DBMS [1, 2].\n\nNext, study the transition from conceptual models to **logical design** and schema generation [2].",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 94
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 94
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 29
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 26
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 97
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 95
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "1/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer accurately captures the reference’s description of a conceptual data model as a formal, implementation-independent representation of data and constraints.",
+        "latency_ms": 2035
+      },
+      {
+        "id": "1-113",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What constraint is used to define the primary key for the EMPLOYEES table and which column does it apply to?",
+        "answer": "A **table constraint** identified by the **`CONSTRAINT`** keyword is used to define the primary key for the `EMPLOYEES` table, specifically applying it to the **`EmployeeNo`** column [3].\n\n* **Constraint Name/Keyword:** `CONSTRAINT Employee_PK PRIMARY KEY` [3]\n* **Target Column:** `EmployeeNo` (defined with a `CHAR(10)` data type, `NOT NULL`, and `UNIQUE` constraints) [1, 3]\n\n### Worked Example (`CREATE TABLE`)\n```sql\nCREATE TABLE EMPLOYEES\n(\nEmployeeNo CHAR(10) NOT NULL UNIQUE,\n-- other columns defined here...\nCONSTRAINT Employee_PK PRIMARY KEY(EmployeeNo)\n);\n``` [3]\n\n> **Next study tip:** Review the rules and properties of **Foreign Key (FK)** constraints and how they establish referential integrity between parent and child tables [1, 5].",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 107
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 105
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 104
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 59
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 57
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 47
+          }
+        ],
+        "grounded": true,
+        "cited": false,
+        "keywords_hit": "4/4",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly identifies the primary key constraint and the column it applies to, matching the reference answer.",
+        "latency_ms": 4798
+      },
+      {
+        "id": "1-124",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What two WHERE clause syntaxes are presented for selecting store items with quantities between 20 and 50 inclusive?",
+        "answer": "The two **WHERE clause syntaxes** presented for selecting store items with quantities between 20 and 50 inclusive are the **BETWEEN operator** and the **comparison operators ($>=$ and $<=$)** combined with an **AND** operator [1].\n\n*   **Syntax 1 (Using `BETWEEN`):**\n    ```sql\n    SELECT StorID, qty, TitleID\n    FROM Sales\n    WHERE qty BETWEEN 20 and 50\n    ```\n*   **Syntax 2 (Using comparison operators):**\n    ```sql\n    SELECT StorID, qty, TitleID\n    FROM Sales\n    WHERE qty >= 20 and qty <= 50\n    ```\n\n> **Diagram Description / Exam Tip:** Both queries produce identical result sets because `BETWEEN` is inclusive of the boundary values (20 and 50) [1].\n\nSuggested next topic to study: How to use `NOT BETWEEN` and the `IN` operator in SQL queries [1].",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 115
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 149
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 117
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 124
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 123
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 133
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "2/3",
+        "judge_score": 5,
+        "judge_reason": "Candidate correctly lists both syntaxes: BETWEEN and comparison operators with AND.",
+        "latency_ms": 1939
+      },
+      {
+        "id": "1-135",
+        "book": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+        "question": "What does the DATEDIFF function return and how does it count date parts according to the description?",
+        "answer": "**DATEDIFF Function**: A SQL function used to return the number of datepart \"boundaries\" crossed between two specified dates [1].\n\n### Key Details of DATEDIFF\n* **Syntax**: `DATEDIFF(datepart, date1, date2)` [1]\n* **Counting Mechanism**: It counts the number of specified **datepart boundaries** crossed between `date1` and `date2` rather than performing simple arithmetic subtraction [1].\n* **Consistency**: This boundary-crossing counting method ensures that the results given by `DATEDIFF` remain consistent across all data types and units, such as minutes, seconds, and milliseconds [1].\n\n### Worked Example\n```sql\nSELECT DATEDIFF(day, HireDate, 'Nov 30 1995')\nFROM Employees;\n```\n*Description*: This query returns the total number of day boundaries crossed between each employee's `HireDate` and November 30, 1995 [1].\n\n***\n\n*Suggested next topic to study: Date parts and their abbreviations (like `yy`, `mm`, `dd`) used with date functions.*",
+        "sources": [
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 127
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 125
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 38
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 128
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 126
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 132
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer accurately states that DATEDIFF returns the number of datepart boundaries crossed between two dates and notes the consistency across data types, matching the reference.",
+        "latency_ms": 1713
+      },
+      {
+        "id": "2-180",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "Why does the sentence \"3 + x = 12\" fail to be a statement according to the passage?",
+        "answer": "A **statement** is defined as a declarative sentence that is definitively either true or false, but not both [1], [4].\n\nThe sentence \"$3 + x = 12$\" fails to be a statement due to the following reason:\n* It contains a **free variable** ($x$) [1], [2]. \n* Because the value of $x$ has not been specified, the sentence is neither true nor false right now; its truth value depends entirely on what value is assigned to $x$ [1].\n\n**Example:**\n* If we substitute $x = 9$, it becomes the true statement: $3 + 9 = 12$ [1].\n* If we substitute $x = 4$, it becomes the false statement: $3 + 4 = 12$ [1].\n* Alternatively, a variable can be made into a statement by **quantifying** over it (e.g., using a universal or existential quantifier) [1], [2].",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 20
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 30
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 244
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 349
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 189
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 351
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly explains that the sentence fails to be a statement because it contains a free variable and thus lacks a definite truth value, matching the reference answer.",
+        "latency_ms": 1596
+      },
+      {
+        "id": "2-224",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "According to the passage, what set expression is equivalent to (B∩C)∪(C∩A)?",
+        "answer": "Based on the provided notes, the text does not contain the answer to what set expression is equivalent to $(B \\cap C) \\cup (C \\cap A)$ (general knowledge, not from your notes).\n\nFrom general set theory (Boolean algebra of sets), we can simplify or rewrite this expression using distributive laws:\n* Factoring out the common intersection, $(B \\cap C) \\cup (C \\cap A)$ is equivalent to **$C \\cap (B \\cup A)$** (or equivalently, **$(A \\cup B) \\cap C$**).\n\nStudy tip: Review the distributive and commutative laws of set operations to quickly simplify complex set expressions for your exam.",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 51
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 217
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 69
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 47
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 97
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 47
+          }
+        ],
+        "grounded": true,
+        "cited": false,
+        "keywords_hit": "1/5",
+        "judge_score": 1,
+        "judge_reason": "Candidate answer does not match the reference expression.",
+        "latency_ms": 1638
+      },
+      {
+        "id": "2-268",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "How many students passed all three classes?",
+        "answer": "**Principle of Inclusion/Exclusion (PIE)**: A counting technique used to find the cardinality of the union of multiple sets by alternately adding and subtracting the cardinalities of their intersections.\n\nTo find the number of students who passed all three classes, we can follow these steps using the given data:\n\n* **Identify the total number of students and given sets**: Let the total number of students who took the examination be 41 [1]. Let sets $A$, $B$, and $C$ represent the students who failed Algebra, Biology, and Chemistry, respectively [1].\n* **Calculate the number of students who failed at least one class ($|A \\cup B \\cup C|$)**: Using the **Principle of Inclusion/Exclusion** for three sets [2]:\n  $$|A \\cup B \\cup C| = |A| + |B| + |C| - |A \\cap B| - |A \\cap C| - |B \\cap C| + |A \\cap B \\cap C|$$\n* **Substitute the given values**:\n  * $|A| = 12$, $|B| = 5$, $|C| = 8$ [2]\n  * $|A \\cap B| = 2$, $|A \\cap C| = 6$, $|B \\cap C| = 3$ [2]\n  * $|A \\cap B \\cap C| = 1$ [2]\n  \n  $$|A \\cup B \\cup C| = 12 + 5 + 8 - 2 - 6 - 3 + 1 = 15$$\n  Thus, 15 students failed at least one class [1].\n\n* **Calculate the students who passed all classes**: Subtract the number of students who failed at least one class from the total number of students [1]:\n  $$\\text{Passed all} = 41 - 15 = 26$$\n\nTherefore, **26** students passed all three classes [1].\n\n*Next study tip: Practice applying PIE to survey problems involving three or four sets, such as TV-watching habits or foreign language enrollments.*",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 81
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 82
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 140
+          },
+          {
+            "doc": "Database Design 2nd Edition (Watt Eng) CC-BY-4.0",
+            "page": 68
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 84
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 80
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Answer correctly applies PIE and obtains the correct count of 26 students.",
+        "latency_ms": 2224
+      },
+      {
+        "id": "2-310",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "Why are the binomial coefficients (n k) and (n n−k) equal?",
+        "answer": "A **binomial coefficient** $\\binom{n}{k}$ represents the number of ways to choose $k$ distinct elements from a set of $n$ elements [3].\n\nThe equality $\\binom{n}{k} = \\binom{n}{n-k}$ can be explained through two standard perspectives:\n\n* **Algebraic Definition:** Using the factorial formula $\\binom{n}{k} = \\frac{n!}{k!(n-k)!}$ [3]:\n  $$\\binom{n}{n-k} = \\frac{n!}{(n-k)!(n - (n-k))!} = \\frac{n!}{(n-k)!k!} = \\binom{n}{k}$$\n\n* **Combinatorial Argument (Bit Strings):** \n  * Choosing $k$ items to include in a subset from a set of $n$ elements is equivalent to choosing $n-k$ items to **exclude** from the subset [5]. \n  * In terms of bit strings of length $n$, the number of strings containing $k$ zeros is the same as the number of strings containing $n-k$ ones (since replacing each $0$ with $1$ and each $1$ with $0$ gives a bijection) [5]. \n  * Therefore, $\\binom{n}{k} = \\binom{n}{n-k}$ [5].\n\n**Worked Example:**\nIf you have a set of $5$ elements and want to choose $2$ items to include, $\\binom{5}{2} = \\frac{5!}{2!(3)!} = 10$. This is identical to choosing $3$ items to leave out ($\\binom{5}{3} = 10$).\n\n> **Next to study:** Pascal's identity and recurrence relations for binomial coefficients ($\\binom{n}{k} = \\binom{n-1}{k-1} + \\binom{n-1}{k}$) [2].",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 110
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 92
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 23
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 139
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 109
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 114
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "1/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate fully explains the equality with correct combinatorial and algebraic reasoning.",
+        "latency_ms": 2167
+      },
+      {
+        "id": "2-359",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "How many different meals can be bought with $10 when there are 7 dollar‑menu items and at least one of each item must be purchased?",
+        "answer": "**Stars and Bars Method**: A combinatorial technique used to count the number of ways to distribute identical items into distinct categories.\n\nTo find the number of different meals when you have $10 to spend on 7 dollar-menu items and must purchase **at least one of each item**, follow these steps:\n\n* **Initial Allocation**: Since there are 7 items and you must buy at least one of each, spend $7 first to buy one item of each type [1].\n* **Remaining Budget**: You are left with $10 - $7 = \\$3$ to spend freely across the 7 items.\n* **Applying Stars and Bars**: We now distribute 3 identical dollars (stars) among 7 categories (items), which are separated by $7 - 1 = 6$ bars [1].\n* **Formula**: The total number of solutions is given by $\\binom{3 + 6 - 6}{6} = \\binom{9}{6}$ or equivalently using stars and bars parameters as $\\binom{3 + 7 - 1}{7 - 1} = \\binom{9}{6}$. (Note: Source [1] explicitly describes this configuration as using 3 stars selected between 6 bars, yielding $\\binom{3+6}{6} = \\binom{9}{6}$, or alternatively represented in related meal distributions as $\\binom{16}{6}$ for larger amounts [1]).\n\n**Worked Example / Diagram**:\nFor 3 stars ($\\star$) and 6 bars ($|$):\n$$\\star \\star \\star | | | | | |$$\nThis represents, for example, getting 3 more of the first item and none of the others. \n\n*Suggested next study topic: Solving restricted distribution problems using the Principle of Inclusion-Exclusion (PIE) [1].*",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 366
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 139
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 101
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 147
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 145
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 144
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/4",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly applies stars and bars, arrives at the correct count of 84 meals, and fully addresses the problem.",
+        "latency_ms": 2405
+      },
+      {
+        "id": "2-431",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "What is the characteristic polynomial of the recurrence an = 2 an−1 + an−2 − 3 an−3 as given in the passage?",
+        "answer": "**Characteristic polynomial** is a polynomial equation used to find the roots for solving linear homogeneous recurrence relations with constant coefficients.\n\nFor the given recurrence relation $a_n = 2a_{n-1} + a_{n-2} - 3a_{n-3}$ (or expressed in standard form as $a_n - 2a_{n-1} - a_{n-2} + 3a_{n-3} = 0$), the characteristic polynomial is obtained by replacing each term $a_{n-k}$ with $x^{3-k}$ (or shifting indices) [2].\n\n* **Characteristic Polynomial:** $x^3 - 2x^2 - x + 3$ [2]\n* **Characteristic Equation:** $x^3 - 2x^2 - x + 3 = 0$ [2]\n\nStudy next: *Techniques for finding roots of degree 3 polynomials and solving recurrence relations with distinct or repeated roots.*",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 189
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 190
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 210
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 187
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 375
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 191
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly states the characteristic polynomial.",
+        "latency_ms": 1596
+      },
+      {
+        "id": "2-506",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "Why does the passage claim that an example cannot be used to prove a statement of the form ∀x P(x)?",
+        "answer": "A statement of the form $\\forall x P(x)$ claims that the property $P(x)$ holds true for **every** element in the domain, meaning that showing it works for just a single value or example is never enough to guarantee it holds universally [2].\n\nTo score full marks in your AKTU exam, present the concept using the following structured points:\n\n* **Universal Quantification ($\\forall x P(x)$):** This means the assertion applies to all possible elements in the domain of discourse [2].\n* **Insufficiency of Examples:** It is almost never acceptable to prove a universal statement using a single example because verifying a specific value (e.g., checking $n = 4$) only tests one instance, leaving infinitely many other elements unchecked [2].\n* **Requirement for Proof:** To truly prove a universal statement, you must show that it holds for an **arbitrary element** $x$ chosen generally from the domain, rather than relying on isolated instances [3]. Conversely, examples *can* only be used to prove **existential statements** (i.e., showing that $\\exists x P(x)$ is true by finding a single working element) [1, 2].\n\n**Short Worked Example:**\nIf you want to prove the statement \"For all integers $n$, if $n^2$ is even, then $n$ is even,\" picking $n = 4$ and showing $4^2 = 16$ (even) implies $4$ (even) only tests one case [2]. It fails to prove the claim for all other integers like $n = 5, 6, 7$, etc [2]. \n\nSuggested next topic to study: *Methods of direct proof and proof by contradiction*.",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 353
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 235
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 231
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 243
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer accurately explains that a single example cannot prove a universal statement, matching the reference explanation.",
+        "latency_ms": 2189
+      },
+      {
+        "id": "2-595",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "State Hall’s Marriage Theorem as given in the passage.",
+        "answer": "**Hall’s Marriage Theorem**: Let $G$ be a bipartite graph with vertex sets $A$ and $B$. Then $G$ has a matching of $A$ if and only if \n$$|N(S)| \\ge |S|$$\nfor all subsets $S \\subseteq A$ (where $N(S)$ denotes the set of neighbors of $S$ in $B$) [1].\n\n* **Key Terms**: **Bipartite graph**, **matching**, **neighborhood** ($N(S)$), **subset** ($S \\subseteq A$).\n\n> **Next up:** Study the proof of Example 4.6.2 to see how the matching condition is applied to card values and piles!",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 300
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 301
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 404
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 302
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 300
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/4",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly states the theorem exactly as in the reference.",
+        "latency_ms": 1464
+      },
+      {
+        "id": "2-657",
+        "book": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+        "question": "What approach does the passage recommend for simplifying negations that involve quantifiers?",
+        "answer": "To simplify negations involving quantifiers, the notes recommend passing the negation over the quantifier by switching its type (between universal $\\forall$ and existential $\\exists$), and then applying propositional logical equivalence rules to the \"inside\" propositional part [3], [6].\n\n* **Key Steps for Simplification:**\n  * **Pass the negation over quantifiers:** Change $\\neg\\forall x$ to $\\exists x\\neg$ and $\\neg\\exists x$ to $\\forall x\\neg$ [6].\n  * **Push inward:** Continue moving the negation symbols inward until they occur *only* directly next to the individual predicates or sentence variables [3], [4].\n  * **Apply propositional rules:** Use logical equivalence rules (such as De Morgan's Laws, implication rewrites, and double negation) to simplify the inner propositional components [3], [5].\n\n* **Worked Example:**\n  To simplify a quantified negation like $\\neg\\exists x\\forall y(\\neg O(x) \\lor E(y))$ [3]:\n  1. Push the negation past the existential quantifier, changing it to universal: $\\forall x \\neg \\forall y(\\neg O(x) \\lor E(y))$\n  2. Push it past the universal quantifier, changing it to existential: $\\forall x \\exists y \\neg(\\neg O(x) \\lor E(y))$\n  3. Apply De Morgan's Law to the inside proposition: $\\forall x \\exists y (\\neg\\neg O(x) \\land \\neg E(y))$\n  4. Apply double negation to get the final simplified form: $\\forall x \\exists y (O(x) \\land \\neg E(y))$\n\n> **Next to study:** Practice pushing negations inward across multiple mixed quantifiers (such as problem 16 in your notes) [3].",
+        "sources": [
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 225
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 225
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 226
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 227
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 218
+          },
+          {
+            "doc": "Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0",
+            "page": 223
+          }
+        ],
+        "grounded": true,
+        "cited": false,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer accurately describes the recommended approach of translating into symbols, moving negations across quantifiers, and applying De Morgan’s laws and propositional equivalences, matching the reference.",
+        "latency_ms": 2557
+      },
+      {
+        "id": "3-763",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What are the three queueing disciplines described, and how does each determine which element is removed?",
+        "answer": "A **queueing discipline** is the rule used by a Queue interface to decide which element should be removed next [1].\n\nThe three main queueing disciplines are:\n\n* **FIFO (First-In-First-Out) Queue**: Removes items in the exact same order they were added, much like a typical customer line at a grocery store checkout [1].\n* **Priority Queue**: Always removes the smallest element from the queue (breaking ties arbitrarily), similar to how patients are triaged in a hospital emergency room based on the severity of their condition [1].\n* **LIFO (Last-In-First-Out) Queue (Stack)**: Removes the most recently added element first, visualized like a stack of plates where items are both added and removed exclusively from the top [1, 2].\n\n```\nFIFO:     [ In ] -> [ Queue ] -> [ Out ]  (Order preserved)\nPriority: [ In ] -> [ Min Element Extracted First ]\nLIFO:     [ In/Out ] <-> [ Top of Stack ]\n```\n\nStudy next: The List interface and how it subsumes FIFO, Stack, and Deque interfaces [2].",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 16
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 17
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 69
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 3
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 92
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 220
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly identifies all three disciplines and accurately describes how each determines which element is removed.",
+        "latency_ms": 2045
+      },
+      {
+        "id": "3-810",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What lower bound on the potential Φ is established for the situation just before a call to balance() that shifts elements because front.size() < back.size()?",
+        "answer": "**Potential Lower Bound in DualArrayDeque**: The lower bound on the potential $\\Phi_1$ immediately before a call to `balance()` when $3 \\cdot \\text{front.size()} < \\text{back.size()}$ is **$\\Phi_1 > n/2$**.\n\n### Detailed Breakdown\n\n* **Definition of Potential ($\\Phi$):** The potential of the `DualArrayDeque` is defined as the absolute difference in size between the `front` and `back` stacks:\n  $$\\Phi = |\\text{front.size()} - \\text{back.size()}|$$ [1]\n\n* **Condition Triggering Rebalancing:** `balance()` is triggered when one stack is more than three times the size of the other, specifically when $3 \\cdot \\text{front.size()} < \\text{back.size()}$ [3].\n\n* **Relating `back.size()` to Total Elements ($n$):**\n  Since $n = \\text{front.size()} + \\text{back.size()}$, and $\\text{front.size()} < \\frac{\\text{back.size()}}{3}$:\n  $$n < \\frac{\\text{back.size()}}{3} + \\text{back.size()} = \\frac{4}{3} \\text{back.size()}$$ [1]\n  Rearranging this gives $\\text{back.size()} > \\frac{3}{4}n$ [1].\n\n* **Deriving the Potential Lower Bound ($\\Phi_1$):**\n  Immediately before `balance()`, the potential is:\n  $$\\Phi_1 = \\text{back.size()} - \\text{front.size()}$$ [1]\n  Substituting $\\text{front.size()} < \\frac{\\text{back.size()}}{3}$:\n  $$\\Phi_1 > \\text{back.size()} - \\frac{\\text{back.size()}}{3} = \\frac{2}{3} \\text{back.size()}$$ [1]\n  Substituting the bound $\\text{back.size()} > \\frac{3}{4}n$:\n  $$\\Phi_1 > \\frac{2}{3} \\times \\frac{3}{4}n = \\frac{n}{2}$$ [1]\n\n---\nSuggested next topic to study: *Amortized analysis using the potential method for `resize()` and `balance()` operations in deque structures*.",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 60
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 61
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 59
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 55
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 44
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 65
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly states the lower bound Φ₁ > n/2 and provides a correct derivation matching the reference.",
+        "latency_ms": 2347
+      },
+      {
+        "id": "3-832",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What is the asymptotic time complexity for locating the item with index i in the described block‑linked list structure?",
+        "answer": "The asymptotic time complexity for locating the item with index $i$ in a space-efficient linked list (SEList) is $O(1 + \\min\\{i, n - i\\}/b)$ [1, 2].\n\n### Key Details:\n* **Block Size ($b$):** Each node in the list contains a block of elements of size proportional to $b$ [2].\n* **Location Components:** Finding an element requires determining two parts: the **node $u$** containing the block, and the **index $j$** of the element within that block [2].\n* **Search Direction:** \n  * If $i < n/2$, the search starts from the **front** and traverses forward, taking $O(1 + i/b)$ steps [2].\n  * If $i \\ge n/2$, the search starts from the **back** and traverses backward, taking $O(1 + (n - i)/b)$ steps [2].\n* Because each step skips over an entire block of elements, the search time is minimized by choosing the optimal direction, yielding $O(1 + \\min\\{i, n - i\\}/b)$ [1, 2].\n\nNext, you might want to study the `add(i, x)` and `remove(i)` interior operations for an SEList.",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 82
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 81
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 85
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 1
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 89
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 228
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "2/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer matches the reference exactly, giving the correct asymptotic time complexity.",
+        "latency_ms": 2027
+      },
+      {
+        "id": "3-859",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "According to the analysis, what is the expected number of steps the forward search path takes at a particular level r in a skiplist?",
+        "answer": "A **forward search path** step at level $r$ refers to the expected number of steps that go to the right at that level, denoted as $E[S_r]$.\n\n* **Expected number of steps:** The expected number of steps the forward search path takes to the right at level $r$ is bounded by $1$, such that $E[S_r] \\le 1$ [1].\n* **Bound by list length:** Furthermore, this expectation is constrained by the length of the list at level $r$, satisfying $E[S_r] \\le E[|L_r|] = n/2^r$ [1].\n\nTherefore, $E[S_r] \\le 1$ for lower levels and decreases exponentially as $n/2^r$ for higher levels where $r > \\lfloor \\log n \\rfloor$ [1].\n\n> **Next to study:** Look into Lemma 4.6 and Theorem 4.3 to see how these expected step bounds combine across all levels to prove the overall $2\\log n + O(1)$ search path length [1], [2].",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 107
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 108
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 95
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 104
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 109
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 106
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "1/5",
+        "judge_score": 3,
+        "judge_reason": "Correctly states E[Sr] ≤ 1 but adds an incorrect additional bound that is not in the reference.",
+        "latency_ms": 1655
+      },
+      {
+        "id": "3-897",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "According to the passage, how is a binary tree defined and what term is used for a node that has no children?",
+        "answer": "A **binary tree** is defined mathematically as a connected, undirected, finite graph with no cycles, and no vertex of degree greater than three, where a special node $r$ of degree at most two is designated as the root [1].\n\nKey definitions and properties associated with this include:\n* **Root ($r$)**: The special starting node of the tree, usually drawn at the top [1].\n* **Leaf**: A node $u$ that has no children [1].\n* **Parent and Child**: For every node $u \\neq r$, the second node on the path to $r$ is the **parent**, and any adjacent node away from the root is a **child** (distinguished as **left child** and **right child** in ordered trees) [1].\n* **External Nodes**: Trees are often thought of as augmented with external nodes where normal pointers would be $\\text{nil}$, meaning a binary tree with $n \\ge 1$ real nodes has $n + 1$ external nodes [2].\n\nStudy next: *Recursive algorithms for computing the size and height of binary trees [6].*",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 138
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 139
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 148
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 289
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 151
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 141
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate correctly states the definition and identifies a leaf as a node with no children.",
+        "latency_ms": 1945
+      },
+      {
+        "id": "3-951",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What are the two properties that must hold for a red‑black tree before and after any operation?",
+        "answer": "**Red-Black Tree Properties**: A **red-black tree** is a binary search tree where every node is coloured either red (0) or black (1), and must satisfy two fundamental properties before and after any operation [1]:\n\n*   **Property 9.3 (Black-Height)**: There are the same number of black nodes on every root-to-leaf path (equivalently, the sum of the colours on any root-to-leaf path is the same) [1].\n*   **Property 9.4 (No-Red-Edge)**: No two red nodes are adjacent. For any node $u$ (except the root), the condition $u.\\text{colour} + u.\\text{parent}.\\text{colour} \\ge 1$ must hold [1].\n\n*(Note: The root is typically assumed to be black, and external nil nodes are treated as black nodes [1].)*\n\nNext, study **Left-Leaning Red-Black Trees and Subroutines (push_black/pull_black)** [3].",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 191
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 199
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 197
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 194
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 195
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 188
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly lists both required properties with accurate definitions.",
+        "latency_ms": 1667
+      },
+      {
+        "id": "3-964",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What total time complexity does Theorem 9.2 claim for all calls to add_fixup(u) and remove_fixup(u) over a sequence of m add(x) and remove(x) operations starting from an empty RedBlackTree?",
+        "answer": "Theorem 9.2 claims that starting from an empty **RedBlackTree**, any sequence of $m$ **add(x)** and **remove(x)** operations results in a total time complexity of **$O(m)$** spent during all calls to **add_fixup(u)** and **remove_fixup(u)** [1].\n\n* **Key Concept:** Amortized analysis using the potential method (inherited from 2-4 trees) shows that structural adjustments like splits and merges decrease the potential, bounding the total fixup cost linearly with respect to the number of operations $m$ [2].\n\nStudy next: The potential method of amortized analysis and how 2-4 tree operations map to Red-Black tree fixups [2].",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 207
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 208
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 88
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 220
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 126
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "Matches the reference exactly.",
+        "latency_ms": 1831
+      },
+      {
+        "id": "3-996",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What lower bound on the number of comparisons does any deterministic comparison‑based sorting algorithm require for an input array of length n?",
+        "answer": "**Lower bound for comparison-based sorting**: The minimum number of comparisons required by any deterministic comparison-based sorting algorithm to sort an input array of length $n$ is $\\log(n!) = n\\log n - O(n)$ [2].\n\n### Key Points of the Proof:\n* **Comparison Tree Model**: Any deterministic comparison-based sorting algorithm can be represented as a **rooted binary comparison tree**, where each internal node represents a comparison between two elements, and each leaf represents a possible final sorted permutation [4].\n* **Number of Leaves**: For the algorithm to correctly sort all possible input permutations of $n$ distinct elements, the comparison tree must have at least **$n!$ leaves** (otherwise, two distinct permutations would map to the same leaf and fail to sort correctly) [2].\n* **Tree Height**: A binary tree with $k$ leaves must have a height of at least $\\log k$ [2]. Therefore, the comparison tree must have a height (and thus perform a number of comparisons) of at least **$\\log(n!)$** in the worst case [2].\n\n---\n*Next to study: The lower bound proof for randomized comparison-based sorting algorithms.*",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 242
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 240
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 242
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 239
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 241
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 246
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly states the lower bound log(n!) = n log n - O(n) and provides a valid proof outline matching the reference.",
+        "latency_ms": 1784
+      },
+      {
+        "id": "3-1025",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What is the time complexity of the add(x) and remove(x) operations in a YFastTrie?",
+        "answer": "**YFastTrie operations**: A **YFastTrie** is a space-efficient data structure for $w$-bit integers that combines an XFastTrie with treaps to achieve doubly-logarithmic performance [1].\n\nThe time complexities for **add(x)** and **remove(x)** in a YFastTrie are:\n- **add(x)**: $O(\\log w)$ expected time per operation [4].\n- **remove(x)**: $O(\\log w)$ expected time per operation [4].\n\n### Key Details of Operations\n* **add(x)**: \n  1. Locates the target treap $t$ using `xft.find(x)` in $O(\\log w)$ time [3].\n  2. Adds $x$ to $t$ in $O(\\log w)$ time [3].\n  3. Tosses a biased coin with probability $1/w$ of coming up heads [3]. If heads, $t$ is split into $t_1$ and $t'$ in $O(\\log w)$ expected time, and the pair is added to the XFastTrie in $O(w)$ time [3].\n  4. Amortizing the $O(w)$ XFastTrie insertion over its $1/w$ probability yields an expected time of $O(\\log w) + \\frac{1}{w}O(w) = O(\\log w)$ [3].\n\n* **remove(x)**:\n  1. Finds the node in the XFastTrie and removes $x$ from the corresponding treap $t$ in $O(\\log w)$ expected time [2].\n  2. If necessary, removes the element from the XFastTrie in $O(w)$ time, which occurs with probability $1/w$ [2].\n  3. This results in an expected removal time of $O(\\log w)$ [2].\n\n> **Next Study Topic**: Review how the space complexity of a YFastTrie is optimized to $O(n)$ compared to an XFastTrie's $O(n \\cdot w)$ space usage [1, 4].",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 278
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 282
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 280
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 284
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 284
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 298
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate correctly states that both add(x) and remove(x) operations run in O(log w) expected time, matching the reference answer.",
+        "latency_ms": 2457
+      },
+      {
+        "id": "3-1052",
+        "book": "Open Data Structures (Morin) CC-BY-2.5",
+        "question": "What is the asymptotic running time of a B-tree find(x) operation in the external memory model, and how is this derived from the tree's height?",
+        "answer": "A **B-tree** is a generalization of binary search trees designed to be efficient in the external memory model, where data is accessed in blocks of size $B$ [3].\n\nThe asymptotic running time and its derivation are structured as follows:\n\n* **Running Time:** In the external memory model, the **find($x$)** operation runs in **$O(\\log_B n)$** time, where $n$ is the number of keys and $B$ is the block/branching factor parameter [1].\n* **Height of the B-tree:** Every leaf in a B-tree stores at least one key, and a B-tree storing $n$ keys with $\\ell$ leaves has a height of $O(\\log_B \\ell)$, which simplifies to **$O(\\log_B n)$** [1].\n* **Derivation:** \n  1. The **find($x$)** method uses a binary search at each node to halve the search space, taking $O(\\log B)$ time per node [1].\n  2. In the external memory model, we count only the number of nodes (blocks) accessed rather than individual instructions [1].\n  3. Since the height of the tree is $O(\\log_B n)$, the search path traverses $O(\\log_B n)$ nodes, resulting in a total external memory access time of **$O(\\log_B n)$** [1].\n\n> **Exam Tip:** Clearly distinguish between the external memory model (where cost is counted by node/block accesses, giving $O(\\log_B n)$) and the word-RAM model (where you account for internal binary searches, giving $O(\\log n)$) [1].\n\nStudy next: **The add($x$) and remove($x$) operations and node splitting/merging in B-trees.**",
+        "sources": [
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 293
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 307
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 289
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 304
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 308
+          },
+          {
+            "doc": "Open Data Structures (Morin) CC-BY-2.5",
+            "page": 288
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly states that find(x) takes O(log_B n) I/Os and explains that this follows from the B-tree height of O(log_B n), matching the reference answer.",
+        "latency_ms": 2304
+      },
+      {
+        "id": "4-1134",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What guarantees does a transaction provide regarding intermediate states, isolation, and system crashes?",
+        "answer": "A **transaction** is a unit of computational work for which no intermediate state from the middle of the computation is ever visible [5].\n\nTo score full marks in your AKTU exam, you should structure the guarantees provided by transactions as follows:\n\n* **Intermediate States (Atomicity):** \n  * No intermediate state or half-completed results from a transaction are ever visible [5]. \n  * If a transaction fails or is explicitly aborted, any changes already made are concealed by undoing them, leaving the storage as it was before the transaction started [3, 5].\n\n* **Isolation:** \n  * Concurrent transactions are isolated from seeing each other's intermediate storage [5]. \n  * This ensures that transactions do not interact in a way that makes concurrency apparent, meaning their execution is **serializable** (equivalent to a serial execution) [2].\n\n* **System Crashes (Durability and Failure Atomicity):** \n  * If the system crashes before a transaction commits, the system returns to its initial, unchanged state upon restart [4]. \n  * If a transaction successfully completes with an explicit **commit action**, it becomes **durable**, meaning the final transformed state remains intact even if the system crashes afterward and reboots [4].\n\n> **Quick Study Tip:** Next, review **Two-Phase Locking (2PL)** and how it ensures serializability for concurrent transactions [2].",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 195
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 195
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 183
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 182
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 31
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 227
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer fully covers all guarantees of intermediate states, isolation, and crash recovery as in reference.",
+        "latency_ms": 2002
+      },
+      {
+        "id": "4-1205",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "According to the passage, how is importance interpreted for tasks with soft deadlines compared to when no urgency information is provided?",
+        "answer": "**Importance in Scheduling:** A measure of the cost or consequence associated with a task—specifically, how bad it is for a task to be late (when deadlines are soft) or how much is at stake in accomplishing it [1, 2].\n\nAccording to the provided text, importance is interpreted differently based on the presence and nature of urgency information:\n\n* **For tasks with soft deadlines:** Importance measures **how bad it is for each task to be late** [1]. \n* **When no urgency information is provided:** The user demands all results \"as soon as possible,\" in which case a **high-importance task** is one to work on whenever possible, and a **low-importance task** is used simply to fill idle moments when nothing more important remains [1].\n\n---\n*Next suggested topic to study:* **The taxonomy of scheduling goals and how mechanisms like Earliest Deadline First (EDF) address urgency [3, 5].**",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 76
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 75
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 78
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 78
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 79
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 82
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer fully matches the reference content.",
+        "latency_ms": 2180
+      },
+      {
+        "id": "4-1352",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What condition must be true for the sellTicket method to attempt to update the state, and how does it ensure the update is applied only if the snapshot remains valid?",
+        "answer": "**Nonblocking Synchronization**: A synchronization approach using atomic instructions that allows threads to make progress without blocking or waiting for locks held by other threads [1].\n\nTo answer your question regarding how the `sellTicket` method updates state using nonblocking synchronization:\n\n* **Condition for attempting an update**: The method must first verify that there are remaining seats by checking that **`seatsRemaining > 0`** from the captured state snapshot [2].\n* **Ensuring the update is applied safely**: \n  - It packages the shared variables (`seatsRemaining` and `cashOnHand`) into an **`AtomicReference`** pointing to an immutable **`State`** object [2], [3].\n  - It invokes the **`compareAndSet(snapshot, next)`** atomic instruction [1], [2].\n  - This hardware-supported instruction checks if the variable (`state`) still contains the exact earlier **`snapshot`**; if no concurrent thread has modified it in the meantime, it atomically updates the variable to the **`next`** state and returns `true` [1], [2].\n  - If another thread has intervened, `compareAndSet` returns `false`, causing the enclosing `while` loop to retry the entire process with a fresh snapshot [1], [2].\n\n**Short Worked Example (`sellTicket` logic):**\n```java\nState snapshot = state.get();\nint seatsRemaining = snapshot.getSeatsRemaining();\nint cashOnHand = snapshot.getCashOnHand();\nif(seatsRemaining > 0){\n    State next = new State(seatsRemaining - 1, cashOnHand + PRICE);\n    if(state.compareAndSet(snapshot, next)){\n        dispenseTicket();\n        return;\n    }\n}\n```[2]\n\nNext suggested topic: Study **lock-free vs. wait-free synchronization** and how compare-and-set prevents deadlocks [1].",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 161
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 163
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 162
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 140
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 125
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 204
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer correctly states the condition and explains compareAndSet ensuring snapshot validity.",
+        "latency_ms": 2929
+      },
+      {
+        "id": "4-1429",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What is checkpointing and how does it affect the retention of log entries?",
+        "answer": "**Checkpointing** is a recovery management mechanism used in transaction processing systems to put a limit on how much of the log needs to be processed during a system crash recovery [1], [2]. \n\nKey aspects of checkpointing include:\n* **Definition:** It is a point in time at which the main persistent storage is brought to a consistent state [1].\n* **Historical Approach:** The simplest and earliest approach creates a hard checkpoint where the system state is synchronized, allowing all log entries prior to the checkpoint to be discarded [1].\n* **Log Retention Effect:** Because historical log entries prior to the established checkpoint are no longer needed to reconstruct past states or handle recoveries past that point, they do not need to be retained [1].\n* **Advanced Mechanisms:** More sophisticated checkpointing techniques avoid forcing the entire system into a complete consistent state, enabling normal processing to continue uninterrupted while still bounding the recovery log processing work [1].\n\nGood luck with your AKTU preparation! Next, you might want to study **Write-Ahead Logging (WAL) rules** and how **redo/undo logs** work.",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 212
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 211
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 207
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 209
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 210
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 211
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/4",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer correctly explains checkpointing and log retention as per reference.",
+        "latency_ms": 1810
+      },
+      {
+        "id": "4-1499",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "How many bytes does a linear page table require for a 32-bit address space with 4‑KB pages when each page-table entry occupies 4 bytes?",
+        "answer": "A linear page table for a 32-bit address space with 4-KB pages and 4-byte page-table entries requires **4 MB** of memory [1].\n\n### Explanation & Calculation:\n* **Page Size:** $4\\text{ KB} = 2^{12}\\text{ bytes}$ [1]. This means 12 bits of the 32-bit address are used to specify the location within a page [1].\n* **Number of Pages:** The remaining bits ($32 - 12 = 20\\text{ bits}$) are used for the page number, giving a total of $2^{20}$ (or $1,048,576$) pages [1].\n* **Page Table Size:** Since each page table entry occupies 4 bytes, the total memory required for the linear page table is:\n  $$\\text{Total Size} = 2^{20} \\text{ entries} \\times 4 \\text{ bytes/entry} = 4 \\text{ MB}$$ [1]\n\n---\n*Suggested next topic to study: Multilevel page tables and how they solve the large memory overhead of linear page tables [3].*",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 252
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 257
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 257
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 261
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 253
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 252
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "0/4",
+        "judge_score": 5,
+        "judge_reason": "Answer correctly states the required size of 4 MB.",
+        "latency_ms": 1785
+      },
+      {
+        "id": "4-1572",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What are the two approaches to memory protection described, and how does the finer‑grained approach differ from the coarser‑grained approach?",
+        "answer": "**Memory protection** refers to the mechanisms used by an operating system to control access rights to memory and prevent processes from interfering with one another.\n\nBased on your notes, here are the key aspects of memory protection and granularity:\n\n### Two Approaches to Memory Protection\n1. **Separate Address Space:** An approach where each process is allocated its own distinct address space [1], [3].\n2. **Single Address Space:** An approach where processes share a single address space [1], [3].\n\n### Difference Between Finer-Grained and Coarser-Grained Protection\n* **Finer-Grained Protection:** This approach protects **parts of processes from each other** within the system [1].\n* **Coarser-Grained Protection:** This approach protects **entire simulated machines from one another**, where each simulated machine runs its own operating system [1].\n\n> **Next Study Suggestion:** Review the fundamentals of access rights and the two approaches for representing them (capabilities vs. credentials with access control lists) in Section 7.4 [1].",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 295
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 227
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 294
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "3/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly identifies both approaches and accurately describes the difference between finer‑grained and coarser‑grained protection as in the reference.",
+        "latency_ms": 1622
+      },
+      {
+        "id": "4-1643",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What security risk arises when a program runs with a user's credentials and can send the user's private data over the network?",
+        "answer": "A **Trojan horse** is a security risk where a program with an apparent benign purpose has a hidden nefarious intent, acting with the user's credentials to perform unauthorized actions like sending private data over the network [1].\n\n* **Definition**: A program that appears useful or entertaining (e.g., a funny animation) but contains hidden malicious code [1].\n* **Mechanism**: Because processes inherit user credentials upon running, whatever the program does is treated by the system as if the **user is doing it directly** [1].\n* **Impact**: If the user has permissions to access and transmit private data over the network, the Trojan horse inherits those exact capabilities and can exfiltrate sensitive information without the user's conscious approval [1]. This represents a mismatch where the executor supplies the **authority** (credentials) while the program's author controls the **actions** [2, 3].\n\n> **Exam Tip:** Clearly state the mismatch concept (user's authority combined with author's control) to secure full marks in AKTU examinations.\n\n*Next suggested topic to study: Setuid programs and the inverse mismatch of authority and control.*",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 337
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 339
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 492
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 451
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 514
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 337
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "5/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer correctly identifies a Trojan horse as the security risk and explains its ability to use user credentials to send private data over the network, matching the reference.",
+        "latency_ms": 2049
+      },
+      {
+        "id": "4-1792",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What role does middleware play at the application layer according to the passage?",
+        "answer": "**Middleware** is software that runs outside of the operating system kernel and provides necessary communication abstractions and higher-level services at the application layer, sitting between application programs and the operating system [1, 6].\n\nAccording to the provided sources, the roles of middleware at the application layer include:\n\n* **Providing Higher-Level Communication Abstractions:** Rather than just sending raw streams of bytes over a basic transport layer API (like sockets), middleware offers sophisticated communication services such as messaging and **Remote Procedure Calls (RPCs)** [1, 3].\n* **Transaction-Integrated Messaging:** Messaging middleware can handle operations where message queuing and dequeuing are treated as part of atomic transactions, ensuring all-or-nothing guarantees (e.g., retrieving an incoming message, updating a database, and sending a response together) [1, 3].\n* **Decoupled Communication:** It enables features like publish-subscribe messaging, where a message is delivered to any number of subscribed recipients without the sender needing to know who the actual receivers are [3].\n* **Support Services and Naming:** Components like the **Domain Name System (DNS)** run outside the kernel using application-layer protocols to map hostnames to numerical IP addresses, acting as middleware that supports various applications [1, 4].\n* **Circumventing Network Obstacles:** Middleware can package application programs' messages into web traffic (layering protocols over the web's application-layer protocol) to help bypass Internet obstacles and firewalls that might otherwise block new application protocols [2].\n\n> **Example:** In a messaging system, a middleware transaction might retrieve a request from an incoming queue, update a database, and place a response in an outgoing queue atomically—if any step fails, none of the changes take place [3].\n\nWhat would you like to study next? We could look at **Remote Procedure Calls (RPCs)** or **socket APIs** in Chapter 10.",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 422
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 421
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 35
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 422
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 34
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 26
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "The candidate answer fully captures the reference’s key points about middleware providing application‑layer communication abstractions, including atomic transaction messaging, and adds correct additional details.",
+        "latency_ms": 2304
+      },
+      {
+        "id": "4-1935",
+        "book": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+        "question": "What is identified as the most serious means of worm propagation, and what programming mistake enables it?",
+        "answer": "**Worm propagation via buffer overflow** is the most serious means of worm propagation, enabled by a programming mistake where fixed-size buffers are used without checking the amount of incoming data [1].\n\n### Key Details & Mechanism\n\n* **Definition:** A **buffer overflow** occurs when a program reads input into a contiguous block of virtual memory (a buffer) of a fixed size, without testing the input amount against the buffer capacity [1].\n* **The Programming Mistake:** Programmers fail to take defensive action when an unreasonably large amount of input is presented, allowing extra data to overflow into adjacent memory spaces [1].\n* **Propagation Mechanism:** Worms exploit these implementation flaws at the application layer to overwrite memory space, execute arbitrary code, transfer a copy of themselves, and start running on the target system [2, 3].\n\n### Worked Example / Scenario\nImagine a program allocates a fixed buffer of 100 bytes for incoming network messages:\n```c\nchar buffer[100];\nstrcpy(buffer, user_input); // Unsafe: no boundary check!\n```\nIf an adversary sends 150 bytes of input, the extra 50 bytes overflow the `buffer` boundary. In a worm exploit, this excess input contains crafted executable instructions that overwrite the return address on the stack, forcing the program to execute the attacker's code instead of returning to its normal routine [6].\n\n> **Next up:** Study the countermeasures for buffer overflows, such as non-executable stack spaces and firewalls [3, 6].",
+        "sources": [
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 506
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 505
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 451
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 512
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 338
+          },
+          {
+            "doc": "Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0",
+            "page": 508
+          }
+        ],
+        "grounded": true,
+        "cited": true,
+        "keywords_hit": "4/5",
+        "judge_score": 5,
+        "judge_reason": "Candidate answer correctly identifies buffer overflow and the programming mistake of unchecked fixed-size buffers.",
+        "latency_ms": 2189
+      }
+    ]
+  }
+}

@@ -67,6 +67,5 @@ def decrypt_secret(token: str | None) -> str | None:
 def mask_secret(value: str | None) -> str | None:
     if not value:
         return None
-    if len(value) <= 8:
-        return "*" * len(value)
-    return f"{value[:4]}...{value[-4:]}"
+    # Only the public vendor prefix (gsk_, AIza, sk-...) is ever shown; no part of the secret itself.
+    return f"{value[:4]}{'*' * 8}" if len(value) > 8 else "*" * len(value)

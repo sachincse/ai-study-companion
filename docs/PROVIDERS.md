@@ -46,7 +46,7 @@ Embeddings are deployment-wide (changing them means re-indexing notes):
 
 | `EMBEDDING_PROVIDER` | Model | Dimensions | Needs |
 |---|---|---|---|
-| `local` (default) | fastembed `BAAI/bge-small-en-v1.5` | 384 | nothing; ~130 MB download on first run, CPU |
+| `local` (default) | fastembed `BAAI/bge-small-en-v1.5` | 384 | nothing; ~65 MB download on first run, CPU |
 | `openai` | `text-embedding-3-small` | 1536 | `OPENAI_API_KEY` |
 | `gemini` | `gemini-embedding-001` | 3072 | `GEMINI_API_KEY` |
 | `ollama` | `nomic-embed-text` | 768 | `ollama pull nomic-embed-text` |
