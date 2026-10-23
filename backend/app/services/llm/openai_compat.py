@@ -1,6 +1,7 @@
 """Chat provider for every OpenAI-compatible API (OpenAI, Groq, xAI, Gemini, Ollama...)."""
 from __future__ import annotations
 
+import re
 from collections.abc import AsyncIterator
 
 import httpx
@@ -28,7 +29,11 @@ def _friendly(exc: Exception, spec: ProviderSpec, model: str) -> LLMError:
     if isinstance(exc, NotFoundError):
         return LLMError(f"{name} does not know the model '{model}'. Pick another model in Settings.", status=404, provider=spec.id)
     if isinstance(exc, RateLimitError):
-        return LLMError(f"{name} rate limit or quota reached. Wait a moment or switch provider.", status=429, provider=spec.id)
+        detail = str(getattr(exc, "message", "") or exc)
+        kind = "daily token quota" if "per day" in detail.lower() else "rate limit"
+        wait = re.search(r"try again in ([0-9hms.]+)", detail)
+        when = f"Try again in {re.sub(r'[.][0-9]+s', 's', wait.group(1)).rstrip('.')}" if wait else "Wait a moment"
+        return LLMError(f"{name} {kind} reached for {model}. {when} or switch model in Settings.", status=429, provider=spec.id)
     if isinstance(exc, BadRequestError):
         detail = getattr(exc, "message", str(exc))
         return LLMError(f"{name} rejected the request: {detail[:200]}", status=400, provider=spec.id)

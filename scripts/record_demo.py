@@ -59,7 +59,39 @@ def type_slowly(page: Page, selector: str, text: str, delay: int = 18) -> None:
     page.type(selector, text, delay=delay)
 
 
-def run(base_url: str, out: Path, book: Path, email: str) -> Path:
+def generate(page: Page, button: str, success: str, attempts: int = 3, timeout: float = 150.0) -> None:
+    """Click a generate button and wait for its result; on an error toast (e.g. a provider rate limit) retry."""
+    for attempt in range(1, attempts + 1):
+        page.click(button)
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if page.query_selector(success):
+                return
+            if page.query_selector("[data-sonner-toast][data-type='error']"):
+                break
+            time.sleep(0.5)
+        if attempt == attempts:
+            raise TimeoutError(f"'{button}' did not produce '{success}' after {attempts} attempts")
+        time.sleep(25)  # let the provider's per-minute window reset
+        for toast in page.query_selector_all("[data-sonner-toast] button[aria-label='Close toast']"):
+            toast.click()
+
+
+def set_model(page: Page, provider: str, model: str) -> None:
+    """Point the demo account at a specific provider/model (same call the Settings page makes)."""
+    status = page.evaluate(
+        """async ([p, m]) => {
+          const t = localStorage.getItem('asc_token')
+          const r = await fetch('/api/v1/settings/llm', {method: 'PUT', headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + t}, body: JSON.stringify({provider: p, model: m})})
+          return r.status
+        }""",
+        [provider, model],
+    )
+    if status != 200:
+        raise RuntimeError(f"could not select {provider}/{model}: HTTP {status}")
+
+
+def run(base_url: str, out: Path, book: Path, email: str, provider: str | None = None, model: str | None = None) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     shutil.rmtree(out / ".raw", ignore_errors=True)  # stale partial recordings from a failed run
     with sync_playwright() as p:
@@ -78,6 +110,10 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         shot(page, out, "01-signup")
         page.click("button:has-text('Create account')")
         page.wait_for_selector("text=Recommended next")
+        if provider and model:
+            set_model(page, provider, model)
+            page.reload()
+            page.wait_for_selector("text=Recommended next")
         caption(page, "A fresh account starts empty. Let's add real study material.", 1.8)
 
         # 2. Upload notes ----------------------------------------------------------
@@ -130,8 +166,7 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         page.click("button:has-text('Database Design')")
         page.select_option("select >> nth=0", "5")
         shot(page, out, "06-quiz-generate")
-        page.click("button:has-text('Generate quiz')")
-        page.wait_for_selector("text=/Q1/", timeout=180_000)
+        generate(page, "button:has-text('Generate quiz')", "text=/Q1/")
         caption(page, "MCQ, true/false and short-answer questions with marks. Let's attempt it.", 1.5)
         shot(page, out, "07-quiz-attempt")
         for _ in range(12):
@@ -166,7 +201,7 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         page.fill("input[placeholder*='Deadlock']", "Entity relationship model")
         page.click("button:has-text('Database Design')")
         caption(page, "Flashcards are generated from the notes and scheduled with SM-2 spaced repetition.", 1.0)
-        page.click("button:has-text('Create deck')")
+        generate(page, "button:has-text('Create deck')", "button:has-text('Cards')")
         page.wait_for_selector("button:has-text('Review all due')", timeout=180_000)
         page.wait_for_selector("text=due", timeout=30_000)
         shot(page, out, "09-flashcards")
@@ -188,16 +223,14 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         page.click("button:has-text('New summary')")
         page.fill("input[placeholder*='Deadlock']", "Normalization")
         page.click("button:has-text('Database Design')")
-        page.click("button:has-text('Summarise')")
-        page.wait_for_selector("text=60-second revision", timeout=180_000)
+        generate(page, "button:has-text('Summarise')", "text=60-second revision")
         caption(page, "Exam-style summaries: definition, core concepts, formulas, keywords, common mistakes.", 2.2)
         shot(page, out, "10-summary")
         page.goto(f"{base_url}/revision?tab=maps")
         page.click("button:has-text('New concept map')")
         page.fill("input[placeholder*='Deadlock']", "Relational model")
         page.click("button:has-text('Database Design')")
-        page.click("button:has-text('Build map')")
-        page.wait_for_selector(".react-flow__node", timeout=180_000)
+        generate(page, "button:has-text('Build map')", ".react-flow__node")
         time.sleep(1.5)
         caption(page, "Interactive concept maps and flowcharts rendered with React Flow.", 2.2)
         shot(page, out, "11-concept-map")
@@ -214,7 +247,7 @@ def run(base_url: str, out: Path, book: Path, email: str) -> Path:
         shot(page, out, "12-syllabus")
         page.click("a[href='/settings']")
         page.wait_for_selector("text=Choose a provider")
-        caption(page, "Bring your own model: Groq, Gemini, OpenAI, Claude, Grok, OpenRouter, Mistral, DeepSeek or a local Ollama.", 2.4)
+        caption(page, "Bring your own model: Groq, Gemini, OpenAI, Claude, Grok, Cerebras, GitHub Models, Ollama and more. This run uses Gemini Flash-Lite.", 2.6)
         shot(page, out, "13-settings")
 
         # 8. Dashboard --------------------------------------------------------------------
@@ -255,7 +288,9 @@ if __name__ == "__main__":
     ap.add_argument("--out", default=str(ROOT / "docs" / "demo"))
     ap.add_argument("--book", default=str(NOTES / "Database_Design_2nd_Edition_(Watt_Eng)_CC-BY-4.0.pdf"))
     ap.add_argument("--email", default=f"asha.demo{int(time.time())}@example.com")
+    ap.add_argument("--provider", default=None, help="record with this provider (e.g. gemini) instead of the server default")
+    ap.add_argument("--model", default=None, help="model id for --provider (e.g. gemini-3.5-flash-lite)")
     args = ap.parse_args()
-    video = run(args.base_url, Path(args.out), Path(args.book), args.email)
+    video = run(args.base_url, Path(args.out), Path(args.book), args.email, args.provider, args.model)
     print(f"recorded {video}")
     convert(video)
