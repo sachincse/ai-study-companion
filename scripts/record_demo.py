@@ -77,6 +77,30 @@ def generate(page: Page, button: str, success: str, attempts: int = 3, timeout: 
             toast.click()
 
 
+SHORT_ANSWER = (
+    "Normalization organises tables to remove redundancy and update anomalies: 1NF needs atomic values, "
+    "2NF removes partial dependencies on a composite key, 3NF removes transitive dependencies, and BCNF "
+    "requires every determinant to be a candidate key."
+)
+
+
+def answer_current_question(page: Page) -> None:
+    """Answer the visible question the way a student skimming would: the most complete-sounding option,
+    'True' for true/false, and a short written answer for descriptive questions. Grading stays real."""
+    textarea = page.query_selector("main textarea")
+    if textarea:
+        textarea.fill(SHORT_ANSWER)
+        return
+    options = page.query_selector_all("main button.flex.w-full")
+    if not options:
+        return
+    texts = [o.inner_text().strip().split("\n")[-1].strip() for o in options]
+    if sorted(t.lower() for t in texts) == ["false", "true"]:
+        options[[t.lower() for t in texts].index("true")].click()
+        return
+    options[max(range(len(texts)), key=lambda i: len(texts[i]))].click()
+
+
 def set_model(page: Page, provider: str, model: str) -> None:
     """Point the demo account at a specific provider/model (same call the Settings page makes)."""
     status = page.evaluate(
@@ -163,32 +187,22 @@ def run(base_url: str, out: Path, book: Path, email: str, provider: str | None =
         page.wait_for_selector("text=Generate a quiz")
         caption(page, "Generate a quiz on any topic, grounded in the uploaded notes.", 1.2)
         page.fill("input[placeholder*='CPU scheduling']", "Normalization and functional dependencies")
+        page.select_option("label:has-text('Subject') select", label="Sem 5 - BCS501 Database Management System")
         page.click("button:has-text('Database Design')")
-        page.select_option("select >> nth=0", "5")
+        page.select_option("label:has-text('Questions') select", "5")
         shot(page, out, "06-quiz-generate")
         generate(page, "button:has-text('Generate quiz')", "text=/Q1/")
         caption(page, "MCQ, true/false and short-answer questions with marks. Let's attempt it.", 1.5)
         shot(page, out, "07-quiz-attempt")
+        page.on("dialog", lambda d: d.accept())
         for _ in range(12):
+            answer_current_question(page)
+            time.sleep(0.5)
             if page.query_selector("button:has-text('Submit quiz')"):
-                textarea = page.query_selector("textarea")
-                if textarea:
-                    textarea.fill("A relation is in 2NF when it is in 1NF and every non-key attribute depends on the whole primary key, removing partial dependencies.")
-                else:
-                    opts = page.query_selector_all("button.flex.w-full")
-                    if opts:
-                        opts[0].click()
                 page.click("button:has-text('Submit quiz')")
                 break
-            textarea = page.query_selector("textarea")
-            if textarea:
-                textarea.fill("A relation is in 2NF when it is in 1NF and every non-key attribute depends on the whole primary key, removing partial dependencies.")
-            else:
-                opts = page.query_selector_all("button.flex.w-full")
-                if opts:
-                    opts[0].click()
             page.click("button:has-text('Next')")
-            time.sleep(0.6)
+            time.sleep(0.5)
         page.wait_for_selector("button:has-text('Retake')", timeout=180_000)
         caption(page, "Objective questions are auto-graded; descriptive answers are graded against a rubric with feedback.", 2.5)
         shot(page, out, "08-quiz-result")
