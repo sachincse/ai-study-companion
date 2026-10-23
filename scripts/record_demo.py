@@ -242,8 +242,8 @@ def convert(webm: Path) -> None:
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(webm), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "medium", "-crf", "23", "-movflags", "+faststart", str(mp4)], check=True)
     gif = webm.with_suffix(".gif")
     palette = webm.parent / "palette.png"
-    filters = "fps=8,scale=960:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-vf", f"{filters},palettegen=max_colors=128", str(palette)], check=True)
+    filters = "fps=5,scale=800:-1:flags=lanczos"  # keeps the README GIF around 7 MB
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-vf", f"{filters},palettegen=max_colors=96", str(palette)], check=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-i", str(palette), "-lavfi", f"{filters} [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=5", str(gif)], check=True)
     palette.unlink(missing_ok=True)
     print(f"wrote {mp4} ({mp4.stat().st_size / 1e6:.1f} MB) and {gif} ({gif.stat().st_size / 1e6:.1f} MB)")
