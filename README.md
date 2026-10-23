@@ -19,7 +19,10 @@
 <p align="center">
   <img src="docs/demo/demo.gif" width="900" alt="Product walkthrough: upload notes, ask the tutor, take a quiz, review flashcards" />
   <br />
-  <sub>Full walkthrough video: <a href="docs/demo/demo.mp4">docs/demo/demo.mp4</a></sub>
+  <b>▶ <a href="https://github.com/sachincse/ai-study-companion/releases/download/v1.0.1/AI_Study_Companion_Full_Tutorial.mp4">Watch the narrated tutorial</a></b>
+  <sub>(about 21 minutes, chapters and subtitles: what it does, free API keys, running it from GitHub, every feature, how the backend works, benchmarks)</sub>
+  <br />
+  <sub>Two-minute silent walkthrough: <a href="docs/demo/demo.mp4">docs/demo/demo.mp4</a> · how the tutorial is generated: <a href="scripts/tutorial/README.md">scripts/tutorial</a></sub>
 </p>
 
 ## Screens
@@ -37,16 +40,16 @@ All screenshots come from the demo run on the open-licensed *Database Design* te
 ## Why
 
 University exam prep is scattered across PDFs, handwritten notes and YouTube, and generic chatbots answer confidently
-from the wrong syllabus. AI Study Companion keeps everything inside one workspace and makes every answer traceable to a
-page in the student's own material.
+from the wrong syllabus. AI Study Companion keeps everything inside one workspace and cites the student's own material in every grounded answer,
+down to the page for PDFs, so answers can be checked instead of trusted.
 
 | | NotebookLM | ChatPDF-style tools | Quizlet AI | **AI Study Companion** |
 |---|---|---|---|---|
-| Answers cite your uploaded notes | yes | yes | no | **yes, with page numbers and hybrid (BM25 + vector) retrieval** |
+| Answers cite your uploaded notes | yes | yes | no | **yes, with page numbers for PDFs and hybrid (BM25 + vector) retrieval** |
 | Quizzes graded against the notes | basic | no | flashcard tests | **MCQ / true-false / rubric-graded short answers, per-topic accuracy** |
 | Spaced repetition | no | no | yes | **SM-2 scheduling** |
 | University syllabus built in | no | no | no | **AKTU B.Tech CSE units and topics** |
-| Choice of model | fixed | fixed | fixed | **15 providers incl. free tiers and local Ollama** |
+| Choice of model | fixed | fixed | fixed | **14 providers plus any OpenAI-compatible server, incl. free tiers and local Ollama** |
 | Self-hosted, open source | no | no | no | **yes, single container** |
 
 ## Features
@@ -59,24 +62,26 @@ page in the student's own material.
 - **Lecture finder.** YouTube search per subject and topic (official Data API if you have a key, otherwise a keyless fallback) plus curated channels AKTU students rely on.
 - **Dashboard.** Accuracy by topic, score trend, 14-day activity, streak, cards due, syllabus coverage and rule-based recommendations for what to do next.
 - **Searchable history.** Every conversation is full-text indexed; bookmark the explanations worth keeping.
-- **Bring your own model.** Groq, Google Gemini, OpenAI, Anthropic Claude, xAI Grok, OpenRouter, Mistral, DeepSeek, Together, Cerebras, SambaNova, GitHub Models, Hugging Face, NVIDIA NIM, a local Ollama or any OpenAI-compatible endpoint. Several of those have free tiers (see [`docs/PROVIDERS.md`](docs/PROVIDERS.md)). Keys live in `.env` or are pasted per account (encrypted at rest). The Settings page lists each provider's live model catalogue and has a one-click connection test.
+- **Bring your own model.** Groq, Google Gemini, OpenAI, Anthropic Claude, xAI Grok, OpenRouter, Mistral, DeepSeek, Together, Cerebras, SambaNova, Hugging Face, NVIDIA NIM, a local Ollama or any OpenAI-compatible endpoint. Several of those have free tiers (see [`docs/PROVIDERS.md`](docs/PROVIDERS.md)). Keys live in `.env` or are pasted per account (encrypted at rest). The Settings page lists each provider's live model catalogue and has a one-click connection test.
 
 ## Quick start
 
-**Prerequisites:** Python 3.11+, Node 22+, and one of: an API key from a provider above (Groq and Gemini have free tiers) or [Ollama](https://ollama.com) running locally.
+**Prerequisites:** Python 3.11+, Node.js 22.12+, and one of: an API key from a provider above (Groq and Gemini have free tiers) or [Ollama](https://ollama.com) running locally.
 
 ```bash
 git clone https://github.com/sachincse/ai-study-companion.git
 cd ai-study-companion
 cp .env.example .env             # put your key in, e.g. GROQ_API_KEY=gsk_...
 
-# Windows
-.\scripts\dev.ps1
+# Windows (the flag lets PowerShell run this one script without changing system settings)
+powershell -ExecutionPolicy Bypass -File scripts/dev.ps1
 # macOS / Linux
 ./scripts/dev.sh
 ```
 
-Open http://localhost:5173, create an account, upload notes, ask a question. API docs live at http://localhost:8000/api/docs.
+The first run checks for Python 3.11+, writes a random `SECRET_KEY` into `.env` (it signs logins and encrypts
+keys saved in Settings), creates `backend/.venv` and installs both halves; later runs start in seconds. Then open
+http://localhost:5173, create an account, upload notes, ask a question. API docs live at http://localhost:8000/api/docs.
 
 <details>
 <summary>Manual setup</summary>
@@ -119,18 +124,18 @@ downloads four complete, Creative Commons textbooks (Open Data Structures, Datab
 
 ## Benchmark
 
-Measured on those four books (not on synthetic text) with the exact service code the API uses. Retrieval asks whether the passage a question was written from comes back; answer quality uses a second model as judge. Details and how to reproduce: [`docs/BENCHMARK.md`](docs/BENCHMARK.md), latest full numbers: [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md).
+Measured on those four books (not on synthetic text) with the exact service code the API uses. Retrieval asks whether the passage a question was written from, or another passage from the same page of that book, comes back in the top k results (Hit@k); answer quality uses a second model as judge. Details and how to reproduce: [`docs/BENCHMARK.md`](docs/BENCHMARK.md), latest full numbers: [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md).
 
 <!-- BENCHMARK:START -->
 Latest run: 2026-10-23 02:16 UTC · corpus: Database Design 2nd Edition (Watt Eng) CC-BY-4.0, Discrete Mathematics An Open Introduction 3e (Levin) CC-BY-SA-4.0, Open Data Structures (Morin) CC-BY-2.5, Operating Systems and Middleware (Hailperin) CC-BY-SA-3.0 (2016 chunks, 39 questions)
 
-**Retrieval (does the ground-truth passage come back?)**
+**Retrieval (does the source passage, or another passage from the same page, come back?)**
 
 | Mode | Hit@1 | Hit@3 | Hit@5 | MRR | p50 latency |
 |---|---|---|---|---|---|
-| keyword | 0.61 | 0.80 | 0.87 | 0.72 | 13.7 ms |
+| keyword | 0.62 | 0.79 | 0.87 | 0.72 | 13.7 ms |
 | semantic | 0.51 | 0.77 | 0.87 | 0.65 | 38.4 ms |
-| hybrid | 0.61 | 0.85 | 0.87 | 0.73 | 45.5 ms |
+| hybrid | 0.62 | 0.85 | 0.87 | 0.73 | 45.5 ms |
 
 **Answer quality (answerer: `gemini/gemini-3.5-flash-lite`, judge: `groq/openai/gpt-oss-20b`)**
 
@@ -150,7 +155,7 @@ upload ──> parse (pypdf / docx) ──> chunk (~500 tok, page-aware) ──>
 question ──> BM25 ∪ vector search ──> reciprocal-rank fusion ──> numbered sources ──> LLM (streamed, cited) ──> saved + indexed
 ```
 
-- **Backend:** FastAPI, SQLAlchemy, SQLite with FTS5, ChromaDB, fastembed, one OpenAI-compatible client for fourteen providers plus the official Anthropic SDK. Server-Sent Events for streaming.
+- **Backend:** FastAPI, SQLAlchemy, SQLite with FTS5, ChromaDB, fastembed, one OpenAI-compatible client for thirteen providers and any custom endpoint, plus the official Anthropic SDK. Server-Sent Events for streaming.
 - **Frontend:** React 19, TypeScript, Vite, Tailwind, TanStack Query, React Flow, Recharts, KaTeX.
 - **Grading:** deterministic for MCQ/true-false; rubric-based LLM grading for short answers with a keyword-coverage fallback if the model is unavailable.
 - **Scheduling:** SM-2 with ease factor floor 1.3; lapses relearn after 10 minutes.
@@ -193,7 +198,7 @@ ai-study-companion/
 ├── data/syllabus/         AKTU subjects as YAML (BCS301-303, 401-403, 501-503)
 ├── data/videos/           curated lecture channels
 ├── benchmarks/            eval-set builder, benchmark runner, results
-├── scripts/               dev launchers, open-textbook fetcher, demo recorder
+├── scripts/               dev launchers, open-textbook fetcher, demo recorder, tutorial video generator (tutorial/)
 └── docs/                  architecture, providers, benchmark, demo video + screenshots
 ```
 

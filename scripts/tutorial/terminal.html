@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --desk1: #101a33; --desk2: #241a4a;
+    --win: #0d1117; --bar: #161b26; --barline: #262d3d;
+    --fg: #cfd6e2; --dim: #7d889c; --white: #f4f6fb;
+    --yellow: #f9f1a5; --cyan: #61d6d6; --green: #3fcf7f; --red: #ff6b6b; --blue: #6ea8fe; --orange: #e6a25a;
+    --brand: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background:
+      radial-gradient(1100px 800px at 85% 10%, rgba(99, 102, 241, 0.35), transparent 60%),
+      radial-gradient(900px 700px at 5% 100%, rgba(16, 185, 129, 0.18), transparent 60%),
+      linear-gradient(135deg, var(--desk1), var(--desk2)); }
+  .win { position: absolute; border-radius: 14px; overflow: hidden; background: var(--win);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: opacity 0.35s ease, transform 0.35s ease; }
+  .win.hidden { opacity: 0; transform: translateY(18px) scale(0.985); pointer-events: none; }
+  .bar { height: 54px; background: var(--bar); border-bottom: 1px solid var(--barline); display: flex; align-items: flex-end; padding: 0 0 0 14px; position: relative; }
+  .tab { height: 42px; display: flex; align-items: center; gap: 12px; padding: 0 18px; background: var(--win); border-radius: 10px 10px 0 0;
+    color: var(--white); font-size: 17px; font-weight: 600; min-width: 300px; }
+  .tab .ps { width: 22px; height: 22px; border-radius: 5px; background: #2b5797; display: grid; place-items: center; font: 700 12px "JetBrains Mono"; color: #fff; }
+  .tab .x { margin-left: auto; color: var(--dim); font-size: 16px; }
+  .plus { color: var(--dim); font-size: 26px; padding: 0 16px 8px; }
+  .ctrls { position: absolute; right: 0; top: 0; height: 54px; display: flex; }
+  .ctrls span { width: 62px; display: grid; place-items: center; color: var(--dim); font-size: 18px; }
+  .term { position: absolute; top: 54px; left: 0; right: 0; bottom: 0; overflow: hidden;
+    font-family: "JetBrains Mono", monospace; font-size: 25px; line-height: 1.5; color: var(--fg); white-space: pre-wrap; word-break: break-all; }
+  .term .vp { position: absolute; left: 30px; right: 30px; top: 22px; bottom: 22px; overflow: hidden; }
+  .term .inner { position: absolute; left: 0; right: 0; top: 0; transition: transform 0.25s ease; }
+  .line { min-height: 1.5em; }
+  .p { color: var(--fg); } .cmd { color: var(--yellow); } .arg { color: var(--white); } .str { color: var(--cyan); }
+  .o-dim { color: var(--dim); } .o-green { color: var(--green); } .o-yellow { color: #e5c07b; } .o-cyan { color: var(--cyan); } .o-white { color: var(--white); } .o-bold { font-weight: 700; color: var(--white); }
+  .caret { display: inline-block; width: 0.6em; height: 1.15em; vertical-align: -0.2em; background: var(--fg); animation: blink 1.05s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .small .term { font-size: 21px; }
+  .small .term .vp { left: 24px; right: 24px; top: 18px; bottom: 18px; }
+  .win.backdrop { filter: brightness(0.42) saturate(0.7); }
+  .hl { background: rgba(99, 102, 241, 0.28); border-radius: 6px; box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.7); }
+
+  /* editor */
+  .editor { background: #1e1f24; }
+  .editor .bar { background: #18191d; border-color: #2c2e35; align-items: center; padding-left: 22px; }
+  .editor .title { color: #e6e6e6; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .editor .dot { width: 11px; height: 11px; border-radius: 50%; background: #e6e6e6; transition: opacity 0.2s; }
+  .editor .saved { margin-left: 18px; font-size: 16px; color: var(--green); opacity: 0; transition: opacity 0.3s; font-weight: 700; }
+  .code { position: absolute; top: 66px; left: 0; right: 0; bottom: 0; overflow: hidden; font-family: "JetBrains Mono", monospace; font-size: 24px; line-height: 1.6; }
+  .code .scroller { position: absolute; left: 0; right: 0; top: 0; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
+  .ln { display: flex; white-space: pre; padding-right: 30px; border-radius: 4px; }
+  .ln .no { width: 76px; flex: none; text-align: right; padding-right: 26px; color: #5c6370; }
+  .ln.focus { background: rgba(99, 102, 241, 0.2); box-shadow: inset 4px 0 0 #818cf8; }
+  .c-comment { color: #7f9f6f; } .c-key { color: #9cdcfe; } .c-val { color: #e7a97c; } .c-eq { color: #d4d4d4; }
+  .ln .typed { color: #f6e3a1; }
+
+  /* callout */
+  .callout { position: absolute; z-index: 50; max-width: 760px; padding: 18px 24px; border-radius: 16px; background: #4f46e5; color: #fff;
+    font-size: 25px; font-weight: 600; line-height: 1.4; box-shadow: 0 24px 60px -18px rgba(30, 27, 75, 0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease; }
+  .callout.hidden { opacity: 0; transform: translateY(10px); }
+  .callout code { font-family: "JetBrains Mono", monospace; font-size: 0.92em; background: rgba(255, 255, 255, 0.16); padding: 2px 9px; border-radius: 7px; }
+  .callout.green { background: #0f766e; } .callout.amber { background: #92400e; }
+</style>
+</head>
+<body>
+  <div class="win" id="main" style="left: 100px; top: 64px; width: 1720px; height: 940px">
+    <div class="bar"><div class="tab"><span class="ps">&gt;_</span><span id="mainTitle">Windows PowerShell</span><span class="x">✕</span></div><div class="plus">+</div>
+      <div class="ctrls"><span>—</span><span>▢</span><span>✕</span></div></div>
+    <div class="term"><div class="vp"><div class="inner" id="mainInner"></div></div></div>
+  </div>
+
+  <div class="win editor hidden" id="editor" style="left: 250px; top: 110px; width: 1420px; height: 770px">
+    <div class="bar"><div class="title"><span class="dot" id="edDot"></span><span id="edTitle">.env</span><span style="color: #8b8f99; font-weight: 500">— ai-study-companion</span><span class="saved" id="edSaved">✓ Saved</span></div>
+      <div class="ctrls"><span>—</span><span>▢</span><span>✕</span></div></div>
+    <div class="code"><div class="scroller" id="edScroller"></div></div>
+  </div>
+
+  <div class="win small hidden" id="backend" style="left: 48px; top: 230px; width: 1010px; height: 800px">
+    <div class="bar"><div class="tab"><span class="ps">&gt;_</span><span>backend · uvicorn</span><span class="x">✕</span></div>
+      <div class="ctrls"><span>—</span><span>▢</span><span>✕</span></div></div>
+    <div class="term"><div class="vp"><div class="inner" id="backendInner"></div></div></div>
+  </div>
+
+  <div class="win small hidden" id="frontend" style="left: 1090px; top: 230px; width: 790px; height: 470px">
+    <div class="bar"><div class="tab"><span class="ps">&gt;_</span><span>frontend · vite</span><span class="x">✕</span></div>
+      <div class="ctrls"><span>—</span><span>▢</span><span>✕</span></div></div>
+    <div class="term"><div class="vp"><div class="inner" id="frontendInner"></div></div></div>
+  </div>
+
+  <div class="callout hidden" id="callout"></div>
+
+<script>
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  class Term {
+    constructor(innerId, prompt) { this.el = document.getElementById(innerId); this.prompt = prompt; this.cur = null; }
+    fit() {
+      const view = this.el.parentElement.clientHeight;
+      const lh = parseFloat(getComputedStyle(this.el).lineHeight) || 36;
+      const over = this.el.scrollHeight - view;
+      // scroll by whole lines, so neither the top nor the bottom line is ever cut in half
+      this.el.style.transform = over > 0 ? `translateY(${-Math.ceil(over / lh) * lh}px)` : 'none';
+    }
+    addLine(html, cls) { const d = document.createElement('div'); d.className = 'line' + (cls ? ' ' + cls : ''); d.innerHTML = html; this.el.appendChild(d); this.fit(); return d; }
+    showPrompt() {
+      this.dropCaret();
+      this.cur = this.addLine(`<span class="p">${esc(this.prompt)}</span><span class="typed"></span><span class="caret"></span>`);
+    }
+    dropCaret() { this.el.querySelectorAll('.caret').forEach((c) => c.remove()); }
+    async type(text, cps = 24) {
+      if (!this.cur) this.showPrompt();
+      const typed = this.cur.querySelector('.typed');
+      let buf = '';
+      for (const ch of text) {
+        buf += ch;
+        typed.innerHTML = colorize(buf);
+        await sleep(1000 / cps * (0.55 + Math.random() * 0.9));
+      }
+      await sleep(260);
+    }
+    enter() { this.dropCaret(); this.cur = null; }
+    async print(lines, perLine = 70) {
+      this.dropCaret();
+      for (const l of lines) {
+        const [cls, text] = Array.isArray(l) ? l : ['', l];
+        this.addLine(text === '' ? '&nbsp;' : fmt(text), cls);
+        if (perLine) await sleep(perLine);
+      }
+    }
+    async run(cmd, lines, opts = {}) {
+      await this.type(cmd, opts.cps);
+      this.enter();
+      if (lines && lines.length) { await sleep(opts.delay ?? 350); await this.print(lines, opts.perLine ?? 70); }
+      if (opts.prompt !== false) { if (opts.newPrompt) this.prompt = opts.newPrompt; this.showPrompt(); }
+    }
+    highlight(substr) {
+      const lines = [...this.el.querySelectorAll('.line')].reverse();
+      const hit = lines.find((l) => l.textContent.includes(substr));
+      if (hit) hit.innerHTML = hit.innerHTML.replace(esc(substr), `<span class="hl">${esc(substr)}</span>`);
+      return !!hit;
+    }
+  }
+
+  function colorize(buf) {
+    const m = buf.match(/^(\S+)(\s?)(.*)$/s);
+    if (!m) return esc(buf);
+    const rest = m[3].split(/(\s+)/).map((t) => (/^https?:\/\//.test(t) ? `<span class="str">${esc(t)}</span>` : `<span class="arg">${esc(t)}</span>`)).join('');
+    return `<span class="cmd">${esc(m[1])}</span>${m[2]}${rest}`;
+  }
+  // tiny markup: {g}green{/}, {y}yellow{/}, {c}cyan{/}, {d}dim{/}, {b}bold{/}
+  function fmt(text) {
+    return esc(text).replace(/\{(g|y|c|d|b|w)\}(.*?)\{\/\}/g, (_, k, s) => `<span class="o-${{ g: 'green', y: 'yellow', c: 'cyan', d: 'dim', b: 'bold', w: 'white' }[k]}">${s}</span>`);
+  }
+
+  const T = new Term('mainInner', 'PS C:\\Users\\you\\projects> ');
+  const B = new Term('backendInner', '');
+  const F = new Term('frontendInner', '');
+  T.showPrompt();
+
+  // ------------------------------------------------------------------ editor
+  const E = {
+    lines: [], top: 0,
+    open(text) {
+      this.lines = text.split('\n');
+      const sc = document.getElementById('edScroller');
+      sc.innerHTML = this.lines.map((l, i) => `<div class="ln" data-i="${i}"><span class="no">${i + 1}</span><span class="tx">${hiEnv(l)}</span></div>`).join('');
+      document.getElementById('edDot').style.opacity = 0;
+      document.getElementById('editor').classList.remove('hidden');
+    },
+    idx(prefix) { return this.lines.findIndex((l) => l.startsWith(prefix)); },
+    row(i) { return document.querySelector(`#edScroller .ln[data-i="${i}"]`); },
+    scrollTo(i) {
+      const lh = this.row(0).getBoundingClientRect().height;
+      const visible = Math.floor((770 - 66 - 8) / lh);
+      const top = Math.max(0, Math.min(i - Math.floor(visible / 3), this.lines.length - visible));
+      document.getElementById('edScroller').style.transform = `translateY(${-top * lh}px)`;
+    },
+    focus(prefixes) {
+      document.querySelectorAll('#edScroller .ln.focus').forEach((r) => r.classList.remove('focus'));
+      for (const p of [].concat(prefixes)) { const i = this.idx(p); if (i >= 0) this.row(i).classList.add('focus'); }
+    },
+    async typeAfter(prefix, text, cps = 20) {
+      const i = this.idx(prefix); const tx = this.row(i).querySelector('.tx');
+      tx.insertAdjacentHTML('beforeend', '<span class="typed"></span><span class="caret"></span>');
+      const t = tx.querySelector('.typed');
+      document.getElementById('edDot').style.opacity = 1;
+      for (const ch of text) { t.textContent += ch; await sleep(1000 / cps * (0.55 + Math.random() * 0.9)); }
+    },
+    save() {
+      document.querySelectorAll('#edScroller .caret').forEach((c) => c.remove());
+      document.getElementById('edDot').style.opacity = 0;
+      const s = document.getElementById('edSaved'); s.style.opacity = 1;
+    },
+    close() { document.getElementById('editor').classList.add('hidden'); },
+    show() { document.getElementById('editor').classList.remove('hidden'); document.getElementById('edSaved').style.opacity = 0; },
+  };
+  function hiEnv(l) {
+    if (l.startsWith('#')) return `<span class="c-comment">${esc(l)}</span>`;
+    const m = l.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (!m) return esc(l);
+    return `<span class="c-key">${m[1]}</span><span class="c-eq">=</span><span class="c-val">${esc(m[2])}</span>`;
+  }
+
+  // ------------------------------------------------------------------ windows + callouts
+  function showWin(id) { document.getElementById(id).classList.remove('hidden'); }
+  function hideWin(id) { document.getElementById(id).classList.add('hidden'); }
+  function front(id) { document.querySelectorAll('.win').forEach((w) => (w.style.zIndex = w.id === id ? 20 : 1)); }
+  function backdrop(id, on) { document.getElementById(id).classList.toggle('backdrop', on); }
+  function callout(html, x, y, tone) {
+    const c = document.getElementById('callout');
+    c.className = 'callout' + (tone ? ' ' + tone : '');
+    c.innerHTML = html; c.style.left = x + 'px'; c.style.top = y + 'px';
+    return true;
+  }
+  function hideCallout() { document.getElementById('callout').classList.add('hidden'); }
+  Object.assign(window, { T, B, F, E, showWin, hideWin, front, backdrop, callout, hideCallout, sleep });
+  window.ready = document.fonts.ready.then(() => true);
+</script>
+</body>
+</html>

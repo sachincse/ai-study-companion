@@ -16,7 +16,7 @@ from app.models import User, UserSettings
 from app.services.llm.anthropic_provider import AnthropicProvider
 from app.services.llm.base import LLMError, LLMProvider, LLMResult, extract_json
 from app.services.llm.openai_compat import OpenAICompatProvider
-from app.services.llm.registry import PROVIDERS, ProviderSpec, get_spec
+from app.services.llm.registry import PROVIDERS, ProviderSpec, default_provider_id, get_spec
 
 __all__ = ["LLMError", "LLMProvider", "LLMResult", "ResolvedLLM", "build_provider", "extract_json", "resolve_llm", "validate_base_url"]
 
@@ -51,11 +51,15 @@ class ResolvedLLM:
 
 
 def env_key_for(spec: ProviderSpec, settings: Settings) -> str | None:
-    if settings.llm_api_key and settings.llm_provider.lower() == spec.id:
+    if settings.llm_api_key and default_provider_id(settings.llm_provider) == spec.id:
         return settings.llm_api_key
     if not spec.key_env:
         return None
     return getattr(settings, spec.key_env.lower(), None)
+
+
+def _norm_url(url: str | None) -> str | None:
+    return url.strip().rstrip("/") if url and url.strip() else None
 
 
 def resolve_llm(db: Session, user: User | None, *, override: dict | None = None) -> ResolvedLLM:
@@ -66,32 +70,39 @@ def resolve_llm(db: Session, user: User | None, *, override: dict | None = None)
     if user is not None:
         user_settings = db.query(UserSettings).filter(UserSettings.user_id == user.id).one_or_none()
 
-    provider_id = override.get("provider") or (user_settings.llm_provider if user_settings and user_settings.llm_provider else None) or settings.llm_provider
-    spec = get_spec(provider_id)
+    server_default = default_provider_id(settings.llm_provider)
+    saved = user_settings.llm_provider if user_settings and user_settings.llm_provider else None
+    if saved and saved.strip().lower() not in PROVIDERS:
+        saved = None  # retired since it was saved (e.g. GitHub Models): use the server default instead
+    spec = get_spec(override.get("provider") or saved or server_default)
+    own = user_settings is not None and user_settings.llm_provider == spec.id  # saved settings belong to this provider
 
-    api_key = override.get("api_key")
-    source = "override" if api_key else ""
-    if api_key is None and user_settings and user_settings.llm_provider == spec.id and user_settings.llm_api_key_enc:
+    # Endpoint first: the server's own key may only ever be sent to the server's own endpoint.
+    base_url = spec.base_url  # pinned: user/env overrides are ignored for hosted providers
+    caller_chose_endpoint = False
+    if spec.id in CONFIGURABLE_BASE_URL:
+        server_base = None
+        if spec.id == "ollama":
+            server_base = settings.ollama_base_url.rstrip("/") + "/v1"
+        elif settings.llm_base_url and server_default == spec.id:
+            server_base = settings.llm_base_url
+        server_base = _norm_url(server_base)
+        caller_base = _norm_url(override.get("base_url") or (user_settings.llm_base_url if own else None))
+        base_url = validate_base_url(caller_base or server_base, spec.id)
+        caller_chose_endpoint = caller_base is not None and caller_base != server_base
+
+    api_key = override.get("api_key") or None
+    source = "override" if api_key else "none"
+    if api_key is None and own and user_settings.llm_api_key_enc:
         api_key = decrypt_secret(user_settings.llm_api_key_enc)
-        source = "user"
-    if api_key is None:
+        source = "user" if api_key else "none"
+    if api_key is None and not caller_chose_endpoint:
         api_key = env_key_for(spec, settings)
         source = "env" if api_key else "none"
 
-    model = override.get("model") or (user_settings.llm_model if user_settings and user_settings.llm_provider == spec.id and user_settings.llm_model else None)
+    model = override.get("model") or (user_settings.llm_model if own and user_settings.llm_model else None)
     if not model:
-        model = settings.llm_model if settings.llm_provider.lower() == spec.id and settings.llm_model else spec.default_model
-
-    if spec.id in CONFIGURABLE_BASE_URL:
-        base_url = override.get("base_url") or (user_settings.llm_base_url if user_settings and user_settings.llm_provider == spec.id else None)
-        if not base_url:
-            if spec.id == "ollama":
-                base_url = settings.ollama_base_url.rstrip("/") + "/v1"
-            elif settings.llm_base_url and settings.llm_provider.lower() == spec.id:
-                base_url = settings.llm_base_url
-        base_url = validate_base_url(base_url, spec.id)
-    else:
-        base_url = spec.base_url  # pinned: user/env overrides are ignored for hosted providers
+        model = settings.llm_model if server_default == spec.id and settings.llm_model else spec.default_model
     return ResolvedLLM(provider_id=spec.id, model=model, api_key=api_key, base_url=base_url, source=source, spec=spec)
 
 

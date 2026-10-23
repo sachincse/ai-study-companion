@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Download openly licensed textbooks used as real sample notes and benchmark corpus.
 
 Nothing here is fabricated: these are complete, Creative Commons licensed books

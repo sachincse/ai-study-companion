@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.core.deps import get_current_user
+from app.core.deps import ai_rate_limit, get_current_user
 from app.models import User
 from app.schemas.common import Message
 from app.schemas.documents import ChunkOut, DocumentOut, DocumentStats, HistoryHit, SearchHit, SearchResponse
@@ -26,7 +26,7 @@ async def upload_document(
     title: str | None = Form(default=None),
     subject_id: int | None = Form(default=None),
     unit: int | None = Form(default=None),
-    user: User = Depends(get_current_user),
+    user: User = Depends(ai_rate_limit),
     db: Session = Depends(get_db),
 ) -> DocumentOut:
     limit = get_settings().max_upload_mb * 1024 * 1024
@@ -72,10 +72,12 @@ def get_chunks(document_id: int, page: int | None = None, user: User = Depends(g
 
 
 @router.post("/documents/{document_id}/reindex", response_model=DocumentOut, status_code=status.HTTP_202_ACCEPTED)
-def reindex(document_id: int, background: BackgroundTasks, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> DocumentOut:
+def reindex(document_id: int, background: BackgroundTasks, user: User = Depends(ai_rate_limit), db: Session = Depends(get_db)) -> DocumentOut:
     doc = document_service.get_owned_document(db, user, document_id)
     if doc is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Document not found")
+    if doc.status in ("uploaded", "processing"):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This document is already being indexed")
     doc.status = "uploaded"
     doc.error = None
     db.commit()

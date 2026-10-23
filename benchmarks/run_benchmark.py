@@ -2,8 +2,10 @@
 """Benchmark retrieval and answer quality on the open-textbook corpus.
 
 Retrieval (no LLM needed): for every eval question, run keyword / semantic /
-hybrid search and check whether the ground-truth passage is retrieved
-(Hit@1, Hit@3, Hit@5, MRR) and how long it takes.
+hybrid search and record the rank of the first result that is the question's
+source passage or another passage from the same page of the same book (see
+is_hit). Hit@1, Hit@3, Hit@5 and MRR are computed from those ranks, alongside
+search latency.
 
 Answer quality (needs a chat model): answer each question with the normal RAG
 pipeline, then have a *different* model grade the answer against the reference
@@ -11,8 +13,13 @@ pipeline, then have a *different* model grade the answer against the reference
 present. Results are written to benchmarks/results/ and summarised in
 benchmarks/RESULTS.md.
 
+Run scripts/fetch_open_notes.py first (it downloads the books). --render-only
+rewrites RESULTS.md from a saved results file without searching or calling any
+model.
+
     python benchmarks/run_benchmark.py --retrieval-only
-    python benchmarks/run_benchmark.py --answer-provider groq --judge-provider gemini
+    python benchmarks/run_benchmark.py --answer-provider gemini --answer-model gemini-3.5-flash-lite --judge-provider groq --judge-model openai/gpt-oss-20b
+    python benchmarks/run_benchmark.py --render-only benchmarks/results/20261023-022300.json
 """
 from __future__ import annotations
 
@@ -24,6 +31,7 @@ if hasattr(sys.stdout, "reconfigure"):  # Windows consoles default to cp1252
 import argparse
 import asyncio
 import json
+import shlex
 import statistics
 import time
 from datetime import datetime, timezone
@@ -39,6 +47,7 @@ from app.services.search_service import RetrievedChunk, hybrid_search
 
 MODES = ["keyword", "semantic", "hybrid"]
 K = 5
+RESULTS_MD = ROOT / "benchmarks" / "RESULTS.md"
 
 JUDGE_PROMPT = """You are grading a tutoring system's answer to a university exam question.
 
@@ -54,11 +63,49 @@ Return JSON: {{"score": <0-5>, "reason": "<one sentence>"}}"""
 
 
 def is_hit(item: dict, hit: RetrievedChunk, doc_titles: dict[int, str]) -> bool:
+    """A hit is the source passage itself or any other passage from the same page of the same book."""
     if doc_titles.get(hit.document_id) != item["book"]:
         return False
     if hit.content.startswith(item["chunk_prefix"][:80]):
         return True
     return item["page_no"] is not None and hit.page_no == item["page_no"]
+
+
+def retrieval_metrics(ranks: list[int | None]) -> dict:
+    """Hit@1, Hit@3, Hit@K and MRR from per-question ranks (None = not in the top K), unrounded."""
+    n = len(ranks)
+    return {
+        "hit@1": sum(1 for r in ranks if r == 1) / n,
+        "hit@3": sum(1 for r in ranks if r and r <= 3) / n,
+        f"hit@{K}": sum(1 for r in ranks if r and r <= K) / n,
+        "mrr": sum(1 / r for r in ranks if r) / n,
+    }
+
+
+def _close(value: float, stored: float) -> bool:
+    return abs(value - stored) <= 0.0005 + 1e-9  # the stored value was rounded to 3 decimals
+
+
+def ranks_from_rounded(m: dict, n: int) -> list[int | None] | None:
+    """Rebuild the ranks behind a results file saved before per-question ranks were kept.
+
+    Those files store Hit@1/3/5 and MRR rounded to 3 decimals. A Hit@k is a count over n
+    questions, so for n < 1000 the count survives the rounding exactly; the split of the
+    remaining hits over ranks 2-3 and 4-5 is whichever one reproduces the stored MRR.
+    Returns None when the stored values are inconsistent or more than one split fits.
+    """
+    c1, c3, c5 = (round(m[f"hit@{k}"] * n) for k in (1, 3, 5))
+    if not (0 < n < 1000 and 0 <= c1 <= c3 <= c5 <= n) or ("misses" in m and len(m["misses"]) != n - c5):
+        return None
+    if not all(_close(c / n, m[f"hit@{k}"]) for c, k in ((c1, 1), (c3, 3), (c5, 5))):
+        return None
+    fits = [
+        [1] * c1 + [2] * two + [3] * (c3 - c1 - two) + [4] * four + [5] * (c5 - c3 - four) + [None] * (n - c5)
+        for two in range(c3 - c1 + 1)
+        for four in range(c5 - c3 + 1)
+        if _close((c1 + two / 2 + (c3 - c1 - two) / 3 + four / 4 + (c5 - c3 - four) / 5) / n, m["mrr"])
+    ]
+    return fits[0] if len(fits) == 1 else None
 
 
 def evaluate_retrieval(db, user_id: int, items: list[dict], doc_titles: dict[int, str]) -> dict:  # noqa: ANN001
@@ -72,14 +119,11 @@ def evaluate_retrieval(db, user_id: int, items: list[dict], doc_titles: dict[int
             latencies.append((time.perf_counter() - t0) * 1000)
             rank = next((i + 1 for i, h in enumerate(hits) if is_hit(item, h, doc_titles)), None)
             ranks.append(rank)
-        n = len(ranks)
         out[mode] = {
-            "hit@1": round(sum(1 for r in ranks if r == 1) / n, 3),
-            "hit@3": round(sum(1 for r in ranks if r and r <= 3) / n, 3),
-            f"hit@{K}": round(sum(1 for r in ranks if r and r <= K) / n, 3),
-            "mrr": round(sum(1 / r for r in ranks if r) / n, 3),
+            **retrieval_metrics(ranks),  # unrounded: RESULTS.md rounds once, when it formats them
             "p50_latency_ms": round(statistics.median(latencies), 1),
             "misses": [items[i]["id"] for i, r in enumerate(ranks) if r is None],
+            "ranks": [[item["id"], r] for item, r in zip(items, ranks, strict=True)],  # a list: question ids may repeat
         }
         print(f"  {mode:9s} hit@1={out[mode]['hit@1']:.2f} hit@3={out[mode]['hit@3']:.2f} hit@{K}={out[mode][f'hit@{K}']:.2f} mrr={out[mode]['mrr']:.2f} p50={out[mode]['p50_latency_ms']}ms")
     return out
@@ -97,6 +141,22 @@ async def _with_backoff(coro_factory, what: str, attempts: int = 5):  # noqa: AN
             print(f"    {what}: rate limited, waiting {delay:.0f}s (attempt {attempt + 1}/{attempts})")
             await asyncio.sleep(delay)
             delay = min(delay * 1.6, 120.0)
+
+
+def answer_summary(rows: list[dict]) -> dict:
+    """Aggregate the per-question answer rows, unrounded."""
+    answered = [r for r in rows if "answer" in r]
+    scored = [r for r in rows if r.get("judge_score") is not None]
+    latencies = [r["latency_ms"] for r in rows if "latency_ms" in r]
+    return {
+        "answered": len(answered),
+        "failed": len([r for r in rows if "error" in r]),
+        "judged": len(scored),
+        "mean_score": statistics.mean(r["judge_score"] for r in scored) if scored else None,
+        "accuracy_ge4": sum(1 for r in scored if r["judge_score"] >= 4) / len(scored) if scored else None,
+        "cited_rate": sum(1 for r in answered if r.get("cited")) / max(1, len(answered)),
+        "p50_latency_ms": statistics.median(latencies) if latencies else None,
+    }
 
 
 async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge, limit: int | None, pause: float = 8.0) -> dict:  # noqa: ANN001
@@ -149,20 +209,46 @@ async def evaluate_answers(db, user_id: int, items: list[dict], answerer, judge,
             }
         )
         print(f"  [{i}/{len(subset)}] score={score} cited={cited} kw={keywords_hit}/{len(item['keywords'])} {latency:.0f}ms  {item['question'][:70]}")
-    scored = [r for r in rows if r.get("judge_score") is not None]
-    summary = {
-        "answered": len([r for r in rows if "answer" in r]),
-        "failed": len([r for r in rows if "error" in r]),
-        "judged": len(scored),
-        "mean_score": round(statistics.mean(r["judge_score"] for r in scored), 2) if scored else None,
-        "accuracy_ge4": round(sum(1 for r in scored if r["judge_score"] >= 4) / len(scored), 3) if scored else None,
-        "cited_rate": round(sum(1 for r in rows if r.get("cited")) / max(1, len([r for r in rows if "answer" in r])), 3),
-        "p50_latency_ms": round(statistics.median(r["latency_ms"] for r in rows if "latency_ms" in r), 0) if any("latency_ms" in r for r in rows) else None,
-    }
-    return {"summary": summary, "rows": rows}
+    return {"summary": answer_summary(rows), "rows": rows}
 
 
-def write_results_md(result: dict) -> None:
+def retrieval_table(result: dict) -> dict[str, dict]:
+    """Per-mode metrics for RESULTS.md, recomputed from the per-question ranks rather than stored summaries."""
+    table: dict[str, dict] = {}
+    for mode, m in result["retrieval"].items():
+        ranks = [r for _, r in m["ranks"]] if "ranks" in m else ranks_from_rounded(m, result["questions"])
+        if ranks is None:
+            print(f"  warning: {mode} has no per-question ranks and its stored metrics are ambiguous; showing them as stored")
+            table[mode] = m
+        else:
+            table[mode] = {**retrieval_metrics(ranks), "p50_latency_ms": m["p50_latency_ms"]}
+    return table
+
+
+def reproduce_command(result: dict) -> str:
+    """The run_benchmark.py command for a saved run, built from the providers and models it recorded."""
+    cmd = ["python", "benchmarks/run_benchmark.py"]
+    if not result.get("answers"):
+        return " ".join(cmd + ["--retrieval-only"])
+    for role, label in (("answer", result["answerer"]), ("judge", result["judge"])):
+        provider, _, model = label.partition("/")  # split at the first "/" only: model ids can contain "/"
+        cmd += [f"--{role}-provider", provider] + ([f"--{role}-model", model] if model else [])
+    rows = result["answers"].get("rows")
+    if rows and len(rows) < result["questions"]:
+        cmd += ["--limit", str(len(rows))]
+    return " ".join(shlex.quote(c) for c in cmd)
+
+
+def _fmt(value: float | None, spec: str) -> str:
+    return "n/a" if value is None else format(value, spec)
+
+
+def _rel(path: Path) -> str:
+    path = path.resolve()
+    return path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.name
+
+
+def write_results_md(result: dict, source: Path) -> None:
     md = [
         "# Benchmark results",
         "",
@@ -170,15 +256,19 @@ def write_results_md(result: dict) -> None:
         "",
         f"Embeddings: `{result['embedding']}` · vector store: `{result['vector_store']}`",
         "",
-        "## Retrieval (does the ground-truth passage come back?)",
+        "## Retrieval (does the source passage, or another passage from the same page, come back?)",
         "",
-        "| Mode | Hit@1 | Hit@3 | Hit@5 | MRR | p50 latency |",
+        "A question is a hit at k when the passage it was written from, or another passage from the same page of the same book, "
+        f"is among the top k results. MRR is the mean of 1/rank of the first such result (0 when none is in the top {K}).",
+        "",
+        f"| Mode | Hit@1 | Hit@3 | Hit@{K} | MRR | p50 latency |",
         "|---|---|---|---|---|---|",
     ]
-    for mode, m in result["retrieval"].items():
-        md.append(f"| {mode} | {m['hit@1']:.2f} | {m['hit@3']:.2f} | {m['hit@5']:.2f} | {m['mrr']:.2f} | {m['p50_latency_ms']} ms |")
+    for mode, m in retrieval_table(result).items():
+        md.append(f"| {mode} | {m['hit@1']:.2f} | {m['hit@3']:.2f} | {m[f'hit@{K}']:.2f} | {m['mrr']:.2f} | {m['p50_latency_ms']} ms |")
     if result.get("answers"):
-        s = result["answers"]["summary"]
+        rows = result["answers"].get("rows")
+        s = answer_summary(rows) if rows else result["answers"]["summary"]
         md += [
             "",
             f"## Answer quality (answerer: `{result['answerer']}`, judge: `{result['judge']}`)",
@@ -186,13 +276,17 @@ def write_results_md(result: dict) -> None:
             "| Metric | Value |",
             "|---|---|",
             f"| Questions answered / judged / failed | {s['answered']} / {s['judged']} / {s.get('failed', 0)} |",
-            f"| Mean judge score (0-5) | {s['mean_score']} |",
-            f"| Accuracy (score >= 4) | {s['accuracy_ge4']} |",
-            f"| Answers with citations | {s['cited_rate']} |",
-            f"| p50 end-to-end latency | {s['p50_latency_ms']} ms |",
+            f"| Mean judge score (0-5) | {_fmt(s['mean_score'], '.2f')} |",
+            f"| Accuracy (score >= 4) | {_fmt(s['accuracy_ge4'], '.3f')} |",
+            f"| Answers with citations | {_fmt(s['cited_rate'], '.3f')} |",
+            f"| p50 end-to-end latency | {_fmt(s['p50_latency_ms'], '.0f')} ms |",
         ]
-    md += ["", "Reproduce: `python scripts/fetch_open_notes.py && python benchmarks/run_benchmark.py`.", "Raw per-question output lives in `benchmarks/results/`."]
-    (ROOT / "benchmarks" / "RESULTS.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    md += [
+        "",
+        f"Reproduce: run `python scripts/fetch_open_notes.py` first (it downloads the books), then `{reproduce_command(result)}`.",
+        f"Raw per-question output for this run: `{_rel(source)}`.",
+    ]
+    RESULTS_MD.write_text("\n".join(md) + "\n", encoding="utf-8")
 
 
 async def main() -> None:
@@ -204,7 +298,15 @@ async def main() -> None:
     ap.add_argument("--judge-model", default=None)
     ap.add_argument("--limit", type=int, default=None, help="answer only the first N questions")
     ap.add_argument("--pause", type=float, default=8.0, help="seconds between questions (free tiers have per-minute token limits)")
+    ap.add_argument("--render-only", type=Path, default=None, metavar="RESULTS_JSON", help="rewrite benchmarks/RESULTS.md from a saved results file; no search, no model calls")
     args = ap.parse_args()
+
+    if args.render_only:
+        if not args.render_only.is_file():
+            ap.error(f"results file not found: {args.render_only}")
+        write_results_md(json.loads(args.render_only.read_text(encoding="utf-8")), args.render_only)
+        print(f"Rendered benchmarks/RESULTS.md from {args.render_only}")
+        return
 
     if not EVAL_SET.exists():
         raise SystemExit("No eval set. Run `python benchmarks/build_eval_set.py` first.")
@@ -246,7 +348,7 @@ async def main() -> None:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     out = RESULTS_DIR / f"{stamp}.json"
     out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
-    write_results_md(result)
+    write_results_md(result, out)
     print(f"\nSaved {out} and benchmarks/RESULTS.md")
 
 

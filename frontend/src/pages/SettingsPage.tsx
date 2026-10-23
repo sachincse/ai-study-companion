@@ -83,7 +83,7 @@ export function SettingsPage() {
         </div>
       </Card>
 
-      <Card title="Choose a provider" subtitle="Everything speaks the same chat protocol, so switching is one click">
+      <Card title="Choose a provider" subtitle="Every provider plugs into the same interface, so switching is one click">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {data.providers.map((p) => (
             <button key={p.id} onClick={() => selectProvider(p.id)} className={cn('rounded-xl border p-3 text-left transition-colors', provider === p.id ? 'border-brand-400 bg-brand-50' : 'border-slate-200 bg-white hover:border-brand-200')}>
@@ -120,7 +120,8 @@ export function SettingsPage() {
                   </button>
                 </div>
                 {models.length > 0 && (
-                  <div className="mt-2 flex max-h-28 flex-wrap gap-1 overflow-y-auto">
+                  // the bottom padding is the faded strip, so a partly hidden row fades out and the last row can scroll clear of it
+                  <div className="mt-2 flex max-h-32 flex-wrap gap-1 overflow-y-auto pb-5 [mask-image:linear-gradient(to_bottom,#000_calc(100%-1.25rem),transparent)]">
                     {models.slice(0, 60).map((m) => (
                       <button type="button" key={m} onClick={() => setModel(m)} className={cn('chip border', model === m ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600')}>
                         {m}

@@ -1,0 +1,8 @@
+# Tools for building the narrated tutorial video (not needed to run the app).
+kokoro-onnx>=0.4      # local text-to-speech; model files: kokoro-v1.0.onnx + voices-v1.0.bin
+soundfile>=0.12
+numpy>=1.26
+playwright>=1.45      # then: playwright install chromium
+pyyaml>=6.0
+pillow>=10.1
+qrcode>=7.4

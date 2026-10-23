@@ -9,7 +9,7 @@ import { Badge, Modal } from '../components/ui'
 import { api, errorMessage, streamEvents } from '../lib/api'
 import { useInvalidate, useReadyDocuments } from '../lib/hooks'
 import type { ChatMessage, ChatSession, ChatSessionDetail, Source } from '../lib/types'
-import { ANSWER_MODES, cn, highlightSnippet, timeAgo } from '../lib/utils'
+import { ANSWER_MODES, cn, highlightSnippet, stripMarkdown, timeAgo } from '../lib/utils'
 
 const SUGGESTIONS = [
   'Explain the difference between paging and segmentation with an example',
@@ -177,11 +177,14 @@ export function TutorPage() {
           {(sessions.data ?? []).map((s) => (
             <li key={s.id} className="group relative">
               <Link to={`/tutor/${s.id}`} className={cn('block rounded-xl px-3 py-2 pr-14 hover:bg-slate-50', String(s.id) === sessionId && 'bg-brand-50 hover:bg-brand-50')}>
-                <div className="flex items-center gap-1 truncate text-sm font-medium text-ink-900">
-                  {s.pinned && <Pin className="h-3 w-3 text-brand-500" />}
-                  {s.title}
+                <div className="flex min-w-0 items-center gap-1 text-sm font-medium text-ink-900">
+                  {s.pinned && <Pin className="h-3 w-3 shrink-0 text-brand-500" />}
+                  {/* the ellipsis needs its own block: text-overflow does not apply to bare text in a flex row */}
+                  <span className="min-w-0 truncate" title={s.title}>
+                    {s.title}
+                  </span>
                 </div>
-                <div className="truncate text-xs text-slate-500">{s.preview || 'No messages yet'}</div>
+                <div className="truncate text-xs text-slate-500">{stripMarkdown(s.preview ?? '') || 'No messages yet'}</div>
                 <div className="text-[11px] text-slate-400">{timeAgo(s.updated_at)}</div>
               </Link>
               <div className="absolute right-2 top-2 hidden gap-0.5 group-hover:flex">

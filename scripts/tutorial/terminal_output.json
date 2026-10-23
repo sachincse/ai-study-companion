@@ -1,0 +1,81 @@
+{
+  "_note": "Real console output captured while building the tutorial: a git clone of the public repo, the first pip and npm install, a fresh backend start (port shown as the default 8000) and the Vite dev server. Only the user-specific folder is replaced with the folder shown in the video.",
+  "clone": [
+    "Cloning into 'ai-study-companion'...",
+    "remote: Enumerating objects: 382, done.",
+    "remote: Counting objects: 100% (382/382), done.",
+    "remote: Compressing objects: 100% (253/253), done.",
+    "remote: Total 382 (delta 129), reused 373 (delta 120), pack-reused 0 (from 0)",
+    "Receiving objects: 100% (382/382), 36.05 MiB | 6.73 MiB/s, done.",
+    "Resolving deltas: 100% (129/129), done."
+  ],
+  "pip": [
+    "Collecting fastapi<1.0,>=0.115 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 2))",
+    "  Downloading fastapi-0.161.0-py3-none-any.whl.metadata (26 kB)",
+    "Collecting uvicorn>=0.30 (from uvicorn[standard]>=0.30->-r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 3))",
+    "  Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)",
+    "Collecting python-multipart>=0.0.9 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 4))",
+    "Collecting pydantic<3,>=2.7 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 5))",
+    "Collecting pydantic-settings>=2.3 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 6))",
+    "  Downloading pydantic_settings-2.16.1-py3-none-any.whl.metadata (4.0 kB)",
+    "Collecting sqlalchemy<3,>=2.0 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 7))",
+    "  Downloading sqlalchemy-2.1.6-cp311-cp311-win_amd64.whl.metadata (9.9 kB)",
+    "Collecting python-dotenv>=1.0 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 8))",
+    "Collecting pyyaml>=6.0 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 9))",
+    "Collecting pyjwt>=2.8 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 11))",
+    "  Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)",
+    "Collecting bcrypt>=4.1 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 12))",
+    "Collecting cryptography>=42 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 13))",
+    "Collecting pypdf>=4.2 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 15))",
+    "  Downloading pypdf-6.21.2-py3-none-any.whl.metadata (7.6 kB)",
+    "Collecting python-docx>=1.1 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 16))",
+    "Collecting chromadb>=0.5 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 18))",
+    "  Downloading chromadb-1.5.9-cp39-abi3-win_amd64.whl.metadata (5.1 kB)",
+    "Collecting fastembed>=0.3 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 19))",
+    "  Downloading fastembed-0.9.0-py3-none-any.whl.metadata (11 kB)",
+    "Collecting numpy>=1.26 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 20))",
+    "Collecting openai>=1.40 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 22))",
+    "  Downloading openai-3.37.0-py3-none-any.whl.metadata (44 kB)",
+    "Collecting anthropic>=0.40 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 23))",
+    "  Downloading anthropic-2.1.0-py3-none-any.whl.metadata (6.0 kB)",
+    "Collecting httpx>=0.27 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 24))",
+    "Collecting yt-dlp>=2024.8.6 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements.txt (line 26))",
+    "  Downloading yt_dlp-2026.10.21-py3-none-any.whl.metadata (183 kB)",
+    "Collecting pytest>=8.2 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements-dev.txt (line 2))",
+    "Collecting pytest-asyncio>=0.23 (from -r C:\\Users\\you\\projects\\ai-study-companion\\backend\\requirements-dev.txt (line 3))",
+    "  Downloading pytest_asyncio-1.4.0-py3-none-any.whl.metadata (4.1 kB)",
+    "  ...",
+    "Installing collected packages: pypika, flatbuffers, durationpy, yt-dlp, win32-setctime, websockets, websocket-client, urllib3, tzdata, typing-extensions, truststore, tenacity, sniffio, six, shellingham, ruff, rpds-py, pyyaml, python-multipart, python-dotenv, pyproject_hooks, pypdf, pyjwt, pygments, pycparser, pybase64, py-rust-stemmers, protobuf, propcache, pluggy, pillow, packaging, overrides, orjson, oauthlib, nump ...",
+    "Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiohttp-retry-2.9.1 aiosignal-1.4.0 annotated-doc-0.0.5 annotated-types-0.8.0 anthropic-2.1.0 anyio-4.15.1 attrs-26.1.0 bcrypt-5.0.0 build-1.6.1 certifi-2026.10.19 cffi-2.1.1 charset_normalizer-3.5.2 chromadb-1.5.9 click-8.5.0 colorama-0.4.6 cryptography-50.0.2 docstring-parser-0.18.0 durationpy-0.11 fastapi-0.161.0 fastembed-0.9.0 filelock-4.2.4 flatbuffers-25.12.19 frozenlist-1.8.0 fsspec-2026.9.0 googleapis-common-protos-1.75.5 greenlet-3.5.6 grpcio-1.84.1 h11-0.16.0 hf-xet-1.7.0 httpcore-1.0.9 httpcore2-2.16.0 httptools-0.9.0 httpx-0.28.1 httpx2-2.16.0 huggingface-hub-1.33.0 idna-3.20 importlib-resources-7.1.0 iniconfig-2.3.1 jiter-0.17.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 kubernetes-37.0.1 loguru-0.7.3 lxml-6.1.3 markdown-it-py-4.2.0 mdurl-0.1.2 mmh3-5.3.1 multidict-7.1.0 numpy-2.4.6 oauthlib-4.0.0 onnxruntime-1.31.0 openai-3.37.0 opentelemetry-api-1.45.1 opentelemetry-exporter-otlp-common-0.66b1 opentelemetry-exporter-otlp-proto-common-1.45.1 opentelemetry-exporter-otlp-proto-grpc-1.45.1 opentelemetry-proto-1.45.1 opentelemetry-sdk-1.45.1 opentelemetry-semantic-conventions-0.66b1 orjson-3.13.0 overrides-7.7.0 packaging-26.3 pillow-12.3.0 playwright-1.64.1 pluggy-1.7.0 propcache-0.5.4 protobuf-7.36.2 py-rust-stemmers-0.1.8 pybase64-1.5.1 pycparser-3.12 pydantic-2.14.1 pydantic-core-2.50.1 pydantic-settings-2.16.1 pyee-13.0.1 pygments-2.21.0 pyjwt-2.15.1 pypdf-6.21.2 pypika-0.51.1 pyproject_hooks-1.3.3 pytest-9.1.1 pytest-asyncio-1.4.0 python-dateutil-3.0.0 python-docx-1.2.0 python-dotenv-1.2.4 python-multipart-0.0.32 pyyaml-6.0.3 referencing-0.37.0 reportlab-5.1.0 requests-2.34.2 requests-oauthlib-2.0.0 rich-15.0.0 rpds-py-2026.9.1 ruff-0.17.2 shellingham-1.5.4 six-1.17.0 sniffio-1.3.1 sqlalchemy-2.1.6 starlette-1.9.0 tenacity-9.2.1 tokenizers-0.23.3 tqdm-4.70.1 truststore-0.10.5 typer-0.27.3 typing-extensions-4.16.0 typing-inspection-0.4.4 tzdata-2026.5 urllib3-2.8.0 uvicorn-0.54.0 watchfiles-1.3.0 websocket-client-1.9.2 websockets-17.3 win32-setctime-1.2.0 yarl-1.25.1 yt-dlp-2026.10.21"
+  ],
+  "npm": [
+    "",
+    "added 298 packages, and audited 299 packages in 33s",
+    ""
+  ],
+  "dev_ready": "Backend: http://localhost:8000/api/docs   Frontend: http://localhost:5173",
+  "uvicorn": [
+    "INFO:     Will watch for changes in these directories: ['C:\\\\Users\\\\you\\\\projects\\\\ai-study-companion\\\\backend']",
+    "INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)",
+    "INFO:     Started reloader process [42768] using WatchFiles",
+    "INFO:     Started server process [33312]",
+    "INFO:     Waiting for application startup.",
+    "2026-10-23 08:57:08,098 INFO app: syllabus seeded (9 subjects)",
+    "2026-10-23 08:57:08,099 INFO app: AI Study Companion v1.0.1 ready (env=development, provider=groq, embeddings=local, vector=chroma)",
+    "INFO:     Application startup complete."
+  ],
+  "model_download": [
+    "Fetching 5 files:  20%|##        | 1/5 [00:00<00:01,  3.19it/s]",
+    "Fetching 5 files: 100%|##########| 5/5 [00:12<00:00,  2.48s/it]"
+  ],
+  "vite": [
+    "> frontend@0.0.0 dev",
+    "> vite",
+    "",
+    "  VITE v8.3.5  ready in 6522 ms",
+    "",
+    "  ➜  Local:   http://localhost:5173/",
+    "  ➜  Network: use --host to expose"
+  ],
+  "dev_secret": "Generated a random SECRET_KEY in .env"
+}

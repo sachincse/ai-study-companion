@@ -1,0 +1,493 @@
+# Narration and timeline for the full tutorial video.
+#
+# Every scene is a list of beats. A beat is one or two spoken sentences plus the
+# visual change that happens while it is spoken:
+#   slide scenes    -> `step`: how many build steps of the slide are visible
+#   terminal scenes -> `do`:   terminal actions (see make_tutorial.py, TERMINAL_ACTIONS)
+#   app / apidocs   -> `do`:   browser actions  (see make_tutorial.py, APP_ACTIONS)
+#
+# `say` is written for the text-to-speech voice (acronyms spelled out). Subtitles
+# are derived from it automatically; `sub` overrides the subtitle when needed.
+
+voice: af_heart
+speed: 1.0
+
+scenes:
+  # ------------------------------------------------------------------ introduction
+  - id: s01-title
+    chapter: Introduction
+    kind: slide
+    slide: title
+    beats:
+      - step: 0
+        say: Welcome to AI Study Companion, an open-source study assistant for university exam preparation.
+      - step: 1
+        say: You upload your own notes. In return, you get a tutor that answers from them and cites its sources, quizzes that grade themselves, flashcards that schedule your revision, and a dashboard that tells you what to study next.
+      - step: 2
+        say: In this video you'll see what it does, how it works inside, how to get a free API key, how to run it from GitHub on your own computer, how to use every feature, and how we benchmarked it.
+
+  - id: s02-problem
+    kind: slide
+    slide: problem
+    beats:
+      - step: 0
+        say: First, why build it? Exam preparation is scattered.
+      - step: 1
+        say: Notes live in P D F files and phone photos, and lectures live on YouTube, with no way to search across all of it.
+      - step: 2
+        say: General chatbots answer confidently, but not from your syllabus or your notes, and they don't tell you when they're guessing.
+      - step: 3
+        say: And when you practise, there's no quick, honest feedback on what you actually got wrong.
+      - step: 4
+        say: AI Study Companion brings your P D F, Word and text notes, your practice and your progress into one place, and helps you find YouTube lectures for any topic.
+
+  - id: s03-features
+    kind: slide
+    slide: features
+    beats:
+      - step: 0
+        say: Here's what's inside.
+      - step: 1
+        say: An AI tutor that answers from your notes and cites the passage it used, with its page number for P D F files.
+      - step: 2
+        say: A notes library with hybrid search across everything you upload.
+      - step: 3
+        say: Quizzes with automatic grading, including short answers that the AI marks against a rubric.
+      - step: 4
+        say: A revision studio with spaced-repetition flashcards, exam summaries, keyword sheets, concept maps and a study plan.
+      - step: 5
+        say: Nine core subjects from the A K T U B Tech computer science syllabus, third to fifth semester, built in, with progress tracking.
+      - step: 6
+        say: A lecture finder, a searchable chat history, and a progress dashboard.
+      - step: 7
+        say: And you bring your own model. Fourteen providers are supported, several with free tiers, or you can run a model entirely on your own machine.
+
+  - id: s04-overview
+    kind: slide
+    slide: overview
+    beats:
+      - step: 0
+        say: How does it work? The idea is called retrieval-augmented generation, or rag.
+      - step: 1
+        say: When you upload notes, they're split into small passages and indexed twice, once by keywords and once by meaning.
+      - step: 2
+        say: When you ask a question, the most relevant passages are retrieved and handed to a language model as numbered sources.
+      - step: 3
+        say: The model is told to answer from those sources and cite them by number, so you can check its answers against your notes, down to the page for P D F files.
+      - step: 4
+        say: When your notes don't cover a question, it says so, and labels that part as general knowledge. We'll look inside the backend in detail later in this video.
+
+  # ------------------------------------------------------------- free API key
+  - id: s05-prereqs
+    chapter: Before you start
+    kind: slide
+    slide: prereqs
+    beats:
+      - step: 1
+        say: To run it, you need three things installed. Python three point eleven or newer, Node J S twenty-two point twelve or newer, and Git.
+      - step: 2
+        say: You also need one language model. The easiest way is a free API key, so let's get one first.
+
+  - id: s06-groq
+    kind: slide
+    slide: groq
+    beats:
+      - step: 0
+        say: I recommend starting with Groq. It's very fast, and its free tier needs no credit card.
+      - step: 1
+        say: Go to console dot groq dot com, and sign in with Google, GitHub or your email.
+      - step: 2
+        say: Open the API Keys page, and click Create API Key.
+      - step: 3
+        say: Give the key a name, such as study companion, and submit.
+      - step: 4
+        say: Copy the key straight away. It starts with g s k underscore, and Groq shows it only once.
+      - step: 5
+        say: Treat it like a password. Never share it, and never commit it to GitHub.
+      - step: 6
+        say: Free tiers have limits per minute and per day. If you hit one, the app tells you, including how long to wait when the provider says, and you can switch models in Settings.
+
+  - id: s07-providers
+    kind: slide
+    slide: providers
+    beats:
+      - step: 0
+        say: You're not tied to Groq.
+      - step: 1
+        say: Google AI Studio gives free Gemini keys. Sign in at the address on screen, and choose Create API key.
+      - step: 2
+        say: OpenRouter gives you one key for many models, including a set of free ones.
+      - step: 3
+        say: Mistral and SambaNova also have free plans. Hugging Face gives small monthly credits, and NVIDIA offers free, rate-limited trial access.
+      - step: 4
+        say: If you'd rather not use any cloud service, install Ollama, pull a model such as Qwen two point five, and the AI runs offline on your computer, with no key at all.
+      - step: 5
+        say: Paid providers, like OpenAI, Anthropic Claude, xAI Grok and Cerebras, work too.
+
+  # ------------------------------------------------------------- run it
+  - id: s08-clone
+    chapter: Run it from GitHub
+    kind: terminal
+    beats:
+      - do: [type_clone]
+        say: Now let's run it. Open a terminal, and clone the repository from GitHub.
+      - do: [out_clone]
+        say: The address is github dot com, slash sachin C S E, slash AI dash study dash companion.
+      - do: [type_cd]
+        say: Then move into the new folder.
+
+  - id: s09-env
+    kind: terminal
+    beats:
+      - do: [type_copy]
+        say: Next, create your configuration file by copying dot env dot example to dot env. In PowerShell that's the copy command. On macOS or Linux, the command is c p.
+      - do: [editor_open]
+        say: Open the new dot env file in any text editor.
+      - do: [editor_groq]
+        say: Find the Groq API key line, and paste your key after the equals sign.
+      - do: [editor_gemini]
+        say: If you chose Gemini instead, paste it on the Gemini API key line, and set the provider line to gemini.
+      - do: [editor_save]
+        say: Save the file. Dot env is listed in git ignore, so git won't commit your key. The app only sends it to the provider you picked.
+
+  - id: s10-run
+    kind: terminal
+    beats:
+      - do: [editor_close]
+        say: Now start everything with one command.
+      - do: [type_dev]
+        say: On Windows, run the dev script with the command on screen. It lets PowerShell run this one script without changing any system settings. On macOS or Linux, run dot slash scripts slash dev dot s h.
+      - do: [out_install]
+        say: The first run writes a random secret key into dot env, creates a Python virtual environment, and installs the backend and frontend dependencies. That takes a few minutes, but only once.
+      - do: [panes]
+        say: Then two servers start. The API on port eight thousand, and the web app on port fifty-one seventy-three.
+      - do: [out_ready]
+        say: On first start, the backend also downloads a small embedding model of about sixty-five megabytes, and then it's ready.
+      - do: [docker_secret]
+        say: If you prefer Docker, check one line first. Docker runs the app in production mode, which needs a long random value on the secret key line of dot env. The dev script writes one for you, and the comment above it shows a command that makes one.
+      - do: [type_docker]
+        say: Then run docker compose up. It builds everything into a single container, served at localhost, port eight thousand.
+
+  # ------------------------------------------------------------- using the app
+  - id: s11-register
+    chapter: Using the app
+    kind: app
+    beats:
+      - do: [register_fill]
+        say: Open your browser at localhost, port fifty-one seventy-three, and create an account with your name, email and a password.
+      - do: [register_submit]
+        say: Your account, notes and progress live on your own server, and other users can't see them.
+
+  - id: s12-settings
+    kind: app
+    beats:
+      - do: [settings_open]
+        say: Before studying, let's connect a model. Open Settings.
+      - do: [settings_tour]
+        say: At the top is the active provider and model. Below are all the supported providers, and the green badges mark free tiers.
+      - do: [settings_groq]
+        say: Select a provider, and you can paste a personal key here instead of using dot env. It's encrypted before it's stored, and this link shows where to get one.
+      - do: [settings_gemini]
+        say: For this demo, I'll use Google's Gemini Flash-Lite, because it's quick on the free tier.
+      - do: [settings_load_test]
+        say: The refresh button loads the provider's live list of models, and Test connection confirms that it works.
+      - do: [settings_save]
+        say: Save it as my model, and every feature now uses it.
+
+  - id: s13-upload
+    kind: app
+    beats:
+      - do: [notes_open]
+        say: Now add your study material. Open My Notes.
+      - do: [notes_tag]
+        say: You can upload P D F, Word, text or Markdown files, and optionally tag them with a title, a subject and a unit.
+      - do: [notes_upload]
+        say: I'm uploading Database Design, an open-licensed textbook that covers the E R modelling, S Q L and normalisation parts of the A K T U database syllabus.
+      - do: []
+        say: While it indexes, the backend extracts the text page by page, splits it into passages, computes embeddings on your computer, and stores every passage in two indexes. When it finishes, the status changes from indexing to ready.
+      - do: [notes_wait_ready]
+        when: after
+        say: Done. A hundred and fifty-three pages became a hundred and fifty-eight passages, and each one remembers its page number.
+
+  - id: s14-search
+    kind: app
+    beats:
+      - do: [search_type]
+        say: The search box finds passages across all your notes.
+      - do: [search_spot]
+        say: Hybrid mode combines exact keyword matches, highlighted here, with semantic matches that understand meaning even when the wording differs.
+      - do: [search_modes]
+        say: You can switch to keyword-only or semantic-only search, and back to hybrid.
+      - do: [search_open_passage]
+        say: Click any result, and the full passage opens right on its page.
+
+  - id: s15-tutor
+    kind: app
+    beats:
+      - do: [tutor_ask]
+        say: Next, the AI tutor. Open AI Tutor, and ask a question in plain language.
+      - do: [tutor_wait_style]
+        say: The answer streams in, written in the style you choose. A full-marks exam answer, a simple explanation, a detailed or a short one, step-by-step working, or practice questions.
+      - do: [tutor_spot_cite]
+        say: Notice the small numbered chips. Each one is a citation.
+      - do: [tutor_open_sources]
+        say: Click one, and you see a short excerpt from the passage the tutor used, with its page number and relevance.
+      - do: [tutor_close_sources]
+        say: Below the answer, this chip shows how many passages from your notes it used. When your notes don't cover a question, the tutor says so, and marks the answer as general knowledge.
+      - do: [tutor_actions]
+        say: Under each answer you can copy it, bookmark it for revision, and rate it.
+      - do: [tutor_followup]
+        say: The tutor also suggests follow-up questions. Click one to keep going.
+      - do: [tutor_filter_turninto]
+        say: You can limit answers to specific documents with the filter. And the Turn into menu sends your latest question and chosen documents to the quiz, flashcard or summary generator, filled in and ready to go.
+
+  - id: s16-quiz
+    kind: app
+    beats:
+      - do: [quiz_new]
+        say: Practice is where it gets real. Open Quizzes, and create a new quiz.
+      - do: [quiz_form]
+        say: Give it a topic, pick the subject from the syllabus, choose the notes to ground it in, the number of questions, the difficulty and an optional timer.
+      - do: [quiz_generate]
+        say: Pick the question types. Multiple choice, true or false, and short answers that the AI grades. Then generate.
+      - do: [quiz_answer]
+        say: Each question shows its marks and topic. Answer them, jump between questions with the numbered buttons, and submit.
+      - do: [quiz_result]
+        say: Multiple choice and true or false answers are graded instantly. Short answers are marked against a rubric, with partial marks and written feedback.
+      - do: [quiz_breakdown]
+        say: You also get a breakdown by topic, and for every question, the correct answer with an explanation.
+      - do: [quiz_weak]
+        say: Weak topics are flagged. One click retakes the quiz, and two shortcuts open the tutor with your weakest topic ready to ask, or the flashcard generator with your weak topics already filled in.
+
+  - id: s17-flashcards
+    kind: app
+    beats:
+      - do: [cards_generate]
+        say: For memorisation, open the Revision Studio, and generate a flashcard deck from your notes on any topic.
+      - do: [cards_review]
+        say: Review the cards one at a time. Press space to flip a card, then rate how well you knew it, from Again to Easy, with the buttons or the keys one to four.
+      - do: [cards_finish]
+        say: Scheduling follows the S M two spaced-repetition algorithm, the same idea behind Anki. Cards you know come back after longer and longer intervals, and cards you miss come back within minutes.
+
+  - id: s18-tools
+    kind: app
+    beats:
+      - do: [tools_summary_form]
+        say: The Revision Studio does more than flashcards. Pick a topic and your notes, and it writes an exam summary.
+      - do: [tools_summary_result]
+        when: after
+        say: Each summary has a definition, core concepts, any formulas or algorithms, a worked example, keywords, common mistakes, and a one-minute revision list.
+      - do: [tools_keywords_form]
+        say: Keyword sheets work the same way.
+      - do: [tools_keywords_result]
+        when: after
+        say: Every term gets a one-line definition, and a high, medium or low tag for how likely it is to come up in the exam, with the high ones first.
+      - do: [tools_map_form]
+        say: It also builds concept maps and flowcharts.
+      - do: [tools_map_result]
+        when: after
+        say: They're interactive. You can drag the nodes, zoom in and out, and copy the map as Mermaid code.
+      - do: [tools_plan_form]
+        say: And for the final stretch, give it your exam date and your subjects.
+      - do: [tools_plan_result]
+        when: after
+        say: It plans your revision day by day until the exam, for up to thirty days, using the syllabus and your weak topics.
+
+  - id: s19-syllabus
+    kind: app
+    beats:
+      - do: [syllabus_open]
+        say: The A K T U syllabus is built in. Nine core computer science subjects, from the third to the fifth semester.
+      - do: [syllabus_subject]
+        say: Open a subject to see its units and topics. Tick topics as you cover them, and your progress shows up on the dashboard.
+      - do: [syllabus_lectures]
+        say: Every unit has shortcuts to ask the tutor, take a quiz, make flashcards, or find lectures.
+      - do: [lectures_results]
+        say: The lecture finder searches YouTube for that topic, and suggests the channels that A K T U students rely on.
+
+  - id: s20-dashboard
+    kind: app
+    beats:
+      - do: [history_search]
+        say: Every conversation is saved and searchable, so you can find an old doubt instead of asking again. Your bookmarked answers are collected here too.
+      - do: [dashboard_open]
+        say: Finally, the dashboard brings it all together. Notes indexed, quiz accuracy, cards due, and your study streak.
+      - do: [dashboard_tour]
+        say: Accuracy by topic shows where you're strong and where you're weak, and the recommendations tell you exactly what to do next.
+
+  # ------------------------------------------------------------- backend deep dive
+  - id: s21-apidocs
+    chapter: How the backend works
+    kind: apidocs
+    beats:
+      - do: [docs_open]
+        say: Now let's look under the hood. Everything you just saw goes through a documented REST API.
+      - do: [docs_tour]
+        say: The backend serves interactive documentation at slash API slash docs, with every endpoint, for accounts, notes, chat, quizzes, flashcards and more, so you can explore it, or build your own client.
+
+  - id: s22-layout
+    kind: slide
+    slide: layout
+    beats:
+      - step: 0
+        say: The backend is a FastAPI application, written in Python.
+      - step: 1
+        say: Routers in the API folder define the endpoints. The services folder holds the real logic, parsing, chunking, embeddings, search, the tutor, quizzes, flashcards and analytics. The models define nineteen database tables, and the schemas validate the requests and most of the responses.
+      - step: 2
+        say: Requests are authenticated with a signed J W T token, AI endpoints are rate-limited per user, and every query is filtered by your user I D, so one student can never see another student's data.
+
+  - id: s23-ingestion
+    kind: slide
+    slide: ingestion
+    beats:
+      - step: 0
+        say: Here's what happens when you upload a file.
+      - step: 1
+        say: It's validated and stored under your account, and indexing runs in the background, so the upload returns immediately.
+      - step: 2
+        say: P D F files are read page by page, and Word files keep their headings and tables. A scanned P D F with no text layer is flagged, with a clear message.
+      - step: 3
+        say: The text is cleaned and split by a recursive splitter that prefers paragraph, line and sentence boundaries. Passages are up to two thousand characters, roughly five hundred tokens, with about two hundred characters of overlap. Each one keeps a section heading when one is found, and, for P D F files, its page number.
+      - step: 4
+        say: Each passage is embedded locally with the B G E small model, into a vector of three hundred and eighty-four numbers, with no API call.
+      - step: 5
+        say: Finally, every passage is indexed twice. In an S Q Lite full-text table for B M twenty-five keyword search, and in a Chroma vector collection for search by meaning.
+
+  - id: s24-retrieval
+    kind: slide
+    slide: retrieval
+    beats:
+      - step: 0
+        say: When you ask a question, two searches run side by side.
+      - step: 1
+        say: Keyword search drops common words, and ranks passages with B M twenty-five. It's precise for exact terms, like B C N F, or a function name.
+      - step: 2
+        say: Semantic search embeds your question, and finds the passages closest in meaning, even when the wording is different.
+      - step: 3
+        say: The two rankings are merged with reciprocal rank fusion. Each passage scores one over sixty plus its rank in each list, so passages that both searches rank highly rise to the top.
+      - step: 4
+        say: Weak matches below half of the top score are dropped, and the best six passages move on to the model.
+
+  - id: s25-generation
+    kind: slide
+    slide: generation
+    beats:
+      - step: 0
+        say: Next comes the prompt.
+      - step: 1
+        say: A system prompt sets the rules. Answer from the numbered sources, cite them in brackets, say clearly when the notes don't cover something, never invent citations, and treat text from your files as data, not as instructions.
+      - step: 2
+        say: The chosen answer style, the recent conversation, and the numbered passages are added, and the request goes to your model.
+      - step: 3
+        say: The reply streams back to the browser as server-sent events. First your saved question, then the sources, then the answer token by token, and finally the saved answer with its follow-up questions.
+      - step: 4
+        say: Everything is stored, the conversation is indexed for history search, and the activity feeds your dashboard.
+
+  - id: s26-quiz-engine
+    kind: slide
+    slide: quizengine
+    beats:
+      - step: 0
+        say: Quizzes work in two stages.
+      - step: 1
+        say: For generation, passages on your topic are retrieved, and the model returns the quiz as structured JSON. The backend validates it. Each multiple-choice question needs exactly one correct option, broken questions are dropped, and the marking rubric stays on the server until you submit.
+      - step: 2
+        say: For grading, multiple choice and true or false are checked exactly. Short answers go to an examiner prompt that compares your answer with the rubric, the model answer and the source passage, and returns marks in half points, with feedback.
+      - step: 3
+        say: If the model is unavailable, a keyword-coverage grader steps in, and says so. Every answer is stored, and that's what powers accuracy by topic and the weak-topic recommendations.
+
+  - id: s27-sm2
+    kind: slide
+    slide: sm2
+    beats:
+      - step: 0
+        say: Flashcards use the S M two algorithm.
+      - step: 1
+        say: Your rating becomes a quality score. Again is one, Hard is three, Good is four, and Easy is five.
+      - step: 2
+        say: Each card has an ease factor that starts at two point five, and moves up or down with your ratings, but never below one point three.
+      - step: 3
+        say: The first good review schedules the card for tomorrow, the next one six days later, and after that the interval is multiplied by the ease. So three good reviews in a row give you one, six, and then fifteen days.
+      - step: 4
+        say: Press Again, and the card comes back in ten minutes, and starts its run over.
+
+  - id: s28-models-security
+    kind: slide
+    slide: security
+    beats:
+      - step: 0
+        say: Models are pluggable.
+      - step: 1
+        say: A registry lists fourteen named providers, plus a custom slot for any OpenAI-compatible server. Thirteen of the named providers, and the custom slot, speak the OpenAI-compatible chat protocol through one client, and Anthropic Claude uses its official S D K.
+      - step: 2
+        say: Your saved choice wins, otherwise the default from dot env is used. Keys you paste are encrypted with Fernet, using a key derived from the server's secret, and they're only ever shown masked.
+      - step: 3
+        say: Hosted providers are pinned to their official addresses, custom addresses are validated, passwords are hashed with B crypt, and uploads are size-limited.
+
+  - id: s29-data-model
+    kind: slide
+    slide: datamodel
+    beats:
+      - step: 1
+        say: And here's the data model. Nineteen tables in S Q Lite, grouped into accounts, syllabus, notes, chat, quizzes, flashcards, generated material and analytics, plus two full-text indexes, and the Chroma vector collection.
+
+  # ------------------------------------------------------------- benchmarks
+  - id: s30-bench-method
+    chapter: Benchmarks
+    kind: slide
+    slide: benchmethod
+    beats:
+      - step: 0
+        say: How well does it work? We measured it on real material, not synthetic text.
+      - step: 1
+        say: Four complete open-licensed textbooks, on data structures, databases, operating systems and discrete mathematics. Two thousand and sixteen passages in total.
+      - step: 2
+        say: From those books we generated thirty-nine exam-style questions, and for each one we know exactly which passage it came from.
+
+  - id: s31-bench-retrieval
+    kind: slide
+    slide: benchretrieval
+    beats:
+      - step: 0
+        say: First, retrieval. Does the right passage come back?
+      - step: 1
+        say: Hybrid search finds it, or another passage from the same page, in the top three results for eighty-five percent of the questions, and in the top five for eighty-seven percent, with a mean reciprocal rank of zero point seven three.
+      - step: 2
+        say: It matches or beats keyword search and semantic search on every accuracy measure, and the median hybrid search takes about forty-five milliseconds.
+
+  - id: s32-bench-answers
+    kind: slide
+    slide: benchanswers
+    beats:
+      - step: 0
+        say: Second, answer quality. The full pipeline answered all thirty-nine questions, and a different model graded every answer against the reference answer.
+      - step: 1
+        say: The average score was four point seven out of five. Ninety-two percent of answers scored four or higher, and eighty-seven percent cited their sources.
+      - step: 2
+        say: You can re-run every measurement with two scripts in the repository. One downloads the four books, and one runs the benchmark, where you pick the answering and grading models. The repository also has fifty-three automated tests, continuous integration on every push to main and every pull request, and a Docker image that C I builds.
+
+  # ------------------------------------------------------------- wrap-up
+  - id: s33-privacy
+    chapter: Privacy and wrap-up
+    kind: slide
+    slide: privacy
+    beats:
+      - step: 0
+        say: A word on privacy.
+      - step: 1
+        say: Your notes are parsed and indexed on your own machine. The model you choose only receives what each feature needs. Your questions and the topics you type, the recent conversation, passages from your notes, your short answers when a quiz is graded, and your subjects, exam date and weak topics for a study plan.
+      - step: 2
+        say: The app never uses your data for training, but free cloud tiers have their own data policies. For the most privacy, use Ollama, and the AI runs entirely on your machine.
+
+  - id: s34-outro
+    kind: slide
+    slide: outro
+    beats:
+      - step: 0
+        say: That's AI Study Companion.
+      - step: 1
+        say: The code is open source under the MIT license, at github dot com, slash sachin C S E, slash AI dash study dash companion. You can scan the code on screen to open it.
+      - step: 2
+        say: Star the repository, open an issue if something breaks, and contributions are welcome.
+      - step: 3
+        say: This project began as a mini-project proposal from the Department of Computer Science and Data Science at G L Bajaj Institute of Technology and Management. Thanks for watching, and good luck with your exams.

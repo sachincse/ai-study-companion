@@ -6,7 +6,7 @@ import { errorMessage } from '../lib/api'
 import { useAuth } from '../lib/auth'
 
 const POINTS = [
-  { icon: MessageSquareText, text: 'Ask questions and get answers cited from your own notes, page by page.' },
+  { icon: MessageSquareText, text: 'Ask questions and get answers cited from your own notes, down to the page for PDFs.' },
   { icon: ListChecks, text: 'Generate quizzes from any unit and get grounded, explained grading.' },
   { icon: BookOpenCheck, text: 'Flashcards with spaced repetition, summaries, keywords and concept maps.' },
   { icon: ShieldCheck, text: 'Bring your own model: Groq, Gemini, OpenAI, Claude, Grok or a local Ollama.' },
@@ -51,7 +51,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <p className="text-sm font-semibold uppercase tracking-widest text-brand-300">RAG-powered personal assistant</p>
           <h1 className="mt-3 text-4xl font-extrabold leading-tight text-white">Study from your notes, not from guesses.</h1>
           <p className="mt-4 text-slate-400">
-            Upload PDFs and lecture notes, then chat, quiz, revise and track progress against the AKTU syllabus. Every answer is grounded in your material with citations.
+            Upload PDFs and lecture notes, then chat, quiz, revise and track progress against the AKTU syllabus. Answers cite your own material, so you can check them.
           </p>
           <ul className="mt-10 space-y-4">
             {POINTS.map((p) => (
@@ -77,7 +77,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           </div>
           <h2 className="text-2xl font-bold text-ink-900">{mode === 'login' ? 'Welcome back' : 'Create your study space'}</h2>
           <p className="mt-1 text-sm text-slate-500">
-            {mode === 'login' ? 'Sign in to continue where you left off.' : 'Free, private, and your notes never leave your server.'}
+            {mode === 'login' ? 'Sign in to continue where you left off.' : 'Free and self-hosted: your notes are stored on your own server, and the model you pick only sees the passages each feature needs.'}
           </p>
           <form onSubmit={submit} className="card mt-6 space-y-4 p-6">
             {mode === 'register' && (

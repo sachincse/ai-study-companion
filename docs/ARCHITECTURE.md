@@ -33,7 +33,7 @@ flowchart TB
   VID --> YT[YouTube Data API / yt-dlp / curated channels]
 
   subgraph LLM["Provider layer"]
-    OA[OpenAI-compatible client\nOpenAI · Groq · Gemini · xAI · OpenRouter · Mistral · DeepSeek · Together · Cerebras · SambaNova · GitHub Models · Hugging Face · NVIDIA · Ollama · custom]
+    OA[OpenAI-compatible client\nOpenAI · Groq · Gemini · xAI · OpenRouter · Mistral · DeepSeek · Together · Cerebras · SambaNova · Hugging Face · NVIDIA · Ollama · custom]
     AN[Anthropic SDK\nClaude]
   end
   EMB[Embeddings\nfastembed bge-small (local) · OpenAI · Gemini · Ollama] --> VEC
@@ -76,4 +76,4 @@ See `backend/app/models/tables.py`. Main tables: users, user_settings, subjects,
 
 - **SQLite + FTS5 + Chroma** keep the whole product runnable on a laptop with zero infrastructure. The vector store sits behind an interface; `DATABASE_URL` is accepted for other SQL databases, but only SQLite is tested and the FTS5 keyword index is SQLite-specific (other databases fall back to a LIKE scan).
 - **Local embeddings by default** (fastembed, ONNX) mean notes never leave the machine for indexing and retrieval works offline; only generation needs a model API (or Ollama for fully offline use).
-- **One chat protocol** (OpenAI-compatible) covers nearly every provider, so adding one is a registry entry; Anthropic uses its official SDK for streaming and refusal fallbacks.
+- **One chat protocol** (OpenAI-compatible) covers nearly every provider, so adding one is a registry entry plus a settings field for its API key (see CONTRIBUTING.md); Anthropic uses its official SDK for streaming and refusal fallbacks.

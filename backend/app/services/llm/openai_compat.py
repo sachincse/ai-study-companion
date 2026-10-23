@@ -4,7 +4,6 @@ from __future__ import annotations
 import re
 from collections.abc import AsyncIterator
 
-import httpx
 from openai import (
     APIConnectionError,
     APIStatusError,
@@ -100,8 +99,7 @@ class OpenAICompatProvider:
         except Exception as exc:  # noqa: BLE001
             raise _friendly(exc, self.spec, self.model) from exc
         if not hasattr(resp, "choices"):
-            hint = " GitHub Models needs a fine-grained personal access token with the 'models:read' permission." if self.spec.id == "github" else ""
-            raise LLMError(f"{self.spec.name} returned an unexpected response: {str(resp)[:120]}.{hint}", status=502, provider=self.id)
+            raise LLMError(f"{self.spec.name} returned an unexpected response: {str(resp)[:120]}.", status=502, provider=self.id)
         choice = resp.choices[0] if resp.choices else None
         text = (choice.message.content if choice and choice.message else "") or ""
         finish = getattr(choice, "finish_reason", None)
@@ -118,11 +116,8 @@ class OpenAICompatProvider:
 
     async def list_models(self) -> list[str]:
         try:
-            if self.spec.models_url:
-                ids = sorted(await self._list_from_catalog())
-            else:
-                page = await self._client.models.list()
-                ids = sorted({m.id.removeprefix("models/") for m in page.data})
+            page = await self._client.models.list()
+            ids = sorted({m.id.removeprefix("models/") for m in page.data})
         except LLMError:
             raise
         except Exception as exc:  # noqa: BLE001
@@ -130,14 +125,3 @@ class OpenAICompatProvider:
         # keep chat-capable models near the top for the big catalogues
         chatty = [m for m in ids if not any(x in m.lower() for x in ("embed", "whisper", "tts", "audio", "image", "moderation", "guard", "rerank", "dall-e", "realtime", "transcribe", "search"))]
         return chatty or ids
-
-    async def _list_from_catalog(self) -> set[str]:
-        """Catalogue endpoints that are not /models (e.g. GitHub Models)."""
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.get(self.spec.models_url or "", headers={"Authorization": f"Bearer {self._client.api_key}", "Accept": "application/vnd.github+json"})
-        if resp.status_code == 401:
-            raise LLMError(f"{self.spec.name} rejected the token. Check it in Settings.", status=401, provider=self.id)
-        resp.raise_for_status()
-        data = resp.json()
-        items = data if isinstance(data, list) else data.get("data") or data.get("models") or []
-        return {str(m.get("id") or m.get("name")) for m in items if isinstance(m, dict) and (m.get("id") or m.get("name"))}

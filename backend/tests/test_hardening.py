@@ -78,6 +78,15 @@ def test_health_hides_configuration_without_auth(client, auth):
     assert "providers_ready" in full and "vector_store" in full
 
 
+def test_health_counts_only_the_callers_passages(client, auth, other_auth, document):
+    """The sidebar's 'chunks indexed' figure must not reveal how much other users have uploaded."""
+    mine = client.get("/api/v1/system/health", headers=auth).json()["vector_store"]["count"]
+    theirs = client.get("/api/v1/system/health", headers=other_auth).json()["vector_store"]["count"]
+    own_docs = client.get("/api/v1/documents", headers=other_auth).json()
+    assert mine >= document["chunk_count"] > 0
+    assert theirs == sum(d["chunk_count"] for d in own_docs)
+
+
 def test_short_answer_rubric_hidden_until_revealed():
     row = {"id": 1, "position": 0, "qtype": "short_answer", "prompt": "Explain paging", "options": ["page table", "frames"], "topic": None, "marks": 3, "source_page": None, "answer_key": "x", "explanation": None}
     assert QuestionPublic.model_validate(row).options is None
@@ -166,3 +175,110 @@ def test_demo_raw_recordings_not_tracked():
     assert not any(Path(ROOT_DIR, "docs", "demo", ".raw").glob("*.webm")) or True  # presence is fine; git-ignore is checked below
     gitignore = Path(ROOT_DIR, ".gitignore").read_text(encoding="utf-8")
     assert "docs/demo/.raw/" in gitignore
+
+
+def _user_and_db(client, email):
+    from app.core.database import get_session_factory
+    from app.models import User
+    from tests.conftest import register
+
+    headers = register(client, email)
+    db = get_session_factory()()
+    return headers, db, db.query(User).filter(User.email == email).one()
+
+
+def test_retired_provider_falls_back_to_server_default(client):
+    """A provider saved before it was retired (GitHub Models) must not lock the account out of Settings,
+    and none of its saved key, model or endpoint may leak into the provider used instead."""
+    from app.core.security import encrypt_secret
+    from app.models import UserSettings
+
+    headers, db, user = _user_and_db(client, "retired-provider@example.com")
+    with db:
+        row = db.query(UserSettings).filter(UserSettings.user_id == user.id).one_or_none() or UserSettings(user_id=user.id)
+        row.llm_provider, row.llm_model = "github", "openai/gpt-4.1-mini"
+        row.llm_api_key_enc = encrypt_secret("github_pat_retired")
+        row.llm_base_url = "https://models.github.ai/inference"
+        db.add(row)
+        db.commit()
+    resp = client.get("/api/v1/settings/providers", headers=headers)
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["current"]["provider"] == "groq" and body["current"]["key_source"] == "env"
+    assert body["current"]["model"] != "openai/gpt-4.1-mini"
+    assert all(p["id"] != "github" for p in body["providers"])
+
+
+def test_retired_server_default_falls_back(client, monkeypatch):
+    """LLM_PROVIDER=github (documented in 1.0.0) must not break every account after upgrading."""
+    from app.core.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "llm_provider", "github")
+    headers, db, _user = _user_and_db(client, "retired-env@example.com")
+    db.close()
+    resp = client.get("/api/v1/settings/providers", headers=headers)
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["current"]["provider"] == "groq"
+
+
+def test_server_key_never_sent_to_a_callers_endpoint(client, monkeypatch):
+    """With LLM_PROVIDER=custom and a server LLM_API_KEY, a user who points 'custom' at another URL gets no key."""
+    from app.core.config import get_settings
+    from app.services.llm import resolve_llm
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "llm_provider", "custom")
+    monkeypatch.setattr(settings, "llm_base_url", "http://llm.internal:8080/v1")
+    monkeypatch.setattr(settings, "llm_api_key", "server-secret")
+    _headers, db, user = _user_and_db(client, "custom-endpoint@example.com")
+    with db:
+        theirs = resolve_llm(db, user, override={"provider": "custom", "base_url": "https://collector.example/v1"})
+        assert theirs.api_key is None and theirs.base_url == "https://collector.example/v1"
+        ours = resolve_llm(db, user, override={"provider": "custom"})
+        assert ours.api_key == "server-secret" and ours.base_url == "http://llm.internal:8080/v1"
+        same = resolve_llm(db, user, override={"provider": "custom", "base_url": " http://llm.internal:8080/v1/ "})
+        assert same.api_key == "server-secret"
+        own_key = resolve_llm(db, user, override={"provider": "custom", "base_url": "https://collector.example/v1", "api_key": "users-own"})
+        assert own_key.api_key == "users-own"
+
+
+def test_sdk_request_loggers_are_quiet(client):
+    import logging
+
+    for name in ("httpx", "httpx2"):
+        assert logging.getLogger(name).getEffectiveLevel() >= logging.WARNING, name
+
+
+def test_rate_limiter_counts_cost():
+    from fastapi import HTTPException
+
+    from app.core.deps import SlidingWindowLimiter
+
+    limiter = SlidingWindowLimiter()
+    limiter.check(1, limit=5, cost=3)
+    with pytest.raises(HTTPException):
+        limiter.check(1, limit=5, cost=3)
+    limiter.check(2, limit=5, cost=50)  # bigger than the budget: allowed once, when the window is empty
+    with pytest.raises(HTTPException):
+        limiter.check(2, limit=5)
+
+
+def test_reindex_refused_while_indexing_and_failed_documents_keep_no_passages(client, auth, document):
+    from app.core.database import get_session_factory
+    from app.models import Chunk, Document
+    from app.services import document_service
+
+    resp = client.post("/api/v1/documents", headers=auth, files={"file": ("extra.txt", b"Paging maps virtual pages to frames. " * 40, "text/plain")})
+    assert resp.status_code == 202, resp.text
+    doc_id = resp.json()["id"]
+    with get_session_factory()() as db:
+        doc = db.get(Document, doc_id)
+        assert doc.status == "ready" and doc.chunk_count > 0
+        doc.status = "processing"
+        db.commit()
+    assert client.post(f"/api/v1/documents/{doc_id}/reindex", headers=auth).status_code == 409
+    with get_session_factory()() as db:
+        document_service._mark_failed(db, doc_id, "Indexing failed: test")
+        assert db.query(Chunk).filter(Chunk.document_id == doc_id).count() == 0
+        assert db.get(Document, doc_id).status == "failed"
+    assert client.post(f"/api/v1/documents/{doc_id}/reindex", headers=auth).status_code == 202

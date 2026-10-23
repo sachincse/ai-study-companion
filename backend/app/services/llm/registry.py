@@ -2,8 +2,9 @@
 
 Every provider except Anthropic speaks the OpenAI chat-completions protocol, so
 one client implementation covers OpenAI, Groq, xAI (Grok), Google Gemini,
-OpenRouter, Mistral, DeepSeek, Together, a local Ollama and any custom endpoint
-(LM Studio, vLLM, LiteLLM...). Anthropic uses the official ``anthropic`` SDK.
+OpenRouter, Mistral, DeepSeek, Together, Cerebras, SambaNova, Hugging Face,
+NVIDIA NIM, a local Ollama and any custom endpoint (LM Studio, vLLM, LiteLLM...).
+Anthropic uses the official ``anthropic`` SDK.
 
 Default model ids are a starting point only: the Settings page lists the live
 ``/models`` catalogue of whichever provider you pick, so stale defaults never
@@ -31,7 +32,6 @@ class ProviderSpec:
     local: bool = False
     supports_json_mode: bool = True
     notes: str = ""
-    models_url: str | None = None  # providers whose catalogue is not at {base_url}/models
 
 
 PROVIDERS: dict[str, ProviderSpec] = {
@@ -55,7 +55,7 @@ PROVIDERS: dict[str, ProviderSpec] = {
         default_model="gemini-3.5-flash",
         key_env="GEMINI_API_KEY",
         docs_url="https://aistudio.google.com/apikey",
-        key_hint="AIza...",
+        key_hint="AQ.... (older keys: AIza...)",
         free_tier=True,
         notes="Free tier via Google AI Studio. gemini-3.5-flash and gemini-flash-lite-latest answer in seconds; the gemini-flash-latest alias can be much slower.",
     ),
@@ -141,8 +141,7 @@ PROVIDERS: dict[str, ProviderSpec] = {
         key_env="CEREBRAS_API_KEY",
         docs_url="https://cloud.cerebras.ai/",
         key_hint="csk-...",
-        free_tier=True,
-        notes="Free developer tier with very fast inference.",
+        notes="Very fast inference. New accounts get a small trial credit after adding a payment method, then pay as you go.",
     ),
     "sambanova": ProviderSpec(
         id="sambanova",
@@ -154,19 +153,6 @@ PROVIDERS: dict[str, ProviderSpec] = {
         docs_url="https://cloud.sambanova.ai/",
         free_tier=True,
         notes="Free tier for open-weight models (Llama, DeepSeek, Qwen).",
-    ),
-    "github": ProviderSpec(
-        id="github",
-        name="GitHub Models",
-        kind="openai_compat",
-        base_url="https://models.github.ai/inference",
-        default_model="openai/gpt-4.1-mini",
-        key_env="GITHUB_MODELS_TOKEN",
-        docs_url="https://github.com/settings/personal-access-tokens/new",
-        key_hint="github_pat_... (scope: models:read)",
-        free_tier=True,
-        notes="Free, rate-limited access to GPT, Llama, Mistral and more with any GitHub account.",
-        models_url="https://models.github.ai/catalog/models",
     ),
     "huggingface": ProviderSpec(
         id="huggingface",
@@ -191,7 +177,7 @@ PROVIDERS: dict[str, ProviderSpec] = {
         docs_url="https://build.nvidia.com/",
         key_hint="nvapi-...",
         free_tier=True,
-        notes="Free API credits on signup at build.nvidia.com.",
+        notes="Free, rate-limited trial access for prototyping at build.nvidia.com.",
     ),
     "ollama": ProviderSpec(
         id="ollama",
@@ -221,6 +207,15 @@ PROVIDERS: dict[str, ProviderSpec] = {
 }
 
 DEFAULT_PROVIDER_ORDER = list(PROVIDERS.keys())
+
+
+DEFAULT_PROVIDER = "groq"  # same as Settings.llm_provider's default
+
+
+def default_provider_id(configured: str | None) -> str:
+    """The server default from LLM_PROVIDER, or Groq when that names an unknown or retired provider."""
+    pid = (configured or "").strip().lower()
+    return pid if pid in PROVIDERS else DEFAULT_PROVIDER
 
 
 def get_spec(provider_id: str) -> ProviderSpec:

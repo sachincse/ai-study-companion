@@ -96,20 +96,37 @@ def process_document(document_id: int) -> None:
             log_activity(db, doc.user_id, "upload", ref_id=doc.id, subject_id=doc.subject_id, detail=doc.title)
             log.info("indexed document %s (%s chunks)", doc.id, doc.chunk_count)
         except (UnsupportedFileError, EmptyDocumentError) as exc:
-            db.rollback()  # drop any half-written chunk rows
-            doc = db.get(Document, document_id)
-            doc.status = "failed"
-            doc.error = str(exc)
-            doc.chunk_count = 0
-            db.commit()
+            _mark_failed(db, document_id, str(exc))
         except Exception as exc:  # noqa: BLE001
             log.exception("ingestion failed for document %s", document_id)
-            db.rollback()
-            doc = db.get(Document, document_id)
-            doc.status = "failed"
-            doc.error = f"Indexing failed: {str(exc)[:300]}"
-            doc.chunk_count = 0
-            db.commit()
+            _mark_failed(db, document_id, f"Indexing failed: {str(exc)[:300]}")
+
+
+def _mark_failed(db: Session, document_id: int, error: str) -> None:
+    """A failed document keeps no half-built index: no passages in SQLite, no vectors in the store."""
+    db.rollback()
+    doc = db.get(Document, document_id)
+    if doc is None:
+        return
+    db.execute(Chunk.__table__.delete().where(Chunk.document_id == doc.id))
+    try:
+        get_vector_store().delete_document(doc.user_id, doc.id)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("vector cleanup failed for document %s: %s", doc.id, exc)
+    doc.status = "failed"
+    doc.error = error
+    doc.chunk_count = 0
+    db.commit()
+
+
+def reset_interrupted_ingestion(db: Session) -> int:
+    """Indexing runs in-process, so a restart drops queued and running jobs: mark them as failed."""
+    docs = db.scalars(select(Document).where(Document.status.in_(("uploaded", "processing")))).all()
+    for doc in docs:
+        doc.status = "failed"
+        doc.error = "Indexing was interrupted by a server restart. Use re-index to try again."
+    db.commit()
+    return len(docs)
 
 
 def _ingest(db: Session, doc: Document) -> None:
@@ -120,6 +137,10 @@ def _ingest(db: Session, doc: Document) -> None:
     chunks = chunk_pages(parsed.pages, cfg)
     if not chunks:
         raise EmptyDocumentError("No usable text could be extracted from this file.")
+
+    # The slow step runs first, while no database write is open, so chat and other
+    # requests are never stuck behind a long indexing transaction.
+    embeddings = get_embedder().embed_documents([c.content for c in chunks])
 
     # replace any previous index for this document
     db.execute(Chunk.__table__.delete().where(Chunk.document_id == doc.id))
@@ -141,9 +162,7 @@ def _ingest(db: Session, doc: Document) -> None:
     db.add_all(rows)
     db.flush()
 
-    embedder = get_embedder()
     texts = [r.content for r in rows]
-    embeddings = embedder.embed_documents(texts)
     store.add(
         ids=[f"chunk-{r.id}" for r in rows],
         embeddings=embeddings,

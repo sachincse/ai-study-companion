@@ -6,7 +6,17 @@ import { Markdown } from '../components/Markdown'
 import { Badge, Card, EmptyState, PageHeader, Spinner } from '../components/ui'
 import { api } from '../lib/api'
 import type { ChatMessage, HistoryHit } from '../lib/types'
-import { formatDateTime, highlightSnippet } from '../lib/utils'
+import { formatDateTime, highlightSnippet, stripMarkdown } from '../lib/utils'
+
+/** The first ~max characters of a saved answer, cut at a line break so no bold pair or link is left half open. */
+function excerpt(markdown: string, max = 1200) {
+  if (markdown.length <= max) return markdown
+  const lineEnd = markdown.lastIndexOf('\n', max)
+  const cut = lineEnd > max / 2 ? lineEnd : markdown.lastIndexOf(' ', max)
+  let head = markdown.slice(0, cut > 0 ? cut : max).trimEnd()
+  if ((head.match(/\*\*/g)?.length ?? 0) % 2) head = head.slice(0, head.lastIndexOf('**')).trimEnd() // the cut split a **bold** pair
+  return `${head}\n\n...`
+}
 
 export function HistoryPage() {
   const [params, setParams] = useSearchParams()
@@ -47,7 +57,7 @@ export function HistoryPage() {
                   {h.bookmarked && <Badge tone="amber">bookmarked</Badge>}
                   <span className="ml-auto text-slate-400">{formatDateTime(h.created_at)}</span>
                 </div>
-                <p className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: highlightSnippet(h.snippet) }} />
+                <p className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: highlightSnippet(stripMarkdown(h.snippet)) }} />
               </li>
             ))}
           </ul>
@@ -70,7 +80,7 @@ export function HistoryPage() {
                   </Link>
                   <span className="ml-auto">{formatDateTime(m.created_at)}</span>
                 </div>
-                <Markdown className="text-sm">{m.content.length > 1200 ? m.content.slice(0, 1200) + '...' : m.content}</Markdown>
+                <Markdown className="text-sm">{excerpt(m.content)}</Markdown>
               </div>
             ))}
           </div>

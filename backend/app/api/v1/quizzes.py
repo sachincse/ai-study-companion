@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.deps import ai_rate_limit, get_current_user
+from app.core.deps import ai_rate_limit, charge_ai, get_current_user
 from app.models import User
 from app.schemas.common import Message
 from app.schemas.learning import (
@@ -71,9 +71,13 @@ async def submit(attempt_id: int, payload: SubmitAttemptRequest, user: User = De
     attempt = quiz_service.get_owned_attempt(db, user, attempt_id)
     if attempt is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Attempt not found")
-    needs_ai = any(q.qtype == "short_answer" for q in attempt.quiz.questions)
+    # the model grades each written answer separately, so each one counts against the AI rate limit
+    graded_by_ai = 0
+    if attempt.submitted_at is None:
+        graded_by_ai = sum(1 for q in attempt.quiz.questions if q.qtype == "short_answer" and str(payload.answers.get(q.id) or "").strip())
+    charge_ai(user, graded_by_ai)
     llm = None
-    if needs_ai:
+    if graded_by_ai:
         try:
             llm = get_llm(db, user)
         except LLMError:

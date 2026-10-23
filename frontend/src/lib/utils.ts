@@ -53,6 +53,41 @@ export function highlightSnippet(snippet: string) {
   return escaped.replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>')
 }
 
+// [text](url) and ![alt](src); the label may hold FTS [[term]] markers
+const MD_LINK = /!?\[((?:\[\[[^\]\n]*\]\]|[^[\]\n])*)\]\(([^)\s]*)\)/g
+
+/** Unwrap **bold**, __bold__, *italic* and _italic_ in text whose inline code has been parked. */
+function unwrapEmphasis(text: string) {
+  return text
+    .replace(/\*\*(?=[^\s*])([\s\S]*?[^\s*])\*\*/g, '$1')
+    .replace(/(^|[^\w_])__(?=[^\s_])([\s\S]*?[^\s_])__(?![\w_])/g, '$1$2')
+    .replace(/(^|[^\w*])\*(?=[^\s*])([^*\n]*?[^\s*])\*(?![\w*])/g, '$1$2')
+    .replace(/(^|[^\w_])_(?=[^\s_])([^_\n]*?[^\s_])_(?![\w_])/g, '$1$2')
+    .replace(/\*\*(?=\S)|(?<=\S)\*\*/g, '') // the other half of the pair was cut off by the snippet window
+}
+
+/**
+ * Flatten a Markdown answer into one line of plain text for previews (history search hits, the conversation
+ * list). FTS `[[term]]` markers are kept, so the result can still go through highlightSnippet.
+ */
+export function stripMarkdown(text: string) {
+  const codes: string[] = []
+  const flat = text
+    .replace(/^[ \t]*(?:`{3,}|~{3,})[ \t]*(.*)$/gm, (_m, info: string) => (info.includes('[[') ? info : '')) // code fence lines, keeping a search hit in the info string
+    .replace(/^[ \t]*(?:[-*_][ \t]*){3,}$/gm, '') // horizontal rules
+    .replace(/^(?=[^\n]*\|)(?=[^\n]*---)[ \t|:-]+$/gm, '') // table separator rows (linear: no nested quantifiers)
+    .replace(/^(?:[^\n|]*(?<!\|)\|(?!\|)){2,}[^\n|]*$/gm, (row) => row.split('|').map((cell) => cell.trim()).filter(Boolean).join(' · ')) // table rows
+    .replace(/^[ \t]*(?:>[ \t]?)+/gm, '') // blockquote markers
+    .replace(/^[ \t]*(?:#{1,6}|[-*+])[ \t]+/gm, '') // heading and bullet markers
+    .replace(MD_LINK, (_m, label: string, href: string) => (href.startsWith('#cite-') ? `[${label}]` : label))
+    .replace(/(`+)([^`]*?)\1/g, (_m, _ticks: string, code: string) => `\u0000${codes.push(code) - 1}\u0000`) // park inline code
+  return unwrapEmphasis(flat)
+    .replace(/`/g, '') // a code span cut off by the snippet window
+    .replace(/\u0000(\d+)\u0000/g, (_m, i: string) => codes[Number(i)]) // inline code comes back verbatim
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 /** YYYY-MM-DD in the browser's local calendar (toISOString would give the UTC date). */
 export function localDateKey(d = new Date()) {
   const pad = (n: number) => String(n).padStart(2, '0')

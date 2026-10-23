@@ -64,7 +64,11 @@ export function AppShell() {
   const providers = useQuery({ queryKey: ['providers'], queryFn: () => api<ProvidersResponse>('/api/v1/settings/providers') })
   const dashboard = useQuery({ queryKey: ['dashboard'], queryFn: () => api<Dashboard>('/api/v1/dashboard'), staleTime: 60_000 })
 
-  useEffect(() => setOpen(false), [location.pathname])
+  // a new page starts at the top (the router keeps the previous page's scroll offset) with the mobile menu closed
+  useEffect(() => {
+    setOpen(false)
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   const submitSearch = (e: FormEvent) => {
     e.preventDefault()

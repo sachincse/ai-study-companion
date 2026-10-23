@@ -67,8 +67,11 @@ class LocalEmbedder:
         self._lock = threading.Lock()
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        with self._lock:
-            return [v.tolist() for v in self._model.embed(texts, batch_size=32)]
+        out: list[list[float]] = []
+        for i in range(0, len(texts), 32):
+            with self._lock:  # per batch, so a search waits for one batch at most, not a whole book
+                out.extend(v.tolist() for v in self._model.embed(texts[i : i + 32], batch_size=32))
+        return out
 
     def embed_query(self, text: str) -> list[float]:
         with self._lock:

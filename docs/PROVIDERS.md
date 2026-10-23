@@ -7,7 +7,7 @@ that server) or be pasted per account in **Settings** (encrypted at rest).
 | Provider | Env var | Default model | Free tier | Notes |
 |---|---|---|---|---|
 | Groq | `GROQ_API_KEY` | `openai/gpt-oss-120b` | yes | Fastest; great default for students. Keys: https://console.groq.com/keys |
-| Google Gemini | `GEMINI_API_KEY` | `gemini-3.5-flash` | yes | https://aistudio.google.com/apikey; `gemini-flash-lite-latest` is the fastest, the `gemini-flash-latest` alias can be slow |
+| Google Gemini | `GEMINI_API_KEY` | `gemini-3.5-flash` | yes | https://aistudio.google.com/apikey (new keys start with `AQ.`, older ones with `AIza`; both work); `gemini-flash-lite-latest` is the fastest, the `gemini-flash-latest` alias can be slow |
 | OpenAI | `OPENAI_API_KEY` | `gpt-4o-mini` | no | https://platform.openai.com/api-keys |
 | Anthropic Claude | `ANTHROPIC_API_KEY` | `claude-opus-5-5` | no | Official SDK; adaptive thinking; server-side refusal fallbacks enabled |
 | xAI Grok | `XAI_API_KEY` | `grok-4.7` | no | Keys from https://console.x.ai start with `xai-` |
@@ -15,20 +15,21 @@ that server) or be pasted per account in **Settings** (encrypted at rest).
 | Mistral | `MISTRAL_API_KEY` | `mistral-small-latest` | yes | https://console.mistral.ai/api-keys |
 | DeepSeek | `DEEPSEEK_API_KEY` | `deepseek-chat` | no | https://platform.deepseek.com/api_keys |
 | Together AI | `TOGETHER_API_KEY` | `meta-llama/Llama-3.3-70B-Instruct-Turbo` | trial credits | https://api.together.xyz |
-| Cerebras | `CEREBRAS_API_KEY` | `llama-3.3-70b` | yes | https://cloud.cerebras.ai (very fast) |
+| Cerebras | `CEREBRAS_API_KEY` | `llama-3.3-70b` | trial credit | https://cloud.cerebras.ai (very fast; the trial credit needs a payment method and expires after 30 days) |
 | SambaNova Cloud | `SAMBANOVA_API_KEY` | `Meta-Llama-3.3-70B-Instruct` | yes | https://cloud.sambanova.ai |
-| GitHub Models | `GITHUB_MODELS_TOKEN` | `openai/gpt-4.1-mini` | yes (rate-limited) | fine-grained PAT with the **models:read** permission; the gh CLI's OAuth token does not work |
 | Hugging Face Inference | `HF_TOKEN` | `meta-llama/Llama-3.3-70B-Instruct` | monthly credits | https://huggingface.co/settings/tokens; HTTP 402 means the credits are used up |
-| NVIDIA NIM | `NVIDIA_API_KEY` | `meta/llama-3.3-70b-instruct` | signup credits | https://build.nvidia.com |
+| NVIDIA NIM | `NVIDIA_API_KEY` | `meta/llama-3.3-70b-instruct` | trial access | https://build.nvidia.com (rate-limited, for prototyping) |
 | Ollama (local) | `OLLAMA_BASE_URL` | `qwen2.5:7b` | free, offline | `ollama pull qwen2.5:7b` |
 | Custom | `LLM_BASE_URL`, `LLM_API_KEY` | - | - | LM Studio, vLLM, LiteLLM, text-generation-webui |
 
 ## Free options, honestly
 
 You do not need to pay to run this. In rough order of generosity: a local Ollama
-(free forever, needs ~5 GB RAM for a 7B model), Groq, Google AI Studio, Cerebras,
-SambaNova, GitHub Models and Mistral all hand out free API keys on signup, and
-OpenRouter exposes a set of `:free` models. The community-maintained list at
+(free forever, needs ~5 GB RAM for a 7B model), Groq, Google AI Studio, SambaNova and
+Mistral all hand out free API keys on signup, OpenRouter exposes a set of `:free`
+models, Hugging Face gives small free monthly credits, and NVIDIA offers free, rate-limited trial access for prototyping.
+GitHub Models was retired on 30 July 2026 and has been removed; Cerebras now
+offers a trial credit instead of a free tier. The community-maintained list at
 https://github.com/cheahjs/free-llm-api-resources tracks current limits.
 
 Create the key under **your own** account. Keys that other people leaked in public

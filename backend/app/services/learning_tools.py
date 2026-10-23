@@ -48,7 +48,8 @@ async def generate_summary(db: Session, user: User, llm: LLMProvider, *, topic: 
 ## Worked example
 ## Exam keywords (bold each keyword, comma separated)
 ## Common mistakes
-## 60-second revision (5 bullet points)
+## 60-second revision
+Use exactly these headings, word for word. Under "60-second revision" write exactly 5 short bullet points.
 Ground every statement in the notes when notes are given. Return JSON: {{"title": "...", "markdown": "..."}}"""
     data, result = await generate_json(llm, instructions, context=context_text(sources), max_tokens=4096)
     markdown = str((data or {}).get("markdown") or "").strip() if isinstance(data, dict) else ""

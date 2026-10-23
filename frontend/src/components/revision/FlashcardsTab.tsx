@@ -67,13 +67,19 @@ export function FlashcardsTab() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {decks.data.map((d) => (
-            <Card key={d.id}>
+            <Card key={d.id} className="flex flex-col">
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <h3 className="truncate font-bold text-ink-900">{d.title}</h3>
+                <div className="min-w-0 flex-1">
+                  <h3 className="line-clamp-2 break-words font-bold text-ink-900" title={d.title}>
+                    {d.title}
+                  </h3>
                   <p className="truncate text-xs text-slate-500">{d.topic ?? 'From your notes'} · {timeAgo(d.created_at)}</p>
                 </div>
-                {d.due_count > 0 && <Badge tone="rose">{d.due_count} due</Badge>}
+                {d.due_count > 0 && (
+                  <Badge tone="rose" className="shrink-0 whitespace-nowrap">
+                    {d.due_count} due
+                  </Badge>
+                )}
               </div>
               <div className="mt-3">
                 <ProgressBar value={d.card_count ? (d.mastered_count / d.card_count) * 100 : 0} tone="mint" />
@@ -82,7 +88,7 @@ export function FlashcardsTab() {
                   <span>{d.card_count} cards · {d.new_count} new</span>
                 </div>
               </div>
-              <div className="mt-4 flex gap-2">
+              <div className="mt-auto flex gap-2 pt-4">
                 <button className="btn-primary btn-sm flex-1" onClick={() => setReview({ deckId: d.id })} disabled={!d.due_count}>
                   Review
                 </button>
@@ -239,7 +245,8 @@ function ReviewSession({ deckId, onExit }: { deckId: number | null; onExit: () =
         </span>
       </div>
       <ProgressBar value={(index / queue.length) * 100} />
-      <div className="flip-card min-h-[260px] cursor-pointer select-none" onClick={() => setFlipped((f) => !f)}>
+      {/* keyed by card: the next card mounts question-side, instead of rotating back while already showing its answer */}
+      <div key={card.id} className="flip-card min-h-[260px] cursor-pointer select-none" onClick={() => setFlipped((f) => !f)}>
         <div className={cn('flip-inner relative min-h-[260px]', flipped && 'flipped')}>
           <div className="flip-face card absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
             <span className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{card.topic ?? 'Question'}</span>

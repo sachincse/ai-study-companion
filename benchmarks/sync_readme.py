@@ -5,6 +5,8 @@ README.md contains two markers:
     <!-- BENCHMARK:START --> ... <!-- BENCHMARK:END -->
 Everything between them is replaced with the tables from the latest run, so the
 front page never drifts from the numbers that were actually measured.
+RESULTS.md itself is written by run_benchmark.py (after a run, or with
+--render-only <results json> to re-render a saved run without any model calls).
 
     python benchmarks/sync_readme.py
 """
@@ -50,7 +52,7 @@ def main() -> None:
     pattern = re.compile(re.escape(START) + r".*?" + re.escape(END), re.DOTALL)
     if not pattern.search(readme):
         raise SystemExit("README.md is missing the BENCHMARK markers")
-    readme = pattern.sub(f"{START}\n{block}{END}", readme)
+    readme = pattern.sub(lambda _: f"{START}\n{block}{END}", readme)  # inserted literally: no backslash escapes
     README.write_text(readme, encoding="utf-8")
     print("README benchmark section updated")
 

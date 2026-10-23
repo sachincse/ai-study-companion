@@ -6,7 +6,7 @@ import time
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app import __version__
@@ -14,7 +14,7 @@ from app.core.config import get_settings
 from app.core.database import fts_available, get_db
 from app.core.deps import ai_rate_limit, bearer_scheme, get_current_user
 from app.core.security import encrypt_secret, mask_secret
-from app.models import Subject, User, UserSettings
+from app.models import Chunk, Subject, User, UserSettings
 from app.schemas.settings import (
     LLMSettingsUpdate,
     LLMTestRequest,
@@ -28,7 +28,7 @@ from app.schemas.settings import (
 from app.services import dashboard_service, syllabus_service, video_service
 from app.services.embeddings import embedder_status
 from app.services.llm import CONFIGURABLE_BASE_URL, LLMError, build_provider, provider_catalogue, resolve_llm, validate_base_url
-from app.services.llm.registry import get_spec
+from app.services.llm.registry import default_provider_id, get_spec
 from app.services.vector_store import get_vector_store
 
 router = APIRouter(tags=["dashboard", "syllabus", "resources", "settings", "system"])
@@ -172,18 +172,19 @@ async def list_models(payload: ModelListRequest, user: User = Depends(ai_rate_li
 def health(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme), db: Session = Depends(get_db)) -> dict:
     """Liveness for everyone; configuration details only for signed-in users."""
     settings = get_settings()
-    authenticated = False
+    user: User | None = None
     if credentials is not None:
         try:
-            get_current_user(credentials, db)
-            authenticated = True
+            user = get_current_user(credentials, db)
         except HTTPException:
-            authenticated = False
-    if not authenticated:
+            user = None
+    if user is None:
         return {"status": "ok", "version": __version__, "rag_engine": "active" if embedder_status()["ready"] else "warming-up"}
     try:
         store = get_vector_store()
-        vector = {"name": store.name, "count": store.count()}
+        store.count()  # reachability check; the number shown is the caller's own passages
+        mine = db.scalar(select(func.count()).select_from(Chunk).where(Chunk.user_id == user.id)) or 0
+        vector = {"name": store.name, "count": mine}
     except Exception as exc:  # noqa: BLE001
         vector = {"name": settings.vector_store, "error": str(exc)[:200]}
     env_providers = [p["id"] for p in provider_catalogue() if p["env_key_configured"] or not p["requires_key"]]
@@ -194,7 +195,7 @@ def health(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_sch
         "embedding": embedder_status(),
         "vector_store": vector,
         "fts": fts_available(),
-        "default_provider": settings.llm_provider,
+        "default_provider": default_provider_id(settings.llm_provider),
         "providers_ready": env_providers,
         "rag_engine": "active" if embedder_status()["ready"] else "warming-up",
     }
@@ -209,5 +210,5 @@ def public_config() -> dict:
         "allow_registration": settings.allow_registration,
         "max_upload_mb": settings.max_upload_mb,
         "supported_files": ["pdf", "docx", "txt", "md"],
-        "default_provider": settings.llm_provider,
+        "default_provider": default_provider_id(settings.llm_provider),
     }

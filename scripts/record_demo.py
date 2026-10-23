@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Record the product walkthrough video with Playwright.
 
 Drives the real app (backend serving the built frontend) through the full
@@ -49,8 +49,11 @@ def caption(page: Page, text: str, pause: float = 1.2) -> None:
 
 def shot(page: Page, out: Path, name: str) -> None:
     (out / "screenshots").mkdir(parents=True, exist_ok=True)
-    page.evaluate(CAPTION_JS, "")
+    hide = "() => { const el = document.getElementById('asc-demo-caption'); if (el) el.style.display = 'none' }"
+    show = "() => { const el = document.getElementById('asc-demo-caption'); if (el) { el.textContent = ''; el.style.opacity = '0'; el.style.display = '' } }"
+    page.evaluate(hide)  # a fading caption would otherwise leave a dark pill in the screenshot
     page.screenshot(path=str(out / "screenshots" / f"{name}.png"))
+    page.evaluate(show)
 
 
 def type_slowly(page: Page, selector: str, text: str, delay: int = 18) -> None:
@@ -187,7 +190,7 @@ def run(base_url: str, out: Path, book: Path, email: str, provider: str | None =
         page.wait_for_selector("text=Generate a quiz")
         caption(page, "Generate a quiz on any topic, grounded in the uploaded notes.", 1.2)
         page.fill("input[placeholder*='CPU scheduling']", "Normalization and functional dependencies")
-        page.select_option("label:has-text('Subject') select", label="Sem 5 - BCS501 Database Management System")
+        page.select_option("label:has-text('Subject') select", label="BCS501 · Database Management System (Sem 5)")
         page.click("button:has-text('Database Design')")
         page.select_option("label:has-text('Questions') select", "5")
         shot(page, out, "06-quiz-generate")
@@ -261,7 +264,7 @@ def run(base_url: str, out: Path, book: Path, email: str, provider: str | None =
         shot(page, out, "12-syllabus")
         page.click("a[href='/settings']")
         page.wait_for_selector("text=Choose a provider")
-        caption(page, "Bring your own model: Groq, Gemini, OpenAI, Claude, Grok, Cerebras, GitHub Models, Ollama and more. This run uses Gemini Flash-Lite.", 2.6)
+        caption(page, "Bring your own model: Groq, Gemini, OpenAI, Claude, Grok, Cerebras, Ollama and more. This run uses Gemini Flash-Lite.", 2.6)
         shot(page, out, "13-settings")
 
         # 8. Dashboard --------------------------------------------------------------------

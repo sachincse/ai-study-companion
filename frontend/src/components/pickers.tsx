@@ -42,7 +42,7 @@ export function SubjectSelect({ value, onChange, allowEmpty = true, className }:
       {allowEmpty && <option value="">Any subject</option>}
       {(subjects ?? []).map((s) => (
         <option key={s.id} value={s.id}>
-          Sem {s.semester} - {s.code} {s.name}
+          {`${s.code} · ${s.name} (Sem ${s.semester})`}
         </option>
       ))}
     </select>
